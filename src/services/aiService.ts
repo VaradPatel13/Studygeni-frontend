@@ -1,0 +1,33 @@
+import api from '@/lib/api';
+
+export const aiService = {
+    async generateFlashcards(documentId: string, count: number = 10) {
+        const response = await api.post(`/ai/flashcards/${documentId}`, { count });
+        return response.data;
+    },
+
+    async generateQuiz(documentId: string, count: number = 5, difficulty: string = 'mixed') {
+        const response = await api.post(`/ai/quiz/${documentId}`, { count, difficulty });
+        return response.data;
+    },
+
+    async generateSummary(documentId: string, length: string = 'medium') {
+        const response = await api.post(`/ai/summary/${documentId}`, { length });
+        return response.data;
+    },
+
+    async chatWithDocument(documentId: string, message: string) {
+        const response = await api.post(`/ai/chat/${documentId}`, { message });
+        return response.data;
+    },
+
+    async explainConcept(documentId: string, concept: string, level: string = 'simple') {
+        const response = await api.post(`/ai/explain/${documentId}`, { concept, level });
+        return response.data;
+    },
+
+    async getChatHistory(documentId: string) {
+        const response = await api.get(`/ai/chat-history/${documentId}`);
+        return response.data;
+    }
+};

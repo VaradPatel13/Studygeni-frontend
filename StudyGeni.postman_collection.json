@@ -1,0 +1,1021 @@
+{
+  "info": {
+    "_postman_id": "53a6046d-fe50-48d9-b780-8c0de1e82d7c",
+    "name": "StudyGeni",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "47078951",
+    "_collection_link": "https://go.postman.co/collection/47078951-53a6046d-fe50-48d9-b780-8c0de1e82d7c?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "auth",
+      "item": [
+        {
+          "name": "register",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"username\": \"john_doe\",\r\n  \"email\": \"john@example.com\",\r\n  \"password\": \"password123\",\r\n  \"mobileNumber\": \"9876543210\",\r\n  \"profileImage\": \"https://example.com/avatar.jpg\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/auth/register",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"john@example.com\", \"password\": \"newpassword456\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get info",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzIyYWIxNTI5ZjgxZDNmZjM5ODdiNCIsImlhdCI6MTc2OTA4OTgxMywiZXhwIjoxNzcxNjgxODEzfQ.krCDUXncmOrLvK-ogpK9UdplW1ThU84YbfGi42PP5F8",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/auth/profile",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "auth",
+                "profile"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzIyYWIxNTI5ZjgxZDNmZjM5ODdiNCIsImlhdCI6MTc2OTA4OTgxMywiZXhwIjoxNzcxNjgxODEzfQ.krCDUXncmOrLvK-ogpK9UdplW1ThU84YbfGi42PP5F8",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"username\": \"new_username\" }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/auth/profile",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "auth",
+                "profile"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "progress",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzIyYWIxNTI5ZjgxZDNmZjM5ODdiNCIsImlhdCI6MTc2OTE2ODYyMSwiZXhwIjoxNzcxNzYwNjIxfQ.VoZiYK2lD7oGQNCiPoa0-gybl4UJS3M2996HAwHSiNQ",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"concept\": \"Machine Learning\",\r\n  \"level\": \"simple\"\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/progress/stats",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "progress",
+                "stats"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzIyYWIxNTI5ZjgxZDNmZjM5ODdiNCIsImlhdCI6MTc2OTA4OTgxMywiZXhwIjoxNzcxNjgxODEzfQ.krCDUXncmOrLvK-ogpK9UdplW1ThU84YbfGi42PP5F8",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"currentPassword\": \"newpassword456\",\r\n  \"newPassword\": \"newpassword456\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/auth/change-password",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "auth",
+                "change-password"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "file upload",
+      "item": [
+        {
+          "name": "Upload material",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzIyYWIxNTI5ZjgxZDNmZjM5ODdiNCIsImlhdCI6MTc2OTEwMDIzOCwiZXhwIjoxNzcxNjkyMjM4fQ.u3hVzx3nJK-32KHqMFM2V49aPrQeoP-SSivm9sBU-QQ",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "value": "My ",
+                  "type": "text",
+                  "uuid": "8801e9b7-e16e-4401-bbbd-acdc32530a73"
+                },
+                {
+                  "key": "description",
+                  "value": "Kinematics basics",
+                  "type": "text",
+                  "uuid": "0b13e145-19f2-4675-9dd4-c3dead34f28b",
+                  "disabled": true
+                },
+                {
+                  "key": "subject",
+                  "value": "Physics",
+                  "type": "text",
+                  "uuid": "e6e96930-8299-4d18-af47-b537643311e3",
+                  "disabled": true
+                },
+                {
+                  "key": "file",
+                  "type": "file",
+                  "uuid": "3706dad2-3873-47ca-b85f-4d67a21dbc6c",
+                  "src": "/C:/Users/varad/Downloads/DMW-Unit-II.pdf"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/documents/upload",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "documents",
+                "upload"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get all materials",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzIyYWIxNTI5ZjgxZDNmZjM5ODdiNCIsImlhdCI6MTc2OTE2ODYyMSwiZXhwIjoxNzcxNzYwNjIxfQ.VoZiYK2lD7oGQNCiPoa0-gybl4UJS3M2996HAwHSiNQ",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"teacher1@example.com\",\r\n  \"password\": \"Password@123\"\r\n}\r\n"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/documents",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "documents"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get one material (by ID)",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzIyYWIxNTI5ZjgxZDNmZjM5ODdiNCIsImlhdCI6MTc2OTE0MjgyNiwiZXhwIjoxNzcxNzM0ODI2fQ.ruV78vr50v0JkPJMVZVUacZcrycdZRnvmBEE_gpvJSI",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "value": "nothing",
+                  "type": "text",
+                  "uuid": "8801e9b7-e16e-4401-bbbd-acdc32530a73"
+                },
+                {
+                  "key": "description",
+                  "value": "Kinematics basics",
+                  "type": "text",
+                  "uuid": "0b13e145-19f2-4675-9dd4-c3dead34f28b"
+                },
+                {
+                  "key": "subject",
+                  "value": "Physics",
+                  "type": "text",
+                  "uuid": "e6e96930-8299-4d18-af47-b537643311e3"
+                },
+                {
+                  "key": "file",
+                  "type": "file",
+                  "uuid": "3706dad2-3873-47ca-b85f-4d67a21dbc6c",
+                  "src": "postman-cloud:///1f0bd7b5-f3f3-43d0-ae53-59ce15b37ca5"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/documents/69738bd57fb2c889ac0c81a2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "documents",
+                "69738bd57fb2c889ac0c81a2"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "AI",
+      "item": [
+        {
+          "name": "Generate Flashcards",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzIyYWIxNTI5ZjgxZDNmZjM5ODdiNCIsImlhdCI6MTc2OTE2ODYyMSwiZXhwIjoxNzcxNzYwNjIxfQ.VoZiYK2lD7oGQNCiPoa0-gybl4UJS3M2996HAwHSiNQ",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"count\": 10\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/ai/flashcards/69738bd57fb2c889ac0c81a2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "ai",
+                "flashcards",
+                "69738bd57fb2c889ac0c81a2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Generate Quiz",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzIyYWIxNTI5ZjgxZDNmZjM5ODdiNCIsImlhdCI6MTc2OTE3ODM4OSwiZXhwIjoxNzcxNzcwMzg5fQ.NmrevxAOpfvE_a3FtRmGhcK_XHBABAgFxxEFp5FlrYk",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"count\": 5,\r\n  \"difficulty\": \"mixed\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/ai/quiz/69738bd57fb2c889ac0c81a2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "ai",
+                "quiz",
+                "69738bd57fb2c889ac0c81a2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Generate Summary",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzIyYWIxNTI5ZjgxZDNmZjM5ODdiNCIsImlhdCI6MTc2OTE2ODYyMSwiZXhwIjoxNzcxNzYwNjIxfQ.VoZiYK2lD7oGQNCiPoa0-gybl4UJS3M2996HAwHSiNQ",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"length\": \"medium\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/ai/summary/69738bd57fb2c889ac0c81a2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "ai",
+                "summary",
+                "69738bd57fb2c889ac0c81a2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Chat with Document",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzIyYWIxNTI5ZjgxZDNmZjM5ODdiNCIsImlhdCI6MTc2OTE2ODYyMSwiZXhwIjoxNzcxNzYwNjIxfQ.VoZiYK2lD7oGQNCiPoa0-gybl4UJS3M2996HAwHSiNQ",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"message\": \"What is the main topic of this document?\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/ai/chat/69738bd57fb2c889ac0c81a2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "ai",
+                "chat",
+                "69738bd57fb2c889ac0c81a2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Explain Concept",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzIyYWIxNTI5ZjgxZDNmZjM5ODdiNCIsImlhdCI6MTc2OTE2ODYyMSwiZXhwIjoxNzcxNzYwNjIxfQ.VoZiYK2lD7oGQNCiPoa0-gybl4UJS3M2996HAwHSiNQ",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"concept\": \"Machine Learning\",\r\n  \"level\": \"simple\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/ai/explain/69738bd57fb2c889ac0c81a2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "ai",
+                "explain",
+                "69738bd57fb2c889ac0c81a2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Chat History",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzIyYWIxNTI5ZjgxZDNmZjM5ODdiNCIsImlhdCI6MTc2OTE2ODYyMSwiZXhwIjoxNzcxNzYwNjIxfQ.VoZiYK2lD7oGQNCiPoa0-gybl4UJS3M2996HAwHSiNQ",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"concept\": \"Machine Learning\",\r\n  \"level\": \"simple\"\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/ai/chat-history/69738bd57fb2c889ac0c81a2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "ai",
+                "chat-history",
+                "69738bd57fb2c889ac0c81a2"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "flashcards",
+      "item": [
+        {
+          "name": "Generate Flashcards for a Document",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzIyYWIxNTI5ZjgxZDNmZjM5ODdiNCIsImlhdCI6MTc2OTE2ODYyMSwiZXhwIjoxNzcxNzYwNjIxfQ.VoZiYK2lD7oGQNCiPoa0-gybl4UJS3M2996HAwHSiNQ",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"concept\": \"Machine Learning\",\r\n  \"level\": \"simple\"\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/flashcards/generate/69738bd57fb2c889ac0c81a2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "flashcards",
+                "generate",
+                "69738bd57fb2c889ac0c81a2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Flashcards for a Specific Document",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzIyYWIxNTI5ZjgxZDNmZjM5ODdiNCIsImlhdCI6MTc2OTE2ODYyMSwiZXhwIjoxNzcxNzYwNjIxfQ.VoZiYK2lD7oGQNCiPoa0-gybl4UJS3M2996HAwHSiNQ",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"concept\": \"Machine Learning\",\r\n  \"level\": \"simple\"\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/flashcards/document/69738bd57fb2c889ac0c81a2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "flashcards",
+                "document",
+                "69738bd57fb2c889ac0c81a2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Flashcard Sets",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzIyYWIxNTI5ZjgxZDNmZjM5ODdiNCIsImlhdCI6MTc2OTE2ODYyMSwiZXhwIjoxNzcxNzYwNjIxfQ.VoZiYK2lD7oGQNCiPoa0-gybl4UJS3M2996HAwHSiNQ",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"concept\": \"Machine Learning\",\r\n  \"level\": \"simple\"\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/flashcards",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "flashcards"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Review a Flashcard",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzIyYWIxNTI5ZjgxZDNmZjM5ODdiNCIsImlhdCI6MTc2OTE2ODYyMSwiZXhwIjoxNzcxNzYwNjIxfQ.VoZiYK2lD7oGQNCiPoa0-gybl4UJS3M2996HAwHSiNQ",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"concept\": \"Machine Learning\",\r\n  \"level\": \"simple\"\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/flashcards/:setId/review/:cardId",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "flashcards",
+                ":setId",
+                "review",
+                ":cardId"
+              ],
+              "variable": [
+                {
+                  "key": "setId",
+                  "value": "69735fc860771f100f05c6be"
+                },
+                {
+                  "key": "cardId",
+                  "value": "69735fc860771f100f05c6bf"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Toggle Star on a Flashcard",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzIyYWIxNTI5ZjgxZDNmZjM5ODdiNCIsImlhdCI6MTc2OTE2ODYyMSwiZXhwIjoxNzcxNzYwNjIxfQ.VoZiYK2lD7oGQNCiPoa0-gybl4UJS3M2996HAwHSiNQ",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"concept\": \"Machine Learning\",\r\n  \"level\": \"simple\"\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/flashcards/:setId/star/:cardId",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "flashcards",
+                ":setId",
+                "star",
+                ":cardId"
+              ],
+              "variable": [
+                {
+                  "key": "setId",
+                  "value": "69735fc860771f100f05c6be"
+                },
+                {
+                  "key": "cardId",
+                  "value": "69735fc860771f100f05c6bf"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "quiz",
+      "item": [
+        {
+          "name": "Get All Quizzes for a Document",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzIyYWIxNTI5ZjgxZDNmZjM5ODdiNCIsImlhdCI6MTc2OTE2ODYyMSwiZXhwIjoxNzcxNzYwNjIxfQ.VoZiYK2lD7oGQNCiPoa0-gybl4UJS3M2996HAwHSiNQ",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"count\": 5,\r\n  \"difficulty\": \"mixed\"\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/quizzes/document/69735f56431f85c16720a234",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "quizzes",
+                "document",
+                "69735f56431f85c16720a234"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get a Specific Quiz",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzIyYWIxNTI5ZjgxZDNmZjM5ODdiNCIsImlhdCI6MTc2OTE2ODYyMSwiZXhwIjoxNzcxNzYwNjIxfQ.VoZiYK2lD7oGQNCiPoa0-gybl4UJS3M2996HAwHSiNQ",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"count\": 5,\r\n  \"difficulty\": \"mixed\"\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/quizzes/69738535040eed71673577a7",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "quizzes",
+                "69738535040eed71673577a7"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Submit Quiz Answers",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzIyYWIxNTI5ZjgxZDNmZjM5ODdiNCIsImlhdCI6MTc2OTE3ODM4OSwiZXhwIjoxNzcxNzcwMzg5fQ.NmrevxAOpfvE_a3FtRmGhcK_XHBABAgFxxEFp5FlrYk",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"answers\": [\r\n    {\r\n      \"questionIndex\": 0,\r\n      \"selectedAnswer\": \"2\"\r\n    },\r\n    {\r\n      \"questionIndex\": 1,\r\n      \"selectedAnswer\": \"1\"\r\n    },\r\n    {\r\n      \"questionIndex\": 2,\r\n      \"selectedAnswer\": \"2\"\r\n    },\r\n    {\r\n      \"questionIndex\": 3,\r\n      \"selectedAnswer\": \"1\"\r\n    },\r\n    {\r\n      \"questionIndex\": 4,\r\n      \"selectedAnswer\": \"2\"\r\n    }\r\n  ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/quizzes/69738535040eed71673577a7/submit",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "quizzes",
+                "69738535040eed71673577a7",
+                "submit"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "quiz result",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzIyYWIxNTI5ZjgxZDNmZjM5ODdiNCIsImlhdCI6MTc2OTE3ODM4OSwiZXhwIjoxNzcxNzcwMzg5fQ.NmrevxAOpfvE_a3FtRmGhcK_XHBABAgFxxEFp5FlrYk",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"answers\": [\r\n    {\r\n      \"questionIndex\": 0,\r\n      \"selectedAnswer\": \"2\"\r\n    },\r\n    {\r\n      \"questionIndex\": 1,\r\n      \"selectedAnswer\": \"1\"\r\n    },\r\n    {\r\n      \"questionIndex\": 2,\r\n      \"selectedAnswer\": \"2\"\r\n    },\r\n    {\r\n      \"questionIndex\": 3,\r\n      \"selectedAnswer\": \"1\"\r\n    },\r\n    {\r\n      \"questionIndex\": 4,\r\n      \"selectedAnswer\": \"2\"\r\n    }\r\n  ]\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/quizzes/69738535040eed71673577a7/result",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "quizzes",
+                "69738535040eed71673577a7",
+                "result"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
