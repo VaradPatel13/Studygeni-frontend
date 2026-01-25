@@ -26,19 +26,25 @@ export interface AuthResponse {
 
 export const authService = {
     async login(credentials: LoginCredentials) {
-        const response = await api.post<AuthResponse>('/auth/login', credentials);
-        if (response.data.token) {
-            Cookies.set('token', response.data.token, { expires: 7 }); // Expires in 7 days
-            localStorage.setItem('user', JSON.stringify(response.data.user)); // Store minimal user data
+        const response = await api.post<any>('/auth/login', credentials);
+        const { token, user } = response.data.data; // Token is in data.data
+
+        if (token) {
+            Cookies.set('token', token, { expires: 7 }); // Expires in 7 days
+            localStorage.setItem('token', token); // Also store in localStorage
+            localStorage.setItem('user', JSON.stringify(user)); // Store user data
         }
         return response.data;
     },
 
     async register(credentials: RegisterCredentials) {
-        const response = await api.post<AuthResponse>('/auth/register', credentials);
-        if (response.data.token) {
-            Cookies.set('token', response.data.token, { expires: 7 });
-            localStorage.setItem('user', JSON.stringify(response.data.user));
+        const response = await api.post<any>('/auth/register', credentials);
+        const { token, user } = response.data.data; // Token is in data.data
+
+        if (token) {
+            Cookies.set('token', token, { expires: 7 });
+            localStorage.setItem('token', token); // Also store in localStorage
+            localStorage.setItem('user', JSON.stringify(user));
         }
         return response.data;
     },
@@ -53,8 +59,14 @@ export const authService = {
         return response.data;
     },
 
+    async changePassword(data: any) {
+        const response = await api.put('/auth/change-password', data);
+        return response.data;
+    },
+
     logout() {
         Cookies.remove('token');
+        localStorage.removeItem('token');
         localStorage.removeItem('user');
     }
 };

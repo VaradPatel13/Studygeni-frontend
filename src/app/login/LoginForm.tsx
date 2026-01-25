@@ -22,7 +22,7 @@ export default function LoginForm() {
         try {
             await authService.login({ email, password });
             toast.success('LOGIN SUCCESSFUL_');
-            router.push('/'); // Redirect to dashboard or home
+            router.push('/dashboard'); // Redirect to dashboard
         } catch (err: any) {
             console.error('Login error:', err);
             const msg = err?.response?.data?.message || 'Invalid email or password.';

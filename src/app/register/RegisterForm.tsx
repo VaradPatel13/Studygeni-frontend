@@ -36,7 +36,7 @@ export default function RegisterForm() {
                 profileImage: 'https://cdn-icons-png.flaticon.com/512/149/149071.png' // Default avatar
             });
             toast.success('ACCOUNT CREATED_');
-            router.push('/'); // Redirect on success
+            router.push('/dashboard'); // Redirect to dashboard
         } catch (err: any) {
             console.error('Registration error:', err);
             const msg = err?.response?.data?.message || 'Registration failed. Please try again.';

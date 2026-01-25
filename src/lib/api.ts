@@ -13,7 +13,12 @@ const api = axios.create({
 // Request interceptor to add auth token
 api.interceptors.request.use(
     (config) => {
-        const token = Cookies.get('token');
+        // Try to get token from cookies first, then localStorage
+        let token = Cookies.get('token');
+        if (!token && typeof window !== 'undefined') {
+            token = localStorage.getItem('token') || undefined;
+        }
+
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
@@ -29,9 +34,15 @@ api.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response?.status === 401) {
-            // Handle unauthorized access (e.g., redirect to login)
+            // Handle unauthorized access
             Cookies.remove('token');
-            // window.location.href = '/login'; // Optional: force redirect
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+
+            // Redirect to login if not already there
+            if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
+                window.location.href = '/login';
+            }
         }
         return Promise.reject(error);
     }

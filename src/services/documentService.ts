@@ -21,12 +21,24 @@ export const documentService = {
     },
 
     async getAllDocuments() {
-        const response = await api.get<Document[]>('/documents');
-        return response.data;
+        const response = await api.get<any>('/documents');
+        // Handle nested response structure: response.data.data.documents
+        return response.data?.data?.documents || response.data?.data || response.data || [];
     },
 
     async getDocumentById(id: string) {
-        const response = await api.get<Document>(`/documents/${id}`);
+        const response = await api.get<any>(`/documents/${id}`);
+        // Handle nested response structure: response.data.data
+        return response.data?.data || response.data;
+    },
+
+    async deleteDocument(id: string) {
+        const response = await api.delete(`/documents/${id}`);
+        return response.data;
+    },
+
+    async updateDocument(id: string, data: Partial<Document>) {
+        const response = await api.put<Document>(`/documents/${id}`, data);
         return response.data;
     },
 };
