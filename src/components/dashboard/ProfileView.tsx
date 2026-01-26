@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
+import { Skeleton } from '@/components/ui/Skeleton';
 
 export default function ProfileView() {
     const [user, setUser] = useState<any>(null);
@@ -87,76 +88,128 @@ export default function ProfileView() {
 
     if (isLoading) {
         return (
-            <div className="flex-1 bg-[#fdfbf7] p-8 flex items-center justify-center">
-                <Loader2 className="w-8 h-8 animate-spin text-black" />
+            <div className="flex-1 bg-[var(--bg-page)] p-8 overflow-y-auto">
+                <div className="max-w-4xl mx-auto space-y-8">
+                    <div className="flex items-center gap-3">
+                        <Skeleton className="w-10 h-10 rounded-full" />
+                        <Skeleton className="h-8 w-48" />
+                    </div>
+
+                    <div className="g-card p-8">
+                        <Skeleton className="h-6 w-48 mb-8" />
+                        <div className="flex items-center gap-8 mb-8">
+                            <Skeleton className="w-24 h-24 rounded-full" />
+                            <div className="flex-1">
+                                <Skeleton className="h-4 w-32 mb-2" />
+                                <Skeleton className="h-12 w-full rounded-xl" />
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="space-y-2">
+                                <Skeleton className="h-4 w-24" />
+                                <Skeleton className="h-12 w-full rounded-xl" />
+                            </div>
+                            <div className="space-y-2">
+                                <Skeleton className="h-4 w-24" />
+                                <Skeleton className="h-12 w-full rounded-xl" />
+                            </div>
+                            <div className="space-y-2">
+                                <Skeleton className="h-4 w-24" />
+                                <Skeleton className="h-12 w-full rounded-xl" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="g-card p-8">
+                        <Skeleton className="h-6 w-32 mb-8" />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="space-y-2">
+                                <Skeleton className="h-4 w-32" />
+                                <Skeleton className="h-12 w-full rounded-xl" />
+                            </div>
+                            <div className="space-y-2">
+                                <Skeleton className="h-4 w-32" />
+                                <Skeleton className="h-12 w-full rounded-xl" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         );
     }
 
     return (
-        <div className="flex-1 bg-[#fdfbf7] p-8 overflow-y-auto">
+        <div className="flex-1 bg-[var(--bg-page)] p-8 overflow-y-auto">
             <div className="max-w-4xl mx-auto space-y-8">
-                <h1 className="text-4xl font-black flex items-center gap-3">
-                    <User className="w-10 h-10" /> Profile Settings
+                <h1 className="text-3xl google-title font-medium flex items-center gap-3 text-[var(--text-primary)]">
+                    <User className="w-8 h-8 text-[var(--color-google-blue)]" /> Profile Settings
                 </h1>
 
                 {/* Profile Information Card */}
-                <Card>
-                    <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                        <User className="w-6 h-6" /> Personal Information
+                <div className="g-card p-8">
+                    <h2 className="text-xl google-title font-medium mb-8 flex items-center gap-2 text-[var(--text-primary)]">
+                        Personal Information
                     </h2>
 
-                    <form onSubmit={handleUpdateProfile} className="space-y-6">
-                        <div className="flex items-center gap-6 mb-6">
-                            <div className="w-24 h-24 bg-gray-100 rounded-full border-2 border-black overflow-hidden flex items-center justify-center flex-shrink-0">
+                    <form onSubmit={handleUpdateProfile} className="space-y-8">
+                        <div className="flex items-center gap-8 mb-8">
+                            <div className="w-24 h-24 bg-[var(--bg-surface-highlight)] rounded-full overflow-hidden flex items-center justify-center flex-shrink-0 relative group cursor-pointer">
                                 {profileImage ? (
                                     <img src={profileImage} alt="Profile" className="w-full h-full object-cover" />
                                 ) : (
-                                    <User className="w-12 h-12 text-gray-400" />
+                                    <User className="w-10 h-10 text-[var(--text-tertiary)]" />
                                 )}
                             </div>
                             <div className="flex-1">
-                                <label className="font-bold text-sm text-gray-600 mb-2 block">Profile Image URL</label>
-                                <Input
-                                    icon={Camera}
-                                    placeholder="https://example.com/avatar.jpg"
-                                    value={profileImage}
-                                    onChange={(e) => setProfileImage(e.target.value)}
-                                    className="bg-gray-50"
-                                />
+                                <label className="font-medium text-xs uppercase tracking-wide text-[var(--text-secondary)] mb-2 block">Profile Image URL</label>
+                                <div className="relative">
+                                    <Camera className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--text-tertiary)]" />
+                                    <input
+                                        placeholder="https://example.com/avatar.jpg"
+                                        value={profileImage}
+                                        onChange={(e) => setProfileImage(e.target.value)}
+                                        className="w-full h-12 pl-12 pr-4 rounded-xl bg-[var(--bg-surface-highlight)] border-transparent focus:bg-[var(--bg-page)] focus:border-[var(--color-google-blue)] focus:ring-4 focus:ring-[var(--color-google-blue)]/10 transition-all outline-none text-[var(--text-primary)] font-medium"
+                                    />
+                                </div>
                             </div>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2">
-                                <label className="font-bold text-sm text-gray-600">Username</label>
-                                <Input
-                                    icon={User}
-                                    value={username}
-                                    onChange={(e) => setUsername(e.target.value)}
-                                    className="bg-gray-50"
-                                />
+                                <label className="font-medium text-xs uppercase tracking-wide text-[var(--text-secondary)]">Username</label>
+                                <div className="relative">
+                                    <User className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--text-tertiary)]" />
+                                    <input
+                                        value={username}
+                                        onChange={(e) => setUsername(e.target.value)}
+                                        className="w-full h-12 pl-12 pr-4 rounded-xl bg-[var(--bg-surface-highlight)] border-transparent focus:bg-[var(--bg-page)] focus:border-[var(--color-google-blue)] focus:ring-4 focus:ring-[var(--color-google-blue)]/10 transition-all outline-none text-[var(--text-primary)] font-medium"
+                                    />
+                                </div>
                             </div>
 
                             <div className="space-y-2">
-                                <label className="font-bold text-sm text-gray-600">Email Address</label>
-                                <Input
-                                    icon={Mail}
-                                    value={email}
-                                    disabled
-                                    className="bg-gray-100 cursor-not-allowed"
-                                />
+                                <label className="font-medium text-xs uppercase tracking-wide text-[var(--text-secondary)]">Email Address</label>
+                                <div className="relative">
+                                    <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--text-tertiary)]" />
+                                    <input
+                                        value={email}
+                                        disabled
+                                        className="w-full h-12 pl-12 pr-4 rounded-xl bg-[var(--bg-surface-highlight)]/50 border-transparent text-[var(--text-tertiary)] cursor-not-allowed font-medium"
+                                    />
+                                </div>
                             </div>
 
                             <div className="space-y-2">
-                                <label className="font-bold text-sm text-gray-600">Mobile Number</label>
-                                <Input
-                                    icon={Phone}
-                                    value={mobileNumber}
-                                    onChange={(e) => setMobileNumber(e.target.value)}
-                                    placeholder="Mobile Number"
-                                    className="bg-gray-50"
-                                />
+                                <label className="font-medium text-xs uppercase tracking-wide text-[var(--text-secondary)]">Mobile Number</label>
+                                <div className="relative">
+                                    <Phone className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--text-tertiary)]" />
+                                    <input
+                                        value={mobileNumber}
+                                        onChange={(e) => setMobileNumber(e.target.value)}
+                                        placeholder="Mobile Number"
+                                        className="w-full h-12 pl-12 pr-4 rounded-xl bg-[var(--bg-surface-highlight)] border-transparent focus:bg-[var(--bg-page)] focus:border-[var(--color-google-blue)] focus:ring-4 focus:ring-[var(--color-google-blue)]/10 transition-all outline-none text-[var(--text-primary)] font-medium"
+                                    />
+                                </div>
                             </div>
                         </div>
 
@@ -165,57 +218,63 @@ export default function ProfileView() {
                                 type="submit"
                                 disabled={isSaving}
                                 isLoading={isSaving}
-                                className="px-8"
+                                className="btn-google btn-google-primary h-11 px-6 rounded-full text-sm font-medium shadow-md"
                             >
-                                <Save className="w-4 h-4" /> Save Changes
+                                <Save className="w-4 h-4 mr-2" /> Save Changes
                             </Button>
                         </div>
                     </form>
-                </Card>
+
+                </div>
 
                 {/* Security Card */}
-                <Card>
-                    <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                        <Lock className="w-6 h-6" /> Security
+                <div className="g-card p-8">
+                    <h2 className="text-xl google-title font-medium mb-8 flex items-center gap-2 text-[var(--text-primary)]">
+                        Security
                     </h2>
 
-                    <form onSubmit={handleChangePassword} className="space-y-6">
+                    <form onSubmit={handleChangePassword} className="space-y-8">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2">
-                                <label className="font-bold text-sm text-gray-600">Current Password</label>
-                                <Input
-                                    type="password"
-                                    icon={Lock}
-                                    value={currentPassword}
-                                    onChange={(e) => setCurrentPassword(e.target.value)}
-                                />
+                                <label className="font-medium text-xs uppercase tracking-wide text-[var(--text-secondary)]">Current Password</label>
+                                <div className="relative">
+                                    <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--text-tertiary)]" />
+                                    <input
+                                        type="password"
+                                        value={currentPassword}
+                                        onChange={(e) => setCurrentPassword(e.target.value)}
+                                        className="w-full h-12 pl-12 pr-4 rounded-xl bg-[var(--bg-surface-highlight)] border-transparent focus:bg-[var(--bg-page)] focus:border-[var(--color-google-blue)] focus:ring-4 focus:ring-[var(--color-google-blue)]/10 transition-all outline-none text-[var(--text-primary)] font-medium"
+                                    />
+                                </div>
                             </div>
 
                             <div className="space-y-2">
-                                <label className="font-bold text-sm text-gray-600">New Password</label>
-                                <Input
-                                    type="password"
-                                    icon={Lock}
-                                    value={newPassword}
-                                    onChange={(e) => setNewPassword(e.target.value)}
-                                />
+                                <label className="font-medium text-xs uppercase tracking-wide text-[var(--text-secondary)]">New Password</label>
+                                <div className="relative">
+                                    <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--text-tertiary)]" />
+                                    <input
+                                        type="password"
+                                        value={newPassword}
+                                        onChange={(e) => setNewPassword(e.target.value)}
+                                        className="w-full h-12 pl-12 pr-4 rounded-xl bg-[var(--bg-surface-highlight)] border-transparent focus:bg-[var(--bg-page)] focus:border-[var(--color-google-blue)] focus:ring-4 focus:ring-[var(--color-google-blue)]/10 transition-all outline-none text-[var(--text-primary)] font-medium"
+                                    />
+                                </div>
                             </div>
                         </div>
 
                         <div className="flex justify-end pt-4">
                             <Button
                                 type="submit"
-                                variant="destructive"
                                 disabled={isSaving}
                                 isLoading={isSaving}
-                                className="px-8"
+                                className="h-11 px-6 rounded-full text-sm font-medium shadow-md bg-[var(--color-google-red)] hover:bg-[#d93025] text-white"
                             >
-                                <Lock className="w-4 h-4" /> Change Password
+                                <Lock className="w-4 h-4 mr-2" /> Change Password
                             </Button>
                         </div>
                     </form>
-                </Card>
+                </div>
             </div>
-        </div>
+        </div >
     );
 }

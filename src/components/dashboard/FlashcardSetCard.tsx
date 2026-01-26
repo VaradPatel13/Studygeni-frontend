@@ -16,59 +16,55 @@ export default function FlashcardSetCard({ set, onClick }: FlashcardSetCardProps
     const docTitle = set.documentId?.title || 'Untitled Document';
 
     return (
-        <Card
-            hoverable
+        <div
             onClick={onClick}
-            className="flex flex-col justify-between h-full min-h-[250px] p-0 overflow-hidden" // p-0 because internal padding might vary or I reuse Card styles
+            className="g-card p-6 flex flex-col justify-between h-64 cursor-pointer hover:-translate-y-1 transition-transform duration-300"
         >
-            {/* Card actually has padding p-6 in default. I'll stick to default padding. */}
-            {/* Note: In original code, I had p-6. My wrapper adds p-6. */}
-
             <div>
                 <div className="flex justify-between items-start mb-4">
-                    <div className="w-10 h-10 bg-green-100 border-2 border-black flex items-center justify-center rounded">
-                        <Brain className="w-6 h-6 text-green-700" />
+                    <div className="w-10 h-10 bg-[var(--color-google-green)]/10 flex items-center justify-center rounded-xl text-[var(--color-google-green)]">
+                        <Brain className="w-6 h-6" />
                     </div>
-                    <span className="text-xs font-bold text-gray-400 bg-gray-50 px-2 py-1 rounded border border-gray-200">
+                    <span className="text-[10px] font-bold text-[var(--text-tertiary)] bg-[var(--bg-surface-highlight)] px-2 py-1 rounded-md uppercase tracking-wide">
                         {new Date(set.createdAt).toLocaleDateString()}
                     </span>
                 </div>
 
-                <h3 className="text-xl font-black mb-1 line-clamp-2 leading-tight group-hover:text-green-700 transition-colors">
+                <h3 className="text-xl font-medium mb-1 line-clamp-1 leading-tight text-[var(--text-primary)] group-hover:text-[var(--color-google-blue)] transition-colors">
                     {docTitle}
                 </h3>
-                <p className="text-sm text-gray-500 font-medium mb-6 line-clamp-1">
+                <p className="text-sm text-[var(--text-secondary)] font-normal mb-6 line-clamp-1">
                     {set.documentId?.filename}
                 </p>
             </div>
 
             <div className="space-y-4">
                 {/* Stats */}
-                <div className="flex items-center gap-4 text-sm font-bold text-gray-600">
-                    <div className="flex items-center gap-1">
-                        <BookOpen className="w-4 h-4" /> {total} Cards
+                <div className="flex items-center gap-4 text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wide">
+                    <div className="flex items-center gap-1.5">
+                        <BookOpen className="w-3.5 h-3.5 text-[var(--text-tertiary)]" /> {total} Cards
                     </div>
                     {starredCount > 0 && (
-                        <div className="flex items-center gap-1 text-orange-500">
-                            <Star className="w-4 h-4 fill-current" /> {starredCount}
+                        <div className="flex items-center gap-1.5 text-[var(--color-google-yellow)]">
+                            <Star className="w-3.5 h-3.5 fill-current" /> {starredCount}
                         </div>
                     )}
                 </div>
 
                 {/* Progress Bar */}
                 <div>
-                    <div className="flex justify-between text-xs font-black uppercase mb-1">
+                    <div className="flex justify-between text-[10px] font-bold uppercase mb-1.5 text-[var(--text-secondary)] tracking-wider">
                         <span>Progress</span>
-                        <span>{progress}% ({reviewedCount}/{total})</span>
+                        <span>{progress}%</span>
                     </div>
-                    <div className="w-full h-3 bg-gray-100 border border-black rounded-full overflow-hidden">
+                    <div className="w-full h-1.5 bg-[var(--bg-surface-highlight)] rounded-full overflow-hidden">
                         <div
-                            className={`h-full border-r border-black transition-all ${progress === 100 ? 'bg-green-500' : 'bg-yellow-400'}`}
+                            className={`h-full rounded-full transition-all duration-500 ease-out ${progress === 100 ? 'bg-[var(--color-google-green)]' : 'bg-[var(--color-google-yellow)]'}`}
                             style={{ width: `${progress}%` }}
                         ></div>
                     </div>
                 </div>
             </div>
-        </Card>
+        </div>
     );
 }

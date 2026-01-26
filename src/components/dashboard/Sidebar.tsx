@@ -1,8 +1,7 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
-import { Home, BookOpen, Library, Upload, FileText, Youtube, PenTool, ChevronRight, LogOut, User, Brain, Target } from 'lucide-react';
+import { LayoutGrid, BookOpen, Brain, User, Zap, LogOut, Settings } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { authService } from '@/services/authService';
 import toast from 'react-hot-toast';
@@ -10,90 +9,108 @@ import toast from 'react-hot-toast';
 interface SidebarProps {
     activeTab: string;
     setActiveTab: (tab: string) => void;
+    isOpen?: boolean;
+    onClose?: () => void;
 }
 
-export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
+export default function Sidebar({ activeTab, setActiveTab, isOpen = false, onClose }: SidebarProps) {
     const router = useRouter();
 
     const handleLogout = () => {
         authService.logout();
-        toast.success('LOGGED OUT_');
+        toast.success('Logged out');
         router.push('/login');
     };
 
+    const navItems = [
+        { id: 'home', label: 'Dashboard', icon: LayoutGrid },
+        { id: 'documents', label: 'Documents', icon: BookOpen },
+        { id: 'flashcards', label: 'Flashcards', icon: Brain },
+        { id: 'profile', label: 'Settings', icon: Settings },
+    ];
+
     return (
-        <aside className="w-64 bg-white border-r-2 border-black h-screen flex flex-col">
-            {/* Logo */}
-            <div className="p-6 border-b-2 border-black">
-                <Link href="/" className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-black flex items-center justify-center text-white font-bold mono">SG</div>
-                    <span className="font-bold text-xl tracking-tight">studygenie</span>
-                </Link>
-            </div>
+        <>
+            {/* Mobile Backdrop */}
+            {isOpen && (
+                <div
+                    className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 md:hidden animate-fade-in"
+                    onClick={onClose}
+                />
+            )}
 
-            {/* Navigation */}
-            <nav className="flex-1 p-4">
-                <button
-                    onClick={() => setActiveTab('home')}
-                    className={`w-full flex items-center gap-3 px-4 py-3 mb-2 font-bold transition-colors ${activeTab === 'home'
-                        ? 'bg-blue-100 text-blue-600 border-l-4 border-blue-600'
-                        : 'hover:bg-gray-100'
-                        }`}
-                >
-                    <Home className="w-5 h-5" />
-                    Home
-                </button>
+            {/* Sidebar Container */}
+            <aside className={`
+                w-[280px] md:w-[256px] 
+                bg-[var(--bg-page)] border-r border-[var(--border-subtle)] 
+                h-screen flex flex-col py-4 
+                fixed md:sticky top-0 left-0 z-50 
+                transition-transform duration-300 ease-in-out
+                ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+                shrink-0
+            `}>
+                {/* Logo Area */}
+                <div className="px-6 mb-8 flex items-center justify-between">
+                    <Link href="/" className="flex items-center gap-2 group">
+                        <div className="flex gap-1 group-hover:scale-110 transition-transform duration-300">
+                            <span className="w-2 h-2 rounded-full bg-[var(--color-google-blue)]"></span>
+                            <span className="w-2 h-2 rounded-full bg-[var(--color-google-red)]"></span>
+                            <span className="w-2 h-2 rounded-full bg-[var(--color-google-yellow)]"></span>
+                            <span className="w-2 h-2 rounded-full bg-[var(--color-google-green)]"></span>
+                        </div>
+                        <span className="google-title text-xl ml-1 text-[var(--text-primary)]">StudyGeni</span>
+                    </Link>
 
-                <button
-                    onClick={() => setActiveTab('documents')}
-                    className={`w-full flex items-center gap-3 px-4 py-3 mb-2 font-bold transition-colors ${activeTab === 'documents'
-                        ? 'bg-blue-100 text-blue-600 border-l-4 border-blue-600'
-                        : 'hover:bg-gray-100'
-                        }`}
-                >
-                    <BookOpen className="w-5 h-5" />
-                    Documents
-                </button>
+                    {/* Mobile Close Button */}
+                    <button
+                        onClick={onClose}
+                        className="md:hidden p-2 -mr-2 text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
+                    >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </div>
 
-                <button
-                    onClick={() => setActiveTab('flashcards')}
-                    className={`w-full flex items-center gap-3 px-4 py-3 mb-2 font-bold transition-colors ${activeTab === 'flashcards'
-                        ? 'bg-blue-100 text-blue-600 border-l-4 border-blue-600'
-                        : 'hover:bg-gray-100'
-                        }`}
-                >
-                    <Brain className="w-5 h-5" />
-                    Flashcards
-                </button>
+                {/* Navigation */}
+                <nav className="flex-1 space-y-1 pr-3">
+                    <div className="px-6 mb-3 text-[11px] font-medium text-[var(--text-secondary)] uppercase tracking-wider">
+                        Workspace
+                    </div>
+                    {navItems.map((item) => {
+                        const isActive = activeTab === item.id;
+                        return (
+                            <button
+                                key={item.id}
+                                onClick={() => setActiveTab(item.id)}
+                                className={`w-full flex items-center gap-4 px-6 py-3 text-sm font-medium rounded-r-full transition-colors relative
+                                    ${isActive
+                                        ? 'bg-[var(--color-google-blue)]/10 text-[var(--color-google-blue)]'
+                                        : 'text-[var(--text-secondary)] hover:bg-[var(--bg-surface-highlight)] hover:text-[var(--text-primary)]'
+                                    }`
+                                }
+                            >
+                                <item.icon className={`w-5 h-5 ${isActive ? 'text-current' : 'text-[var(--text-tertiary)] group-hover:text-[var(--text-secondary)]'}`} />
+                                <span>{item.label}</span>
+                            </button>
+                        );
+                    })}
+                </nav>
 
+                {/* Bottom Actions */}
+                <div className="mt-auto pt-4 border-t border-[var(--border-subtle)] mx-4">
+                    <button
+                        onClick={handleLogout}
+                        className="w-full flex items-center gap-4 px-2 py-3 text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-highlight)] rounded-lg transition-colors"
+                    >
+                        <LogOut className="w-5 h-5" />
+                        <span>Log out</span>
+                    </button>
 
-
-                <button
-                    onClick={() => setActiveTab('profile')}
-                    className={`w-full flex items-center gap-3 px-4 py-3 mb-2 font-bold transition-colors ${activeTab === 'profile'
-                        ? 'bg-blue-100 text-blue-600 border-l-4 border-blue-600'
-                        : 'hover:bg-gray-100'
-                        }`}
-                >
-                    <User className="w-5 h-5" />
-                    Profile
-                </button>
-            </nav>
-
-            {/* Upgrade Button */}
-            <div className="p-4 border-t-2 border-black">
-                <button className="w-full bg-blue-600 text-white font-bold py-3 px-4 hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
-                    ⚡ Upgrade
-                </button>
-
-                <button
-                    onClick={handleLogout}
-                    className="w-full mt-2 border-2 border-black font-bold py-3 px-4 hover:bg-gray-100 transition-colors flex items-center justify-center gap-2"
-                >
-                    <LogOut className="w-4 h-4" />
-                    Logout
-                </button>
-            </div>
-        </aside>
+                    <div className="mt-4 px-2 flex justify-between text-[10px] text-[var(--text-tertiary)]">
+                        <span>v2.4.0</span>
+                        <span>Pro Plan</span>
+                    </div>
+                </div>
+            </aside>
+        </>
     );
 }

@@ -21,133 +21,123 @@
   --text-primary: #202124;
   --text-secondary: #5F6368;
   --text-tertiary: #80868B;
+  --text-inverse: #FFFFFF;
+
+  --font-google: 'Google Sans', 'Roboto', 'Inter', system-ui, -apple-system, sans-serif;
+
+  /* Animations */
+  --animate-fade-in: fadeIn 0.8s ease-out forwards;
+  --animate-slide-up: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  --animate-float: float 6s ease-in-out infinite;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes float {
+    0% {
+      transform: translateY(0px);
+    }
+
+    50% {
+      transform: translateY(-20px);
+    }
+
+    100% {
+      transform: translateY(0px);
+    }
+  }
 }
 
-/* Dark Mode Overrides */
+:root {
+  --background: #FFFFFF;
+  --foreground: #202124;
+}
+
 .dark {
   --bg-page: #202124;
+  /* Google Dark Background */
   --bg-surface: #303134;
+  /* Google Dark Surface */
   --bg-surface-highlight: #3C4043;
 
   --border-subtle: #5F6368;
-  --border-focus: #8AB4F8;
+  /* Darker border */
 
   --text-primary: #E8EAED;
   --text-secondary: #BDC1C6;
   --text-tertiary: #9AA0A6;
+  --text-inverse: #202124;
+
+  --background: #202124;
+  --foreground: #E8EAED;
 }
 
-/* Custom Scrollbar Styles - Hidden but scrollable */
-::-webkit-scrollbar {
-  width: 0px;
-  height: 0px;
-  display: none;
-}
 
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: transparent;
-}
-
-/* Hide scrollbar for IE, Edge and Firefox */
-* {
-  -ms-overflow-style: none;
-  /* IE and Edge */
-  scrollbar-width: none;
-  /* Firefox */
-}
-
-/* Animations */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes slideUp {
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-@keyframes pulse-subtle {
-
-  0%,
-  100% {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 0.8;
-  }
-}
-
-@keyframes float {
-  0% {
-    transform: translate(0, 0);
-  }
-
-  50% {
-    transform: translate(10px, -10px);
-  }
-
-  100% {
-    transform: translate(0, 0);
-  }
-}
-
-.animate-fade-in {
-  animation: fadeIn 0.4s ease-out;
-}
-
-.animate-slide-up {
-  animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.animate-float {
-  animation: float 10s ease-in-out infinite;
-}
-
-/* Global Styles */
 body {
   background-color: var(--bg-page);
   color: var(--text-primary);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: var(--font-google);
   -webkit-font-smoothing: antialiased;
 }
 
-/* Google-style Card */
+/* --- Google Style Utilities --- */
+
+.google-container {
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+.google-title {
+  font-family: var(--font-google);
+  font-weight: 500;
+  /* Google Sans Medium */
+  letter-spacing: -0.5px;
+}
+
+/* Cards */
 .g-card {
   background-color: var(--bg-page);
   border: 1px solid var(--border-subtle);
-  border-radius: 1.5rem;
-  /* 24px */
-  overflow: hidden;
-  transition: all 0.2s ease;
+  border-radius: 24px;
+  padding: 32px;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .g-card:hover {
-  border-color: var(--text-tertiary);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 4px 8px 3px rgba(0, 0, 0, 0.05);
+  /* Softer shadow */
+  transform: translateY(-2px);
+  border-color: var(--color-google-blue);
 }
 
-/* Google Fonts & Typography */
-.google-title {
-  font-family: 'Google Sans', 'Roboto', sans-serif;
-  letter-spacing: -0.5px;
+.dark .g-card {
+  background-color: var(--bg-surface);
+}
+
+.dark .g-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 /* Buttons */
@@ -155,7 +145,6 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Google Sans', 'Roboto', sans-serif;
   font-weight: 500;
   border-radius: 9999px;
   /* Pill */
@@ -202,22 +191,4 @@ body {
   background: linear-gradient(90deg, #4285F4, #EA4335, #FBBC05, #34A853);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-}
-
-/* 3D Flip Card Utilities */
-.backface-hidden {
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-}
-
-.transform-style-3d {
-  transform-style: preserve-3d;
-}
-
-.rotate-y-180 {
-  transform: rotateY(180deg);
-}
-
-.perspective-1000 {
-  perspective: 1000px;
 }

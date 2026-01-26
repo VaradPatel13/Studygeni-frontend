@@ -2,7 +2,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 
 const API_URL = 'https://studygeni-backend-rouge.vercel.app/api';
-
+// https://studygeni-backend-rouge.vercel.app
 const api = axios.create({
     baseURL: API_URL,
     headers: {

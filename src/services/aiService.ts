@@ -29,5 +29,15 @@ export const aiService = {
     async getChatHistory(documentId: string) {
         const response = await api.get(`/ai/chat-history/${documentId}`);
         return response.data;
+    },
+
+    async generateYoutubeSummary(videoUrl: string, length: string = 'medium') {
+        const response = await api.post('/ai/youtube-summary', { videoUrl, length });
+        return response.data;
+    },
+
+    async generateTextSummary(text: string, length: string = 'medium') {
+        const response = await api.post('/ai/text-summary', { text, length });
+        return response.data;
     }
 };

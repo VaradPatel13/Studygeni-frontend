@@ -3,9 +3,10 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ArrowRight, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { authService } from '@/services/authService';
 import toast from 'react-hot-toast';
+import { motion } from 'framer-motion';
 
 export default function RegisterForm() {
     const router = useRouter();
@@ -35,76 +36,141 @@ export default function RegisterForm() {
                 ...formData,
                 profileImage: 'https://cdn-icons-png.flaticon.com/512/149/149071.png' // Default avatar
             });
-            toast.success('ACCOUNT CREATED_');
-            router.push('/dashboard'); // Redirect to dashboard
+            toast.success('Account created successfully!');
+            router.push('/dashboard');
         } catch (err: any) {
             console.error('Registration error:', err);
             const msg = err?.response?.data?.message || 'Registration failed. Please try again.';
-            toast.error(msg.toUpperCase());
+            toast.error(msg);
+            setError(msg);
         } finally {
             setIsLoading(false);
         }
     };
 
     return (
-        <div className="min-h-screen relative flex items-center justify-center p-6 bg-[length:40px_40px]">
-            <div className="margin-line" />
+        <div className="min-h-screen bg-[var(--bg-page)] flex flex-col items-center justify-center p-4 transition-colors duration-300 relative overflow-hidden">
+            <motion.div
+                className="w-full max-w-[448px] bg-white dark:bg-[#1a1b1e] rounded-[28px] p-10 md:p-12 shadow-sm border border-[var(--border-subtle)] relative z-10"
+                initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+            >
+                <div className="flex flex-col items-center mb-8">
+                    <Link href="/" className="mb-6 group">
+                        <div className="flex items-center gap-2">
+                            <div className="flex gap-1 group-hover:scale-110 transition-transform duration-300">
+                                <span className="w-2.5 h-2.5 rounded-full bg-[#4285F4]"></span>
+                                <span className="w-2.5 h-2.5 rounded-full bg-[#EA4335]"></span>
+                                <span className="w-2.5 h-2.5 rounded-full bg-[#FBBC05]"></span>
+                                <span className="w-2.5 h-2.5 rounded-full bg-[#34A853]"></span>
+                            </div>
+                            {/* Google-colored Text */}
+                            <span className="text-2xl font-medium tracking-tight ml-1.5">
+                                <span className="text-[#4285F4]">S</span>
+                                <span className="text-[#EA4335]">t</span>
+                                <span className="text-[#FBBC05]">u</span>
+                                <span className="text-[#4285F4]">d</span>
+                                <span className="text-[#34A853]">y</span>
+                                <span className="text-[#EA4335]">G</span>
+                                <span className="text-[#4285F4]">e</span>
+                                <span className="text-[#FBBC05]">n</span>
+                                <span className="text-[#34A853]">i</span>
+                            </span>
+                        </div>
+                    </Link>
 
-            <div className="w-full max-w-md mx-auto">
-                <Link href="/" className="inline-flex items-center gap-2 font-bold mb-8 hover:text-blue-600 transition-colors">
-                    ← Back to Home
-                </Link>
+                    <h1 className="text-[24px] font-normal text-[var(--text-primary)] mb-2">Create a StudyGeni Account</h1>
+                    <p className="text-[var(--text-secondary)] text-base">Enter your details to get started</p>
+                </div>
 
-                <div className="brutal-card shadow-[8px_8px_0px_rgba(0,0,0,1)]">
-                    <div className="inline-block bg-yellow-300 border-2 border-black px-2 py-1 font-bold text-xs mb-4 mono">
-                        START_FREE
-                    </div>
-                    <h1 className="text-4xl font-black mb-2">JOIN_US</h1>
-                    <p className="text-gray-600 font-medium mb-8">Stop failing. Start studying smarter.</p>
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    {error && (
+                        <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            className="bg-red-50 dark:bg-red-900/20 text-[#D93025] dark:text-[#F28B82] p-3 rounded-lg text-sm flex items-center gap-2"
+                        >
+                            <svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
+                            {error}
+                        </motion.div>
+                    )}
 
-                    <form onSubmit={handleSubmit} className="space-y-4">
-
-                        <div>
-                            <label className="block font-bold mono text-sm mb-2" htmlFor="username">FULL NAME</label>
+                    <div className="space-y-6">
+                        {/* Username */}
+                        <div className="relative group">
                             <input
                                 type="text"
                                 id="username"
                                 value={formData.username}
                                 onChange={handleChange}
                                 required
-                                className="w-full border-2 border-black p-3 font-medium focus:outline-none focus:shadow-[4px_4px_0px_rgba(0,0,0,1)] transition-shadow"
-                                placeholder="John Doe"
+                                className="peer w-full h-[56px] px-4 rounded-[4px] border border-[var(--border-subtle)] bg-transparent text-[var(--text-primary)] placeholder-transparent focus:outline-none focus:border-[#1A73E8] focus:ring-2 focus:ring-[#1A73E8]/20 transition-all"
+                                placeholder="Full Name"
                             />
+                            <label
+                                htmlFor="username"
+                                className="absolute left-3 top-4 text-[var(--text-secondary)] text-base transition-all 
+                                peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-[#1A73E8] peer-focus:px-1
+                                peer-focus:bg-white dark:peer-focus:bg-[#1a1b1e]
+                                peer-not-placeholder-shown:-top-2.5 peer-not-placeholder-shown:text-xs peer-not-placeholder-shown:px-1
+                                peer-not-placeholder-shown:bg-white dark:peer-not-placeholder-shown:bg-[#1a1b1e]
+                                pointer-events-none"
+                            >
+                                Full Name
+                            </label>
                         </div>
 
-                        <div>
-                            <label className="block font-bold mono text-sm mb-2" htmlFor="email">EMAIL</label>
+                        {/* Email */}
+                        <div className="relative group">
                             <input
                                 type="email"
                                 id="email"
                                 value={formData.email}
                                 onChange={handleChange}
                                 required
-                                className="w-full border-2 border-black p-3 font-medium focus:outline-none focus:shadow-[4px_4px_0px_rgba(0,0,0,1)] transition-shadow"
-                                placeholder="student@university.edu"
+                                className="peer w-full h-[56px] px-4 rounded-[4px] border border-[var(--border-subtle)] bg-transparent text-[var(--text-primary)] placeholder-transparent focus:outline-none focus:border-[#1A73E8] focus:ring-2 focus:ring-[#1A73E8]/20 transition-all"
+                                placeholder="Email"
                             />
+                            <label
+                                htmlFor="email"
+                                className="absolute left-3 top-4 text-[var(--text-secondary)] text-base transition-all 
+                                peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-[#1A73E8] peer-focus:px-1
+                                peer-focus:bg-white dark:peer-focus:bg-[#1a1b1e]
+                                peer-not-placeholder-shown:-top-2.5 peer-not-placeholder-shown:text-xs peer-not-placeholder-shown:px-1
+                                peer-not-placeholder-shown:bg-white dark:peer-not-placeholder-shown:bg-[#1a1b1e]
+                                pointer-events-none"
+                            >
+                                Email
+                            </label>
                         </div>
 
-                        <div>
-                            <label className="block font-bold mono text-sm mb-2" htmlFor="password">PASSWORD</label>
+                        {/* Password */}
+                        <div className="relative group">
                             <input
                                 type="password"
                                 id="password"
                                 value={formData.password}
                                 onChange={handleChange}
                                 required
-                                className="w-full border-2 border-black p-3 font-medium focus:outline-none focus:shadow-[4px_4px_0px_rgba(0,0,0,1)] transition-shadow"
-                                placeholder="••••••••"
+                                className="peer w-full h-[56px] px-4 rounded-[4px] border border-[var(--border-subtle)] bg-transparent text-[var(--text-primary)] placeholder-transparent focus:outline-none focus:border-[#1A73E8] focus:ring-2 focus:ring-[#1A73E8]/20 transition-all"
+                                placeholder="Password"
                             />
+                            <label
+                                htmlFor="password"
+                                className="absolute left-3 top-4 text-[var(--text-secondary)] text-base transition-all 
+                                peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-[#1A73E8] peer-focus:px-1
+                                peer-focus:bg-white dark:peer-focus:bg-[#1a1b1e]
+                                peer-not-placeholder-shown:-top-2.5 peer-not-placeholder-shown:text-xs peer-not-placeholder-shown:px-1
+                                peer-not-placeholder-shown:bg-white dark:peer-not-placeholder-shown:bg-[#1a1b1e]
+                                pointer-events-none"
+                            >
+                                Password
+                            </label>
                         </div>
 
-                        <div>
-                            <label className="block font-bold mono text-sm mb-2" htmlFor="mobileNumber">MOBILE NUMBER</label>
+                        {/* Mobile Number */}
+                        <div className="relative group">
                             <input
                                 type="tel"
                                 id="mobileNumber"
@@ -113,34 +179,52 @@ export default function RegisterForm() {
                                 required
                                 pattern="[0-9]{10}"
                                 title="Please enter a valid 10-digit mobile number"
-                                className="w-full border-2 border-black p-3 font-medium focus:outline-none focus:shadow-[4px_4px_0px_rgba(0,0,0,1)] transition-shadow"
-                                placeholder="9876543210"
+                                className="peer w-full h-[56px] px-4 rounded-[4px] border border-[var(--border-subtle)] bg-transparent text-[var(--text-primary)] placeholder-transparent focus:outline-none focus:border-[#1A73E8] focus:ring-2 focus:ring-[#1A73E8]/20 transition-all"
+                                placeholder="Mobile Number"
                             />
+                            <label
+                                htmlFor="mobileNumber"
+                                className="absolute left-3 top-4 text-[var(--text-secondary)] text-base transition-all 
+                                peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-[#1A73E8] peer-focus:px-1
+                                peer-focus:bg-white dark:peer-focus:bg-[#1a1b1e]
+                                peer-not-placeholder-shown:-top-2.5 peer-not-placeholder-shown:text-xs peer-not-placeholder-shown:px-1
+                                peer-not-placeholder-shown:bg-white dark:peer-not-placeholder-shown:bg-[#1a1b1e]
+                                pointer-events-none"
+                            >
+                                Mobile Number
+                            </label>
                         </div>
+                    </div>
 
+                    <div className="flex justify-between items-center mt-8 pt-4">
+                        <Link href="/login" className="btn-google text-[#1A73E8] hover:bg-blue-50 dark:hover:bg-blue-900/20 px-0 h-10 text-sm font-medium hover:px-2 transition-all">
+                            Sign in instead
+                        </Link>
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full bg-blue-600 text-white font-bold py-4 text-lg hover:bg-blue-700 transition-colors brutal-border flex items-center justify-center gap-2 mt-6 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
+                            className="btn-google btn-google-primary px-6 h-10 text-sm font-medium shadow-none hover:shadow-md disabled:opacity-70 disabled:cursor-not-allowed"
                         >
                             {isLoading ? (
-                                <>
-                                    <Loader2 className="w-5 h-5 animate-spin" /> CREATING...
-                                </>
+                                <Loader2 className="w-5 h-5 animate-spin" />
                             ) : (
-                                <>
-                                    CREATE ACCOUNT <ArrowRight className="w-5 h-5" />
-                                </>
+                                'Create account'
                             )}
                         </button>
-                    </form>
-
-                    <div className="mt-8 pt-6 border-t-2 border-black text-center text-sm font-bold">
-                        <span className="mr-2">Already have an account?</span>
-                        <Link href="/login" className="hover:text-blue-600 underline">Log in</Link>
                     </div>
+                </form>
+            </motion.div>
+
+            <footer className="mt-6 text-xs text-[var(--text-secondary)] flex gap-6 z-10 w-full max-w-[448px] px-4">
+                <div className="flex-1">
+                    <a href="#" className="hover:text-[var(--text-primary)] p-2 rounded hover:bg-[var(--bg-surface-highlight)] -ml-2">English (United States)</a>
                 </div>
-            </div>
+                <div className="flex gap-4">
+                    <a href="#" className="hover:text-[var(--text-primary)] p-2 rounded hover:bg-[var(--bg-surface-highlight)]">Help</a>
+                    <a href="#" className="hover:text-[var(--text-primary)] p-2 rounded hover:bg-[var(--bg-surface-highlight)]">Privacy</a>
+                    <a href="#" className="hover:text-[var(--text-primary)] p-2 rounded hover:bg-[var(--bg-surface-highlight)]">Terms</a>
+                </div>
+            </footer>
         </div>
     );
 }

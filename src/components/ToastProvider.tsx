@@ -5,30 +5,36 @@ export default function ToastProvider() {
         <Toaster
             position="top-center"
             toastOptions={{
-                className: 'brutal-border',
+                className: '',
                 style: {
-                    border: '2px solid #000',
-                    borderRadius: '0px',
-                    padding: '16px',
-                    color: '#000',
-                    background: '#fff',
-                    boxShadow: '4px 4px 0px #000',
+                    border: '1px solid var(--border-subtle)',
+                    borderRadius: '12px',
+                    padding: '12px 16px',
+                    color: 'var(--text-primary)',
+                    background: 'var(--bg-surface)',
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.1), 0 8px 16px rgba(0,0,0,0.1)',
                     fontSize: '14px',
-                    fontWeight: 'bold',
-                    fontFamily: "'Inter', sans-serif"
+                    fontWeight: '500',
+                    fontFamily: "'Google Sans', 'Roboto', 'Inter', sans-serif"
                 },
                 success: {
                     iconTheme: {
-                        primary: '#000',
-                        secondary: '#fff',
+                        primary: 'var(--color-google-green)',
+                        secondary: 'var(--bg-surface)',
                     },
                 },
                 error: {
                     iconTheme: {
-                        primary: '#ef4444',
-                        secondary: '#fff',
+                        primary: 'var(--color-google-red)',
+                        secondary: 'var(--bg-surface)',
                     },
                 },
+                loading: {
+                    iconTheme: {
+                        primary: 'var(--color-google-blue)',
+                        secondary: 'var(--bg-surface)',
+                    }
+                }
             }}
         />
     );

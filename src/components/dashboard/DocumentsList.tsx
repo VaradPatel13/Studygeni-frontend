@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { documentService } from '@/services/documentService';
 import { ChevronRight, FileText, Search, Upload, Filter, Clock, CheckCircle, AlertCircle, ArrowUpDown, Calendar, X, Edit2, Trash2, ExternalLink } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { Skeleton } from '@/components/ui/Skeleton';
 
 interface DocumentsListProps {
     onSelectDocument?: (id: string) => void;
@@ -149,14 +150,14 @@ export default function DocumentsList({ onSelectDocument }: DocumentsListProps) 
         });
 
     return (
-        <div className="flex-1 bg-[#fdfbf7] p-8 overflow-y-auto h-screen">
+        <div className="flex-1 bg-[var(--bg-page)] p-8 overflow-y-auto h-screen transition-colors duration-300">
             <div className="max-w-7xl mx-auto">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-                    <h1 className="text-4xl font-black">Documents</h1>
+                    <h1 className="text-3xl font-medium google-title text-[var(--text-primary)]">Documents</h1>
 
-                    <label className="brutal-btn bg-black text-white hover:bg-gray-800 flex items-center gap-2 cursor-pointer px-6 py-3">
+                    <label className="btn-google btn-google-primary h-11 px-6 rounded-full shadow-md cursor-pointer gap-2">
                         <Upload className="w-5 h-5" />
-                        <span className="font-bold">Upload New</span>
+                        <span>Upload New</span>
                         <input
                             type="file"
                             accept=".pdf,.doc,.docx,.ppt,.pptx"
@@ -169,19 +170,22 @@ export default function DocumentsList({ onSelectDocument }: DocumentsListProps) 
                 {/* Primary Search & Filter Toggle */}
                 <div className="flex gap-4 mb-6">
                     <div className="relative flex-1">
-                        <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                        <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-[var(--text-tertiary)] w-5 h-5" />
                         <input
                             type="text"
                             placeholder="Search documents..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-12 pr-4 py-3 border-2 border-gray-300 font-medium focus:outline-none focus:border-black transition-colors"
+                            className="w-full pl-12 pr-4 h-12 rounded-xl bg-[var(--bg-surface-highlight)] text-[var(--text-primary)] border-none focus:ring-2 focus:ring-[var(--border-focus)]/20 transition-all placeholder-[var(--text-tertiary)]"
                         />
                     </div>
 
                     <button
                         onClick={() => setIsFiltersOpen(!isFiltersOpen)}
-                        className={`px-4 py-3 border-2 font-bold flex items-center gap-2 transition-colors ${isFiltersOpen ? 'bg-black text-white border-black' : 'bg-white border-gray-300 hover:border-black'}`}
+                        className={`px-6 h-12 rounded-xl border flex items-center gap-2 transition-all font-medium ${isFiltersOpen
+                            ? 'bg-[var(--bg-surface-highlight)] border-[var(--border-focus)] text-[var(--text-primary)]'
+                            : 'bg-[var(--bg-page)] border-[var(--border-subtle)] text-[var(--text-secondary)] hover:bg-[var(--bg-surface-highlight)]'
+                            }`}
                     >
                         <Filter className="w-5 h-5" />
                         Filters
@@ -190,14 +194,14 @@ export default function DocumentsList({ onSelectDocument }: DocumentsListProps) 
 
                 {/* Advanced Filters Panel */}
                 {isFiltersOpen && (
-                    <div className="bg-white border-2 border-black p-6 mb-8 grid md:grid-cols-4 gap-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] animate-in slide-in-from-top-2 duration-200">
+                    <div className="bg-[var(--bg-page)] border border-[var(--border-subtle)] rounded-2xl p-6 mb-8 grid md:grid-cols-4 gap-6 shadow-sm animate-in slide-in-from-top-2 duration-200">
                         {/* Type Filter */}
                         <div>
-                            <label className="text-xs font-bold uppercase text-gray-500 mb-1 block">File Type</label>
+                            <label className="text-xs font-bold uppercase text-[var(--text-secondary)] mb-2 block tracking-wider">File Type</label>
                             <select
                                 value={filterType}
                                 onChange={(e) => setFilterType(e.target.value)}
-                                className="w-full p-2 border-2 border-gray-300 font-medium focus:border-black focus:outline-none"
+                                className="w-full h-10 px-3 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-page)] text-[var(--text-primary)] focus:border-[var(--border-focus)] focus:ring-2 focus:ring-[var(--border-focus)]/10 outline-none transition-all"
                             >
                                 <option value="all">All Types</option>
                                 <option value="pdf">PDF Documents</option>
@@ -208,11 +212,11 @@ export default function DocumentsList({ onSelectDocument }: DocumentsListProps) 
 
                         {/* Status Filter */}
                         <div>
-                            <label className="text-xs font-bold uppercase text-gray-500 mb-1 block">Status</label>
+                            <label className="text-xs font-bold uppercase text-[var(--text-secondary)] mb-2 block tracking-wider">Status</label>
                             <select
                                 value={statusFilter}
                                 onChange={(e) => setStatusFilter(e.target.value)}
-                                className="w-full p-2 border-2 border-gray-300 font-medium focus:border-black focus:outline-none"
+                                className="w-full h-10 px-3 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-page)] text-[var(--text-primary)] focus:border-[var(--border-focus)] focus:ring-2 focus:ring-[var(--border-focus)]/10 outline-none transition-all"
                             >
                                 <option value="all">All Statuses</option>
                                 <option value="completed">Processed</option>
@@ -222,11 +226,11 @@ export default function DocumentsList({ onSelectDocument }: DocumentsListProps) 
 
                         {/* Date Filter */}
                         <div>
-                            <label className="text-xs font-bold uppercase text-gray-500 mb-1 block">Date Uploaded</label>
+                            <label className="text-xs font-bold uppercase text-[var(--text-secondary)] mb-2 block tracking-wider">Date Uploaded</label>
                             <select
                                 value={dateFilter}
                                 onChange={(e) => setDateFilter(e.target.value)}
-                                className="w-full p-2 border-2 border-gray-300 font-medium focus:border-black focus:outline-none"
+                                className="w-full h-10 px-3 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-page)] text-[var(--text-primary)] focus:border-[var(--border-focus)] focus:ring-2 focus:ring-[var(--border-focus)]/10 outline-none transition-all"
                             >
                                 <option value="all">Anytime</option>
                                 <option value="today">Today</option>
@@ -237,12 +241,12 @@ export default function DocumentsList({ onSelectDocument }: DocumentsListProps) 
 
                         {/* Sort Option */}
                         <div>
-                            <label className="text-xs font-bold uppercase text-gray-500 mb-1 block">Sort By</label>
+                            <label className="text-xs font-bold uppercase text-[var(--text-secondary)] mb-2 block tracking-wider">Sort By</label>
                             <div className="flex gap-2">
                                 <select
                                     value={sortOption}
                                     onChange={(e) => setSortOption(e.target.value)}
-                                    className="w-full p-2 border-2 border-gray-300 font-medium focus:border-black focus:outline-none"
+                                    className="w-full h-10 px-3 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-page)] text-[var(--text-primary)] focus:border-[var(--border-focus)] focus:ring-2 focus:ring-[var(--border-focus)]/10 outline-none transition-all"
                                 >
                                     <option value="date-desc">Newest First</option>
                                     <option value="date-asc">Oldest First</option>
@@ -256,8 +260,8 @@ export default function DocumentsList({ onSelectDocument }: DocumentsListProps) 
                 )}
 
                 {/* Results Count */}
-                <div className="flex items-center justify-between mb-4">
-                    <p className="text-sm font-bold text-gray-500">
+                <div className="flex items-center justify-between mb-4 px-1">
+                    <p className="text-sm font-medium text-[var(--text-secondary)]">
                         Showing {filteredAndSortedDocuments.length} results
                     </p>
                     {(filterType !== 'all' || statusFilter !== 'all' || dateFilter !== 'all' || searchQuery) && (
@@ -269,7 +273,7 @@ export default function DocumentsList({ onSelectDocument }: DocumentsListProps) 
                                 setSearchQuery('');
                                 setSortOption('date-desc');
                             }}
-                            className="text-sm text-red-600 font-bold hover:underline flex items-center gap-1"
+                            className="text-sm text-[var(--color-google-red)] font-medium hover:bg-red-50 dark:hover:bg-red-900/10 px-3 py-1 rounded-full transition-colors flex items-center gap-1"
                         >
                             <X className="w-3 h-3" /> Clear Filters
                         </button>
@@ -279,18 +283,31 @@ export default function DocumentsList({ onSelectDocument }: DocumentsListProps) 
                 {isLoading ? (
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         {[1, 2, 3, 4, 5, 6].map((i) => (
-                            <div key={i} className="brutal-card bg-gray-100 animate-pulse h-64"></div>
+                            <div key={i} className="g-card h-64 p-8 flex flex-col relative">
+                                <div className="mb-6 pt-2">
+                                    <Skeleton className="w-14 h-14 rounded-2xl mb-5" />
+                                    <Skeleton className="h-6 w-3/4 mb-2" />
+                                    <Skeleton className="h-4 w-1/2" />
+                                </div>
+                                <div className="mt-auto space-y-3 pt-4 border-t border-[var(--border-subtle)]">
+                                    <div className="flex items-center justify-between">
+                                        <Skeleton className="h-4 w-24" />
+                                        <Skeleton className="h-4 w-12 rounded-full" />
+                                    </div>
+                                    <Skeleton className="h-4 w-20" />
+                                </div>
+                            </div>
                         ))}
                     </div>
                 ) : filteredAndSortedDocuments.length === 0 ? (
-                    <div className="text-center py-20 bg-white border-2 border-dashed border-gray-300">
+                    <div className="text-center py-20 bg-[var(--bg-page)] border border-dashed border-[var(--border-subtle)] rounded-3xl">
                         <div className="flex flex-col items-center gap-4">
-                            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
-                                <Filter className="w-8 h-8 text-gray-400" />
+                            <div className="w-16 h-16 bg-[var(--bg-surface-highlight)] rounded-full flex items-center justify-center">
+                                <Filter className="w-8 h-8 text-[var(--text-tertiary)]" />
                             </div>
                             <div>
-                                <p className="text-xl font-bold mb-2">No documents found</p>
-                                <p className="text-gray-500">Try adjusting your search or filters.</p>
+                                <p className="text-xl font-medium text-[var(--text-primary)] mb-2">No documents found</p>
+                                <p className="text-[var(--text-secondary)]">Try adjusting your search or filters.</p>
                             </div>
                             <button
                                 onClick={() => {
@@ -299,77 +316,74 @@ export default function DocumentsList({ onSelectDocument }: DocumentsListProps) 
                                     setDateFilter('all');
                                     setSearchQuery('');
                                 }}
-                                className="text-blue-600 font-bold hover:underline"
+                                className="text-[var(--color-google-blue)] font-medium hover:underline"
                             >
                                 Clear all filters
                             </button>
                         </div>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pb-8">
                         {filteredAndSortedDocuments.map((doc) => (
                             <button
                                 key={doc._id}
                                 onClick={() => onSelectDocument ? onSelectDocument(doc._id) : router.push(`/dashboard/document/${doc._id}`)}
-                                className="brutal-card hover:bg-yellow-50 transition-all group flex flex-col h-full text-left relative overflow-hidden"
+                                className="g-card text-left relative overflow-hidden group hover:shadow-lg transition-all duration-300 flex flex-col h-64 p-0 bg-[var(--bg-page)] border border-[var(--border-subtle)] hover:border-[var(--border-focus)]"
                             >
-                                <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-                                    <div
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            window.open(doc.fileUrl || doc.filepath, '_blank');
-                                        }}
-                                        className="w-8 h-8 bg-white border-2 border-black rounded-full flex items-center justify-center hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-colors shadow-sm"
-                                        title="Open in New Tab"
-                                    >
-                                        <ExternalLink className="w-4 h-4" />
+                                {/* Header / Preview Area */}
+                                <div className="h-1/2 w-full bg-[var(--bg-surface-highlight)]/50 p-6 flex flex-col justify-between relative overflow-hidden group-hover:bg-[var(--color-google-blue)]/5 transition-colors">
+                                    <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-200 z-10 translate-y-1 group-hover:translate-y-0">
+                                        <div
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                window.open(doc.fileUrl || doc.filepath, '_blank');
+                                            }}
+                                            className="p-2 bg-[var(--bg-page)] rounded-full hover:bg-[var(--bg-surface-highlight)] transition-colors shadow-sm cursor-pointer border border-[var(--border-subtle)]"
+                                            title="Open Original"
+                                        >
+                                            <ExternalLink className="w-4 h-4 text-[var(--text-secondary)]" />
+                                        </div>
+                                        <div
+                                            onClick={(e) => handleDelete(e, doc._id)}
+                                            className="p-2 bg-[var(--bg-page)] rounded-full hover:bg-red-50 hover:border-red-100 transition-colors shadow-sm cursor-pointer border border-[var(--border-subtle)]"
+                                            title="Delete"
+                                        >
+                                            <Trash2 className="w-4 h-4 text-[var(--color-google-red)]" />
+                                        </div>
                                     </div>
-                                    <div
-                                        onClick={(e) => handleEdit(e, doc._id)}
-                                        className="w-8 h-8 bg-white border-2 border-black rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-colors shadow-sm"
-                                    >
-                                        <Edit2 className="w-4 h-4" />
-                                    </div>
-                                    <div
-                                        onClick={(e) => handleDelete(e, doc._id)}
-                                        className="w-8 h-8 bg-white border-2 border-black rounded-full flex items-center justify-center hover:bg-red-600 hover:text-white hover:border-red-600 transition-colors shadow-sm"
-                                    >
-                                        <Trash2 className="w-4 h-4" />
+
+                                    <div className="w-12 h-12 bg-[var(--bg-page)] rounded-xl flex items-center justify-center shadow-sm border border-[var(--border-subtle)] group-hover:scale-105 transition-transform duration-300">
+                                        <FileText className="w-6 h-6 text-[var(--color-google-blue)]" />
                                     </div>
                                 </div>
 
-                                <div className="mb-6">
-                                    <div className="w-16 h-16 bg-blue-100 border-2 border-black flex items-center justify-center mb-4">
-                                        {getFileIcon(doc.fileType)}
+                                {/* Content Area */}
+                                <div className="flex-1 p-5 flex flex-col justify-between">
+                                    <div>
+                                        <h3 className="font-medium text-base text-[var(--text-primary)] mb-1.5 line-clamp-1 leading-snug group-hover:text-[var(--color-google-blue)] transition-colors" title={doc.title}>
+                                            {doc.title}
+                                        </h3>
+                                        <p className="text-xs text-[var(--text-tertiary)] line-clamp-1 break-all">{doc.filename}</p>
                                     </div>
-                                    <h3 className="font-bold text-xl mb-2 line-clamp-2 leading-tight">{doc.title}</h3>
-                                    <p className="text-sm text-gray-500 break-all line-clamp-1">{doc.filename}</p>
-                                </div>
 
-                                <div className="mt-auto space-y-3 pt-4 border-t-2 border-gray-100 group-hover:border-black/10 transition-colors">
-                                    <div className="flex items-center justify-between text-sm">
-                                        <div className="flex items-center gap-2 text-gray-600">
-                                            <Clock className="w-4 h-4" />
+                                    <div className="flex items-center justify-between border-t border-[var(--border-subtle)] pt-4 mt-2">
+                                        <div className="flex items-center gap-2 text-xs text-[var(--text-secondary)] font-medium">
+                                            <Calendar className="w-3.5 h-3.5 text-[var(--text-tertiary)]" />
                                             <span>{new Date(doc.uploadDate || doc.createdAt).toLocaleDateString()}</span>
                                         </div>
-                                        <span className="font-mono text-xs text-gray-400">
-                                            {formatBytes(doc.filesize || 0)}
-                                        </span>
-                                    </div>
 
-                                    {doc.status && (
-                                        <div className="flex items-center gap-2">
-                                            {doc.status === 'completed' ? (
-                                                <span className="flex items-center gap-1 text-xs font-bold text-green-600 bg-green-100 px-2 py-1 rounded-full border border-green-200">
-                                                    <CheckCircle className="w-3 h-3" /> PROCESSED
-                                                </span>
-                                            ) : (
-                                                <span className="flex items-center gap-1 text-xs font-bold text-yellow-600 bg-yellow-100 px-2 py-1 rounded-full border border-yellow-200">
-                                                    <AlertCircle className="w-3 h-3" /> PROCESSING
-                                                </span>
-                                            )}
-                                        </div>
-                                    )}
+                                        {doc.status === 'completed' ? (
+                                            <div className="flex items-center gap-1.5 text-[10px] bg-[var(--color-google-green)]/10 text-[var(--color-google-green)] px-2 py-1 rounded-md font-bold uppercase tracking-wider">
+                                                <CheckCircle className="w-3 h-3" />
+                                                Processed
+                                            </div>
+                                        ) : (
+                                            <div className="flex items-center gap-1.5 text-[10px] bg-[var(--color-google-yellow)]/10 text-[#f29900] px-2 py-1 rounded-md font-bold uppercase tracking-wider">
+                                                <AlertCircle className="w-3 h-3" />
+                                                Processing
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
                             </button>
                         ))}
