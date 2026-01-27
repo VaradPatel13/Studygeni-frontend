@@ -1,23 +1,15 @@
-'use client';
+import type { Metadata } from 'next';
+import DashboardAuthGuard from '@/components/dashboard/DashboardAuthGuard';
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import Cookies from 'js-cookie';
+export const metadata: Metadata = {
+    title: 'Dashboard',
+    description: 'Manage your documents, quizzes, and flashcards.',
+};
 
 export default function DashboardLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
-    const router = useRouter();
-
-    useEffect(() => {
-        // Check if user is authenticated
-        const token = Cookies.get('token');
-        if (!token) {
-            router.push('/login');
-        }
-    }, [router]);
-
-    return <>{children}</>;
+    return <DashboardAuthGuard>{children}</DashboardAuthGuard>;
 }

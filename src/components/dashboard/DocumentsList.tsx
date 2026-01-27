@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { documentService } from '@/services/documentService';
-import { ChevronRight, FileText, Search, Upload, Filter, Clock, CheckCircle, AlertCircle, ArrowUpDown, Calendar, X, Edit2, Trash2, ExternalLink } from 'lucide-react';
+import { ChevronRight, FileText, Search, Upload, Filter, Clock, CheckCircle, AlertCircle, ArrowUpDown, Calendar, X, Edit2, Trash2, ExternalLink, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Skeleton } from '@/components/ui/Skeleton';
 
@@ -69,19 +69,29 @@ export default function DocumentsList({ onSelectDocument }: DocumentsListProps) 
         }
     };
 
-    const handleDelete = async (e: React.MouseEvent, id: string) => {
+    const [deleteId, setDeleteId] = useState<string | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
+
+    const handleDelete = (e: React.MouseEvent, id: string) => {
         e.stopPropagation();
-        if (confirm('Are you sure you want to delete this document?')) {
-            try {
-                toast.loading('DELETING...');
-                await documentService.deleteDocument(id);
-                toast.dismiss();
-                toast.success('DOCUMENT DELETED');
-                fetchDocuments();
-            } catch (error) {
-                toast.dismiss();
-                toast.error('DELETE FAILED');
-            }
+        setDeleteId(id);
+    };
+
+    const confirmDelete = async () => {
+        if (!deleteId) return;
+        setIsDeleting(true);
+        try {
+            toast.loading('DELETING...');
+            await documentService.deleteDocument(deleteId);
+            toast.dismiss();
+            toast.success('DOCUMENT DELETED');
+            fetchDocuments();
+        } catch (error) {
+            toast.dismiss();
+            toast.error('DELETE FAILED');
+        } finally {
+            setIsDeleting(false);
+            setDeleteId(null);
         }
     };
 
@@ -153,9 +163,9 @@ export default function DocumentsList({ onSelectDocument }: DocumentsListProps) 
         <div className="flex-1 bg-[var(--bg-page)] p-8 overflow-y-auto h-screen transition-colors duration-300">
             <div className="max-w-7xl mx-auto">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-                    <h1 className="text-3xl font-medium google-title text-[var(--text-primary)]">Documents</h1>
+                    <h1 className="text-3xl font-medium app-title text-[var(--text-primary)]">Documents</h1>
 
-                    <label className="btn-google btn-google-primary h-11 px-6 rounded-full shadow-md cursor-pointer gap-2">
+                    <label className="btn-app btn-primary h-11 px-6 rounded-full shadow-md cursor-pointer gap-2">
                         <Upload className="w-5 h-5" />
                         <span>Upload New</span>
                         <input
@@ -273,7 +283,7 @@ export default function DocumentsList({ onSelectDocument }: DocumentsListProps) 
                                 setSearchQuery('');
                                 setSortOption('date-desc');
                             }}
-                            className="text-sm text-[var(--color-google-red)] font-medium hover:bg-red-50 dark:hover:bg-red-900/10 px-3 py-1 rounded-full transition-colors flex items-center gap-1"
+                            className="text-sm text-[var(--color-brand-red)] font-medium hover:bg-red-50 dark:hover:bg-red-900/10 px-3 py-1 rounded-full transition-colors flex items-center gap-1"
                         >
                             <X className="w-3 h-3" /> Clear Filters
                         </button>
@@ -283,7 +293,7 @@ export default function DocumentsList({ onSelectDocument }: DocumentsListProps) 
                 {isLoading ? (
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         {[1, 2, 3, 4, 5, 6].map((i) => (
-                            <div key={i} className="g-card h-64 p-8 flex flex-col relative">
+                            <div key={i} className="app-card h-64 p-8 flex flex-col relative">
                                 <div className="mb-6 pt-2">
                                     <Skeleton className="w-14 h-14 rounded-2xl mb-5" />
                                     <Skeleton className="h-6 w-3/4 mb-2" />
@@ -316,7 +326,7 @@ export default function DocumentsList({ onSelectDocument }: DocumentsListProps) 
                                     setDateFilter('all');
                                     setSearchQuery('');
                                 }}
-                                className="text-[var(--color-google-blue)] font-medium hover:underline"
+                                className="text-[var(--color-brand-blue)] font-medium hover:underline"
                             >
                                 Clear all filters
                             </button>
@@ -328,11 +338,11 @@ export default function DocumentsList({ onSelectDocument }: DocumentsListProps) 
                             <button
                                 key={doc._id}
                                 onClick={() => onSelectDocument ? onSelectDocument(doc._id) : router.push(`/dashboard/document/${doc._id}`)}
-                                className="g-card text-left relative overflow-hidden group hover:shadow-lg transition-all duration-300 flex flex-col h-64 p-0 bg-[var(--bg-page)] border border-[var(--border-subtle)] hover:border-[var(--border-focus)]"
+                                className="app-card text-left relative overflow-hidden group hover:shadow-lg transition-all duration-300 flex flex-col h-64 p-0 bg-[var(--bg-page)] border border-[var(--border-subtle)] hover:border-[var(--border-focus)]"
                             >
                                 {/* Header / Preview Area */}
-                                <div className="h-1/2 w-full bg-[var(--bg-surface-highlight)]/50 p-6 flex flex-col justify-between relative overflow-hidden group-hover:bg-[var(--color-google-blue)]/5 transition-colors">
-                                    <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-200 z-10 translate-y-1 group-hover:translate-y-0">
+                                <div className="h-1/2 w-full bg-[var(--bg-surface-highlight)]/50 p-6 flex flex-col justify-between relative overflow-hidden group-hover:bg-[var(--color-brand-blue)]/5 transition-colors">
+                                    <div className="absolute top-4 right-4 flex gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all duration-200 z-10 translate-y-0 md:translate-y-1 md:group-hover:translate-y-0">
                                         <div
                                             onClick={(e) => {
                                                 e.stopPropagation();
@@ -348,19 +358,19 @@ export default function DocumentsList({ onSelectDocument }: DocumentsListProps) 
                                             className="p-2 bg-[var(--bg-page)] rounded-full hover:bg-red-50 hover:border-red-100 transition-colors shadow-sm cursor-pointer border border-[var(--border-subtle)]"
                                             title="Delete"
                                         >
-                                            <Trash2 className="w-4 h-4 text-[var(--color-google-red)]" />
+                                            <Trash2 className="w-4 h-4 text-[var(--color-brand-red)]" />
                                         </div>
                                     </div>
 
                                     <div className="w-12 h-12 bg-[var(--bg-page)] rounded-xl flex items-center justify-center shadow-sm border border-[var(--border-subtle)] group-hover:scale-105 transition-transform duration-300">
-                                        <FileText className="w-6 h-6 text-[var(--color-google-blue)]" />
+                                        <FileText className="w-6 h-6 text-[var(--color-brand-blue)]" />
                                     </div>
                                 </div>
 
                                 {/* Content Area */}
                                 <div className="flex-1 p-5 flex flex-col justify-between">
                                     <div>
-                                        <h3 className="font-medium text-base text-[var(--text-primary)] mb-1.5 line-clamp-1 leading-snug group-hover:text-[var(--color-google-blue)] transition-colors" title={doc.title}>
+                                        <h3 className="font-medium text-base text-[var(--text-primary)] mb-1.5 line-clamp-1 leading-snug group-hover:text-[var(--color-brand-blue)] transition-colors" title={doc.title}>
                                             {doc.title}
                                         </h3>
                                         <p className="text-xs text-[var(--text-tertiary)] line-clamp-1 break-all">{doc.filename}</p>
@@ -373,12 +383,12 @@ export default function DocumentsList({ onSelectDocument }: DocumentsListProps) 
                                         </div>
 
                                         {doc.status === 'completed' ? (
-                                            <div className="flex items-center gap-1.5 text-[10px] bg-[var(--color-google-green)]/10 text-[var(--color-google-green)] px-2 py-1 rounded-md font-bold uppercase tracking-wider">
+                                            <div className="flex items-center gap-1.5 text-[10px] bg-[var(--color-brand-green)]/10 text-[var(--color-brand-green)] px-2 py-1 rounded-md font-bold uppercase tracking-wider">
                                                 <CheckCircle className="w-3 h-3" />
                                                 Processed
                                             </div>
                                         ) : (
-                                            <div className="flex items-center gap-1.5 text-[10px] bg-[var(--color-google-yellow)]/10 text-[#f29900] px-2 py-1 rounded-md font-bold uppercase tracking-wider">
+                                            <div className="flex items-center gap-1.5 text-[10px] bg-[var(--color-brand-yellow)]/10 text-[#f29900] px-2 py-1 rounded-md font-bold uppercase tracking-wider">
                                                 <AlertCircle className="w-3 h-3" />
                                                 Processing
                                             </div>
@@ -390,6 +400,39 @@ export default function DocumentsList({ onSelectDocument }: DocumentsListProps) 
                     </div>
                 )}
             </div>
+
+            {/* Custom Delete Confirmation Dialog */}
+            {deleteId && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200" onClick={(e) => e.stopPropagation()}>
+                    <div className="bg-[var(--bg-page)] rounded-2xl shadow-xl max-w-sm w-full p-6 border border-[var(--border-subtle)] animate-in zoom-in-95 duration-200" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex flex-col items-center text-center">
+                            <div className="w-12 h-12 bg-[var(--color-brand-red)]/10 text-[var(--color-brand-red)] rounded-full flex items-center justify-center mb-4">
+                                <Trash2 className="w-6 h-6" />
+                            </div>
+                            <h3 className="text-lg font-bold text-[var(--text-primary)] mb-2">Delete Document?</h3>
+                            <p className="text-sm text-[var(--text-secondary)] mb-6 leading-relaxed">
+                                Are you sure you want to delete this document? This action cannot be undone.
+                            </p>
+                            <div className="flex gap-3 w-full">
+                                <button
+                                    onClick={(e) => { e.stopPropagation(); setDeleteId(null); }}
+                                    className="flex-1 px-4 py-2 rounded-full border border-[var(--border-subtle)] font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-surface-highlight)] transition-colors"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={(e) => { e.stopPropagation(); confirmDelete(); }}
+                                    disabled={isDeleting}
+                                    className="flex-1 px-4 py-2 rounded-full bg-[var(--color-brand-red)] text-white font-medium hover:bg-red-600 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                >
+                                    {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                                    {isDeleting ? 'Deleting...' : 'Delete'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

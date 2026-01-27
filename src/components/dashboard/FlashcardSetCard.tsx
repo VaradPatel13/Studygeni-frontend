@@ -18,11 +18,11 @@ export default function FlashcardSetCard({ set, onClick }: FlashcardSetCardProps
     return (
         <div
             onClick={onClick}
-            className="g-card p-6 flex flex-col justify-between h-64 cursor-pointer hover:-translate-y-1 transition-transform duration-300"
+            className="app-card p-6 flex flex-col justify-between h-64 cursor-pointer hover:-translate-y-1 transition-transform duration-300"
         >
             <div>
                 <div className="flex justify-between items-start mb-4">
-                    <div className="w-10 h-10 bg-[var(--color-google-green)]/10 flex items-center justify-center rounded-xl text-[var(--color-google-green)]">
+                    <div className="w-10 h-10 bg-[var(--color-brand-green)]/10 flex items-center justify-center rounded-xl text-[var(--color-brand-green)]">
                         <Brain className="w-6 h-6" />
                     </div>
                     <span className="text-[10px] font-bold text-[var(--text-tertiary)] bg-[var(--bg-surface-highlight)] px-2 py-1 rounded-md uppercase tracking-wide">
@@ -30,7 +30,7 @@ export default function FlashcardSetCard({ set, onClick }: FlashcardSetCardProps
                     </span>
                 </div>
 
-                <h3 className="text-xl font-medium mb-1 line-clamp-1 leading-tight text-[var(--text-primary)] group-hover:text-[var(--color-google-blue)] transition-colors">
+                <h3 className="text-xl font-medium mb-1 line-clamp-1 leading-tight text-[var(--text-primary)] group-hover:text-[var(--color-brand-blue)] transition-colors">
                     {docTitle}
                 </h3>
                 <p className="text-sm text-[var(--text-secondary)] font-normal mb-6 line-clamp-1">
@@ -45,7 +45,7 @@ export default function FlashcardSetCard({ set, onClick }: FlashcardSetCardProps
                         <BookOpen className="w-3.5 h-3.5 text-[var(--text-tertiary)]" /> {total} Cards
                     </div>
                     {starredCount > 0 && (
-                        <div className="flex items-center gap-1.5 text-[var(--color-google-yellow)]">
+                        <div className="flex items-center gap-1.5 text-[var(--color-brand-yellow)]">
                             <Star className="w-3.5 h-3.5 fill-current" /> {starredCount}
                         </div>
                     )}
@@ -59,7 +59,7 @@ export default function FlashcardSetCard({ set, onClick }: FlashcardSetCardProps
                     </div>
                     <div className="w-full h-1.5 bg-[var(--bg-surface-highlight)] rounded-full overflow-hidden">
                         <div
-                            className={`h-full rounded-full transition-all duration-500 ease-out ${progress === 100 ? 'bg-[var(--color-google-green)]' : 'bg-[var(--color-google-yellow)]'}`}
+                            className={`h-full rounded-full transition-all duration-500 ease-out ${progress === 100 ? 'bg-[var(--color-brand-green)]' : 'bg-[var(--color-brand-yellow)]'}`}
                             style={{ width: `${progress}%` }}
                         ></div>
                     </div>

@@ -1,7 +1,22 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Upload, FileText, Youtube, ChevronRight, Search, Plus, BookOpen, Brain, Target, Zap, MoreHorizontal, Clock, Calendar, Image } from 'lucide-react';
+import {
+    MdOutlineCloudUpload as Upload,
+    MdOutlineDescription as FileText,
+    MdOutlineSmartDisplay as Youtube,
+    MdChevronRight as ChevronRight,
+    MdOutlineSearch as Search,
+    MdAdd as Plus,
+    MdOutlineMenuBook as BookOpen,
+    MdOutlinePsychology as Brain,
+    MdOutlineTrackChanges as Target,
+    MdOutlineBolt as Zap,
+    MdMoreHoriz as MoreHorizontal,
+    MdOutlineAccessTime as Clock,
+    MdOutlineCalendarToday as Calendar,
+    MdOutlineImage as Image
+} from 'react-icons/md';
 import { documentService } from '@/services/documentService';
 import { progressService } from '@/services/progressService';
 import { flashcardService } from '@/services/flashcardService';
@@ -175,7 +190,7 @@ export default function DashboardHome({ onViewAllDocuments }: DashboardHomeProps
                 {/* Header */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between pb-8 border-b border-[var(--border-subtle)] gap-4">
                     <div>
-                        <h1 className="google-title text-3xl text-[var(--text-primary)] tracking-tight">Overview</h1>
+                        <h1 className="app-title text-3xl text-[var(--text-primary)] tracking-tight">Overview</h1>
                         <p className="text-sm text-[var(--text-secondary)] mt-2 font-medium">Welcome back, {userName} 👋</p>
                     </div>
 
@@ -188,7 +203,7 @@ export default function DashboardHome({ onViewAllDocuments }: DashboardHomeProps
                         </button>
                         <button
                             onClick={() => setIsUploadModalOpen(true)}
-                            className="h-10 px-5 text-sm font-medium rounded-full bg-[var(--color-google-blue)] text-white shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 hover:-translate-y-0.5 transition-all flex items-center gap-2"
+                            className="h-10 px-5 text-sm font-medium rounded-full bg-[var(--color-brand-blue)] text-white shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 hover:-translate-y-0.5 transition-all flex items-center gap-2"
                         >
                             <Plus className="w-4 h-4" /> New Upload
                         </button>
@@ -199,7 +214,7 @@ export default function DashboardHome({ onViewAllDocuments }: DashboardHomeProps
                 {isLoading ? (
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                         {/* Skeleton Streak */}
-                        <div className="g-card p-6 flex flex-col justify-between h-36 rounded-3xl">
+                        <div className="app-card p-6 flex flex-col justify-between h-36 rounded-3xl">
                             <div className="flex justify-between items-start">
                                 <Skeleton className="h-4 w-16" />
                                 <Skeleton className="h-10 w-10 rounded-full" />
@@ -211,7 +226,7 @@ export default function DashboardHome({ onViewAllDocuments }: DashboardHomeProps
                         </div>
 
                         {/* Skeleton Accuracy */}
-                        <div className="g-card p-6 flex flex-col justify-between h-36 rounded-3xl">
+                        <div className="app-card p-6 flex flex-col justify-between h-36 rounded-3xl">
                             <div className="flex justify-between items-start">
                                 <Skeleton className="h-4 w-20" />
                                 <Skeleton className="h-10 w-10 rounded-full" />
@@ -222,7 +237,7 @@ export default function DashboardHome({ onViewAllDocuments }: DashboardHomeProps
                         </div>
 
                         {/* Skeleton Summary */}
-                        <div className="col-span-1 md:col-span-2 g-card p-0 flex rounded-3xl overflow-hidden">
+                        <div className="col-span-1 md:col-span-2 app-card p-0 flex rounded-3xl overflow-hidden">
                             <div className="flex-1 p-6 border-r border-[var(--border-subtle)] flex flex-col justify-between">
                                 <Skeleton className="h-3 w-12 mb-4" />
                                 <Skeleton className="h-8 w-8" />
@@ -246,8 +261,8 @@ export default function DashboardHome({ onViewAllDocuments }: DashboardHomeProps
                             </div>
                             <div className="flex justify-between items-start relative z-10">
                                 <span className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider">Daily Streak</span>
-                                <div className="p-2 bg-[var(--color-google-yellow)]/10 rounded-2xl">
-                                    <Zap className="w-5 h-5 text-[var(--color-google-yellow)]" />
+                                <div className="p-2 bg-[var(--color-brand-yellow)]/10 rounded-2xl">
+                                    <Zap className="w-5 h-5 text-[var(--color-brand-yellow)]" />
                                 </div>
                             </div>
                             <div className="relative z-10">
@@ -266,8 +281,8 @@ export default function DashboardHome({ onViewAllDocuments }: DashboardHomeProps
                             </div>
                             <div className="flex justify-between items-start relative z-10">
                                 <span className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider">Avg Accuracy</span>
-                                <div className="p-2 bg-[var(--color-google-blue)]/10 rounded-2xl">
-                                    <Target className="w-5 h-5 text-[var(--color-google-blue)]" />
+                                <div className="p-2 bg-[var(--color-brand-blue)]/10 rounded-2xl">
+                                    <Target className="w-5 h-5 text-[var(--color-brand-blue)]" />
                                 </div>
                             </div>
                             <div className="relative z-10">
@@ -288,15 +303,15 @@ export default function DashboardHome({ onViewAllDocuments }: DashboardHomeProps
                                 <span className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Documents</span>
                             </div>
                             <div className="flex-1 p-6 border-r border-[var(--border-subtle)] flex flex-col justify-center items-center text-center gap-2 hover:bg-[var(--bg-surface-highlight)] transition-colors">
-                                <div className="p-3 bg-[var(--color-google-yellow)]/10 rounded-2xl mb-1">
-                                    <Brain className="w-6 h-6 text-[var(--color-google-yellow)]" />
+                                <div className="p-3 bg-[var(--color-brand-yellow)]/10 rounded-2xl mb-1">
+                                    <Brain className="w-6 h-6 text-[var(--color-brand-yellow)]" />
                                 </div>
                                 <span className="text-2xl font-bold text-[var(--text-primary)] tracking-tight">{stats?.stats?.flashcards?.totalSets || 0}</span>
                                 <span className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Flashcards</span>
                             </div>
                             <div className="flex-1 p-6 flex flex-col justify-center items-center text-center gap-2 hover:bg-[var(--bg-surface-highlight)] transition-colors">
-                                <div className="p-3 bg-[var(--color-google-green)]/10 rounded-2xl mb-1">
-                                    <Zap className="w-6 h-6 text-[var(--color-google-green)]" />
+                                <div className="p-3 bg-[var(--color-brand-green)]/10 rounded-2xl mb-1">
+                                    <Zap className="w-6 h-6 text-[var(--color-brand-green)]" />
                                 </div>
                                 <span className="text-2xl font-bold text-[var(--text-primary)] tracking-tight">{stats?.stats?.quizzes?.taken || 0}</span>
                                 <span className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Quizzes</span>
@@ -309,9 +324,9 @@ export default function DashboardHome({ onViewAllDocuments }: DashboardHomeProps
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <button
                         onClick={() => setIsUploadModalOpen(true)}
-                        className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] p-6 rounded-3xl cursor-pointer hover:border-[var(--color-google-blue)] hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group flex flex-row items-center gap-5 text-left w-full h-32"
+                        className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] p-6 rounded-3xl cursor-pointer hover:border-[var(--color-brand-blue)] hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group flex flex-row items-center gap-5 text-left w-full h-32"
                     >
-                        <div className="w-14 h-14 rounded-2xl bg-[var(--color-google-blue)]/10 flex items-center justify-center text-[var(--color-google-blue)] group-hover:bg-[var(--color-google-blue)] group-hover:text-white transition-colors duration-300 shadow-sm">
+                        <div className="w-14 h-14 rounded-2xl bg-[var(--color-brand-blue)]/10 flex items-center justify-center text-[var(--color-brand-blue)] group-hover:bg-[var(--color-brand-blue)] group-hover:text-white transition-colors duration-300 shadow-sm">
                             <Upload className="w-7 h-7" />
                         </div>
                         <div>
@@ -322,9 +337,9 @@ export default function DashboardHome({ onViewAllDocuments }: DashboardHomeProps
 
                     <button
                         onClick={() => setIsTextModalOpen(true)}
-                        className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] p-6 rounded-3xl cursor-pointer hover:border-[var(--color-google-red)] hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group flex flex-row items-center gap-5 text-left w-full h-32"
+                        className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] p-6 rounded-3xl cursor-pointer hover:border-[var(--color-brand-red)] hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group flex flex-row items-center gap-5 text-left w-full h-32"
                     >
-                        <div className="w-14 h-14 rounded-2xl bg-[var(--color-google-red)]/10 flex items-center justify-center text-[var(--color-google-red)] group-hover:bg-[var(--color-google-red)] group-hover:text-white transition-colors duration-300 shadow-sm">
+                        <div className="w-14 h-14 rounded-2xl bg-[var(--color-brand-red)]/10 flex items-center justify-center text-[var(--color-brand-red)] group-hover:bg-[var(--color-brand-red)] group-hover:text-white transition-colors duration-300 shadow-sm">
                             <FileText className="w-7 h-7" />
                         </div>
                         <div>
@@ -334,10 +349,10 @@ export default function DashboardHome({ onViewAllDocuments }: DashboardHomeProps
                     </button>
 
                     <button
-                        onClick={() => setIsYoutubeModalOpen(true)}
-                        className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] p-6 rounded-3xl cursor-pointer hover:border-[var(--color-google-yellow)] hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group flex flex-row items-center gap-5 text-left w-full h-32"
+                        onClick={() => toast.error('Service temporarily unavailable. Please try again in a few minutes')}
+                        className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] p-6 rounded-3xl cursor-pointer hover:border-[var(--color-brand-yellow)] hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group flex flex-row items-center gap-5 text-left w-full h-32"
                     >
-                        <div className="w-14 h-14 rounded-2xl bg-[var(--color-google-yellow)]/10 flex items-center justify-center text-[var(--color-google-yellow)] group-hover:bg-[var(--color-google-yellow)] group-hover:text-white transition-colors duration-300 shadow-sm">
+                        <div className="w-14 h-14 rounded-2xl bg-[var(--color-brand-yellow)]/10 flex items-center justify-center text-[var(--color-brand-yellow)] group-hover:bg-[var(--color-brand-yellow)] group-hover:text-white transition-colors duration-300 shadow-sm">
                             <Youtube className="w-7 h-7" />
                         </div>
                         <div>
@@ -355,7 +370,7 @@ export default function DashboardHome({ onViewAllDocuments }: DashboardHomeProps
                         <h2 className="text-lg font-medium text-[var(--text-primary)]">Recent Activity</h2>
                     </div>
 
-                    <div className="g-card p-0 overflow-hidden">
+                    <div className="app-card p-0 overflow-hidden">
                         <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-[var(--bg-surface-highlight)] border-b border-[var(--border-subtle)] text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider">
                             <div className="col-span-6">Activity</div>
                             <div className="col-span-3">Date</div>
@@ -383,8 +398,8 @@ export default function DashboardHome({ onViewAllDocuments }: DashboardHomeProps
                                 {recentActivity.map((activity: any, idx: number) => {
                                     // Determine icon and color based on type
                                     let Icon = FileText;
-                                    let colorClass = 'text-[var(--color-google-blue)]';
-                                    let bgColorClass = 'bg-[var(--color-google-blue)]/10';
+                                    let colorClass = 'text-[var(--color-brand-blue)]';
+                                    let bgColorClass = 'bg-[var(--color-brand-blue)]/10';
                                     let actionText = 'Uploaded Document';
                                     let detailText = activity.details || '-';
 
@@ -405,13 +420,13 @@ export default function DashboardHome({ onViewAllDocuments }: DashboardHomeProps
                                         }
                                     } else if (activity.type === 'flashcard_set_created') {
                                         Icon = BookOpen;
-                                        colorClass = 'text-[var(--color-google-yellow)]';
-                                        bgColorClass = 'bg-[var(--color-google-yellow)]/10';
+                                        colorClass = 'text-[var(--color-brand-yellow)]';
+                                        bgColorClass = 'bg-[var(--color-brand-yellow)]/10';
                                         actionText = 'Created Flashcards';
                                     } else if (activity.type === 'quiz_completed') {
                                         Icon = Brain; // or Trophy/Target
-                                        colorClass = 'text-[var(--color-google-green)]';
-                                        bgColorClass = 'bg-[var(--color-google-green)]/10';
+                                        colorClass = 'text-[var(--color-brand-green)]';
+                                        bgColorClass = 'bg-[var(--color-brand-green)]/10';
                                         actionText = 'Completed Quiz';
                                     }
 
@@ -429,7 +444,7 @@ export default function DashboardHome({ onViewAllDocuments }: DashboardHomeProps
                                                     <Icon className="w-4 h-4" />
                                                 </div>
                                                 <div>
-                                                    <span className="text-sm font-medium text-[var(--text-primary)] block group-hover:text-[var(--color-google-blue)] transition-colors">{activity.title}</span>
+                                                    <span className="text-sm font-medium text-[var(--text-primary)] block group-hover:text-[var(--color-brand-blue)] transition-colors">{activity.title}</span>
                                                     <span className="text-xs text-[var(--text-secondary)]">{actionText}</span>
                                                 </div>
                                             </div>
@@ -458,7 +473,7 @@ export default function DashboardHome({ onViewAllDocuments }: DashboardHomeProps
                     <div className="bg-[var(--bg-surface)] dark:bg-[var(--bg-surface-highlight)] w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden flex flex-col animate-slide-up ring-1 ring-black/5">
 
                         <div className="p-8 pb-6">
-                            <h2 className="text-2xl font-bold google-title text-[var(--text-primary)]">Upload Document</h2>
+                            <h2 className="text-2xl font-bold app-title text-[var(--text-primary)]">Upload Document</h2>
                             <p className="text-sm text-[var(--text-secondary)] mt-2">Upload a PDF or Doc to generate quizzes and flashcards.</p>
                         </div>
 
@@ -476,17 +491,17 @@ export default function DashboardHome({ onViewAllDocuments }: DashboardHomeProps
 
                             <div>
                                 <label className="block text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-2">File</label>
-                                <label className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed border-[var(--border-subtle)] rounded-3xl cursor-pointer bg-[var(--bg-page)]/50 hover:bg-[var(--bg-surface-highlight)] hover:border-[var(--color-google-blue)] transition-all group relative overflow-hidden">
+                                <label className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed border-[var(--border-subtle)] rounded-3xl cursor-pointer bg-[var(--bg-page)]/50 hover:bg-[var(--bg-surface-highlight)] hover:border-[var(--color-brand-blue)] transition-all group relative overflow-hidden">
                                     <div className="flex flex-col items-center justify-center pt-5 pb-6 z-10">
 
                                         {/* 1. Large Blue Upload Icon */}
-                                        <div className="mb-4 p-3 bg-[var(--color-google-blue)]/10 rounded-full group-hover:scale-110 transition-transform duration-300 text-[var(--color-google-blue)]">
-                                            <Upload className="w-8 h-8 stroke-[2.5]" />
+                                        <div className="mb-4 p-3 bg-[var(--color-brand-blue)]/10 rounded-full group-hover:scale-110 transition-transform duration-300 text-[var(--color-brand-blue)]">
+                                            <Upload className="w-8 h-8" />
                                         </div>
 
                                         {/* 2. Text */}
                                         <p className="mb-6 text-lg text-[var(--text-secondary)] font-medium">
-                                            <span className="font-bold text-[var(--color-google-blue)]">Click to upload</span> or drag and drop
+                                            <span className="font-bold text-[var(--color-brand-blue)]">Click to upload</span> or drag and drop
                                         </p>
 
                                         {/* 3. Small Icons Row */}
@@ -517,14 +532,14 @@ export default function DashboardHome({ onViewAllDocuments }: DashboardHomeProps
                                     {/* Success State Overlay */}
                                     {uploadFile && (
                                         <div className="absolute inset-0 bg-[var(--bg-page)]/95 backdrop-blur-sm z-20 flex flex-col items-center justify-center animate-fade-in">
-                                            <div className="w-16 h-16 rounded-full bg-[var(--color-google-green)]/10 flex items-center justify-center mb-4 text-[var(--color-google-green)] shadow-sm">
+                                            <div className="w-16 h-16 rounded-full bg-[var(--color-brand-green)]/10 flex items-center justify-center mb-4 text-[var(--color-brand-green)] shadow-sm">
                                                 <FileText className="w-8 h-8" />
                                             </div>
                                             <p className="text-lg font-semibold text-[var(--text-primary)] max-w-[80%] truncate px-4">{uploadFile.name}</p>
                                             <p className="text-sm text-[var(--text-secondary)] mt-1">{(uploadFile.size / 1024 / 1024).toFixed(2)} MB</p>
                                             <button
                                                 onClick={(e) => { e.preventDefault(); setUploadFile(null); }}
-                                                className="mt-6 text-sm font-semibold text-[var(--color-google-red)] hover:text-[#C5221F] transition-colors bg-[var(--color-google-red)]/10 px-4 py-2 rounded-full hover:bg-[var(--color-google-red)]/20"
+                                                className="mt-6 text-sm font-semibold text-[var(--color-brand-red)] hover:text-[#C5221F] transition-colors bg-[var(--color-brand-red)]/10 px-4 py-2 rounded-full hover:bg-[var(--color-brand-red)]/20"
                                             >
                                                 Remove file
                                             </button>
@@ -537,13 +552,13 @@ export default function DashboardHome({ onViewAllDocuments }: DashboardHomeProps
                         <div className="p-6 pt-0 flex justify-end gap-3">
                             <button
                                 onClick={() => { setIsUploadModalOpen(false); setUploadFile(null); setUploadTitle(''); }}
-                                className="btn-google btn-google-outline h-11 px-6 rounded-xl text-sm"
+                                className="btn-app btn-outline h-11 px-6 rounded-xl text-sm"
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={handleUploadSubmit}
-                                className="btn-google btn-google-primary h-11 px-8 rounded-xl text-sm shadow-md hover:shadow-lg"
+                                className="btn-app btn-primary h-11 px-8 rounded-xl text-sm shadow-md hover:shadow-lg"
                             >
                                 Upload Document
                             </button>
@@ -557,7 +572,7 @@ export default function DashboardHome({ onViewAllDocuments }: DashboardHomeProps
                 <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4 backdrop-blur-3xl animate-fade-in">
                     <div className="bg-[var(--bg-surface)] dark:bg-[var(--bg-surface-highlight)] w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden flex flex-col animate-slide-up ring-1 ring-black/5 max-h-[85vh]">
                         <div className="p-8 pb-6 shrink-0">
-                            <h2 className="text-2xl font-bold google-title text-[var(--text-primary)]">YouTube Summary</h2>
+                            <h2 className="text-2xl font-bold app-title text-[var(--text-primary)]">YouTube Summary</h2>
                             <p className="text-sm text-[var(--text-secondary)] mt-2">Paste a YouTube URL to get an AI-generated summary.</p>
                         </div>
 
@@ -594,7 +609,7 @@ export default function DashboardHome({ onViewAllDocuments }: DashboardHomeProps
                             {youtubeSummaryResult && (
                                 <button
                                     onClick={() => { setYoutubeSummaryResult(null); setYoutubeUrl(''); }}
-                                    className="text-sm text-[var(--color-google-blue)] hover:underline"
+                                    className="text-sm text-[var(--color-brand-blue)] hover:underline"
                                 >
                                     Summarize Another
                                 </button>
@@ -602,7 +617,7 @@ export default function DashboardHome({ onViewAllDocuments }: DashboardHomeProps
                             <div className="flex justify-end gap-3 ml-auto">
                                 <button
                                     onClick={() => { setIsYoutubeModalOpen(false); setYoutubeUrl(''); setYoutubeSummaryResult(null); }}
-                                    className="btn-google btn-google-outline h-11 px-6 rounded-xl text-sm"
+                                    className="btn-app btn-outline h-11 px-6 rounded-xl text-sm"
                                 >
                                     {youtubeSummaryResult ? 'Close' : 'Cancel'}
                                 </button>
@@ -610,7 +625,7 @@ export default function DashboardHome({ onViewAllDocuments }: DashboardHomeProps
                                     <button
                                         onClick={handleYoutubeSubmit}
                                         disabled={isYoutubeLoading || !youtubeUrl.trim()}
-                                        className="btn-google btn-google-primary h-11 px-8 rounded-xl text-sm shadow-md hover:shadow-lg flex items-center gap-2"
+                                        className="btn-app btn-primary h-11 px-8 rounded-xl text-sm shadow-md hover:shadow-lg flex items-center gap-2"
                                     >
                                         {isYoutubeLoading && <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>}
                                         {isYoutubeLoading ? 'Processing...' : 'Summarize'}
@@ -627,7 +642,7 @@ export default function DashboardHome({ onViewAllDocuments }: DashboardHomeProps
                 <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4 backdrop-blur-3xl animate-fade-in">
                     <div className="bg-[var(--bg-surface)] dark:bg-[var(--bg-surface-highlight)] w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden flex flex-col animate-slide-up ring-1 ring-black/5 max-h-[85vh]">
                         <div className="p-8 pb-6 shrink-0">
-                            <h2 className="text-2xl font-bold google-title text-[var(--text-primary)]">Text Summarization</h2>
+                            <h2 className="text-2xl font-bold app-title text-[var(--text-primary)]">Text Summarization</h2>
                             <p className="text-sm text-[var(--text-secondary)] mt-2">Paste raw text to get a concise summary.</p>
                         </div>
 
@@ -656,7 +671,7 @@ export default function DashboardHome({ onViewAllDocuments }: DashboardHomeProps
                             {textSummaryResult && (
                                 <button
                                     onClick={() => { setTextSummaryResult(null); setTextInput(''); }}
-                                    className="text-sm text-[var(--color-google-blue)] hover:underline"
+                                    className="text-sm text-[var(--color-brand-blue)] hover:underline"
                                 >
                                     Summarize Another
                                 </button>
@@ -664,7 +679,7 @@ export default function DashboardHome({ onViewAllDocuments }: DashboardHomeProps
                             <div className="flex justify-end gap-3 ml-auto">
                                 <button
                                     onClick={() => { setIsTextModalOpen(false); setTextInput(''); setTextSummaryResult(null); }}
-                                    className="btn-google btn-google-outline h-11 px-6 rounded-xl text-sm"
+                                    className="btn-app btn-outline h-11 px-6 rounded-xl text-sm"
                                 >
                                     {textSummaryResult ? 'Close' : 'Cancel'}
                                 </button>
@@ -672,7 +687,7 @@ export default function DashboardHome({ onViewAllDocuments }: DashboardHomeProps
                                     <button
                                         onClick={handleTextSubmit}
                                         disabled={isTextLoading || !textInput.trim()}
-                                        className="btn-google btn-google-primary h-11 px-8 rounded-xl text-sm shadow-md hover:shadow-lg flex items-center gap-2"
+                                        className="btn-app btn-primary h-11 px-8 rounded-xl text-sm shadow-md hover:shadow-lg flex items-center gap-2"
                                     >
                                         {isTextLoading && <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>}
                                         {isTextLoading ? 'Processing...' : 'Summarize'}

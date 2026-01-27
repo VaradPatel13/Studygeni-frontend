@@ -1,17 +1,17 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Register - StudyGeni',
-    description: 'Create a free StudyGeni account. Turn documents into flashcards and quizzes instantly.',
+    title: 'Create Account',
+    description: 'Create a free StudyMate.io account. Turn documents into flashcards and quizzes instantly.',
     openGraph: {
-        title: 'Join StudyGeni - Start Studying Smarter',
+        title: 'Join StudyMate.io - Start Studying Smarter',
         description: 'Stop failing. Start studying smarter. Create your free account today.',
-        url: 'https://studygeni.com/register',
-        siteName: 'StudyGeni',
+        url: 'https://studymate.io/register',
+        siteName: 'StudyMate.io',
         type: 'website',
     },
     twitter: {
-        title: 'Join StudyGeni',
+        title: 'Join StudyMate.io',
         description: 'Create a free account and start learning faster.',
         card: 'summary',
     },

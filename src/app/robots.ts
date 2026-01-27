@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
             allow: '/',
             disallow: ['/private/', '/api/'],
         },
-        sitemap: 'https://studygeni.com/sitemap.xml',
+        sitemap: 'https://studymate.io/sitemap.xml',
     };
 }

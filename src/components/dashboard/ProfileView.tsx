@@ -95,7 +95,7 @@ export default function ProfileView() {
                         <Skeleton className="h-8 w-48" />
                     </div>
 
-                    <div className="g-card p-8">
+                    <div className="app-card p-8">
                         <Skeleton className="h-6 w-48 mb-8" />
                         <div className="flex items-center gap-8 mb-8">
                             <Skeleton className="w-24 h-24 rounded-full" />
@@ -120,7 +120,7 @@ export default function ProfileView() {
                         </div>
                     </div>
 
-                    <div className="g-card p-8">
+                    <div className="app-card p-8">
                         <Skeleton className="h-6 w-32 mb-8" />
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2">
@@ -141,13 +141,13 @@ export default function ProfileView() {
     return (
         <div className="flex-1 bg-[var(--bg-page)] p-8 overflow-y-auto">
             <div className="max-w-4xl mx-auto space-y-8">
-                <h1 className="text-3xl google-title font-medium flex items-center gap-3 text-[var(--text-primary)]">
-                    <User className="w-8 h-8 text-[var(--color-google-blue)]" /> Profile Settings
+                <h1 className="text-3xl app-title font-medium flex items-center gap-3 text-[var(--text-primary)]">
+                    <User className="w-8 h-8 text-[var(--color-brand-blue)]" /> Profile Settings
                 </h1>
 
                 {/* Profile Information Card */}
-                <div className="g-card p-8">
-                    <h2 className="text-xl google-title font-medium mb-8 flex items-center gap-2 text-[var(--text-primary)]">
+                <div className="app-card p-8">
+                    <h2 className="text-xl app-title font-medium mb-8 flex items-center gap-2 text-[var(--text-primary)]">
                         Personal Information
                     </h2>
 
@@ -168,7 +168,7 @@ export default function ProfileView() {
                                         placeholder="https://example.com/avatar.jpg"
                                         value={profileImage}
                                         onChange={(e) => setProfileImage(e.target.value)}
-                                        className="w-full h-12 pl-12 pr-4 rounded-xl bg-[var(--bg-surface-highlight)] border-transparent focus:bg-[var(--bg-page)] focus:border-[var(--color-google-blue)] focus:ring-4 focus:ring-[var(--color-google-blue)]/10 transition-all outline-none text-[var(--text-primary)] font-medium"
+                                        className="w-full h-12 pl-12 pr-4 rounded-xl bg-[var(--bg-surface-highlight)] border-transparent focus:bg-[var(--bg-page)] focus:border-[var(--color-brand-blue)] focus:ring-4 focus:ring-[var(--color-brand-blue)]/10 transition-all outline-none text-[var(--text-primary)] font-medium"
                                     />
                                 </div>
                             </div>
@@ -182,7 +182,7 @@ export default function ProfileView() {
                                     <input
                                         value={username}
                                         onChange={(e) => setUsername(e.target.value)}
-                                        className="w-full h-12 pl-12 pr-4 rounded-xl bg-[var(--bg-surface-highlight)] border-transparent focus:bg-[var(--bg-page)] focus:border-[var(--color-google-blue)] focus:ring-4 focus:ring-[var(--color-google-blue)]/10 transition-all outline-none text-[var(--text-primary)] font-medium"
+                                        className="w-full h-12 pl-12 pr-4 rounded-xl bg-[var(--bg-surface-highlight)] border-transparent focus:bg-[var(--bg-page)] focus:border-[var(--color-brand-blue)] focus:ring-4 focus:ring-[var(--color-brand-blue)]/10 transition-all outline-none text-[var(--text-primary)] font-medium"
                                     />
                                 </div>
                             </div>
@@ -207,7 +207,7 @@ export default function ProfileView() {
                                         value={mobileNumber}
                                         onChange={(e) => setMobileNumber(e.target.value)}
                                         placeholder="Mobile Number"
-                                        className="w-full h-12 pl-12 pr-4 rounded-xl bg-[var(--bg-surface-highlight)] border-transparent focus:bg-[var(--bg-page)] focus:border-[var(--color-google-blue)] focus:ring-4 focus:ring-[var(--color-google-blue)]/10 transition-all outline-none text-[var(--text-primary)] font-medium"
+                                        className="w-full h-12 pl-12 pr-4 rounded-xl bg-[var(--bg-surface-highlight)] border-transparent focus:bg-[var(--bg-page)] focus:border-[var(--color-brand-blue)] focus:ring-4 focus:ring-[var(--color-brand-blue)]/10 transition-all outline-none text-[var(--text-primary)] font-medium"
                                     />
                                 </div>
                             </div>
@@ -218,7 +218,7 @@ export default function ProfileView() {
                                 type="submit"
                                 disabled={isSaving}
                                 isLoading={isSaving}
-                                className="btn-google btn-google-primary h-11 px-6 rounded-full text-sm font-medium shadow-md"
+                                className="btn-app btn-primary h-11 px-6 rounded-full text-sm font-medium shadow-md"
                             >
                                 <Save className="w-4 h-4 mr-2" /> Save Changes
                             </Button>
@@ -228,8 +228,8 @@ export default function ProfileView() {
                 </div>
 
                 {/* Security Card */}
-                <div className="g-card p-8">
-                    <h2 className="text-xl google-title font-medium mb-8 flex items-center gap-2 text-[var(--text-primary)]">
+                <div className="app-card p-8">
+                    <h2 className="text-xl app-title font-medium mb-8 flex items-center gap-2 text-[var(--text-primary)]">
                         Security
                     </h2>
 
@@ -243,7 +243,7 @@ export default function ProfileView() {
                                         type="password"
                                         value={currentPassword}
                                         onChange={(e) => setCurrentPassword(e.target.value)}
-                                        className="w-full h-12 pl-12 pr-4 rounded-xl bg-[var(--bg-surface-highlight)] border-transparent focus:bg-[var(--bg-page)] focus:border-[var(--color-google-blue)] focus:ring-4 focus:ring-[var(--color-google-blue)]/10 transition-all outline-none text-[var(--text-primary)] font-medium"
+                                        className="w-full h-12 pl-12 pr-4 rounded-xl bg-[var(--bg-surface-highlight)] border-transparent focus:bg-[var(--bg-page)] focus:border-[var(--color-brand-blue)] focus:ring-4 focus:ring-[var(--color-brand-blue)]/10 transition-all outline-none text-[var(--text-primary)] font-medium"
                                     />
                                 </div>
                             </div>
@@ -256,7 +256,7 @@ export default function ProfileView() {
                                         type="password"
                                         value={newPassword}
                                         onChange={(e) => setNewPassword(e.target.value)}
-                                        className="w-full h-12 pl-12 pr-4 rounded-xl bg-[var(--bg-surface-highlight)] border-transparent focus:bg-[var(--bg-page)] focus:border-[var(--color-google-blue)] focus:ring-4 focus:ring-[var(--color-google-blue)]/10 transition-all outline-none text-[var(--text-primary)] font-medium"
+                                        className="w-full h-12 pl-12 pr-4 rounded-xl bg-[var(--bg-surface-highlight)] border-transparent focus:bg-[var(--bg-page)] focus:border-[var(--color-brand-blue)] focus:ring-4 focus:ring-[var(--color-brand-blue)]/10 transition-all outline-none text-[var(--text-primary)] font-medium"
                                     />
                                 </div>
                             </div>
@@ -267,7 +267,7 @@ export default function ProfileView() {
                                 type="submit"
                                 disabled={isSaving}
                                 isLoading={isSaving}
-                                className="h-11 px-6 rounded-full text-sm font-medium shadow-md bg-[var(--color-google-red)] hover:bg-[#d93025] text-white"
+                                className="h-11 px-6 rounded-full text-sm font-medium shadow-md bg-[var(--color-brand-red)] hover:bg-[#d93025] text-white"
                             >
                                 <Lock className="w-4 h-4 mr-2" /> Change Password
                             </Button>

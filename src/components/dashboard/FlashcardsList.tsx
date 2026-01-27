@@ -44,15 +44,14 @@ export default function FlashcardsList() {
                     <FlashcardPlayer
                         cards={activeSet.cards || activeSet.flashcards || []}
                         setId={activeSet._id}
-                        title={activeSet.title}
                         onClose={() => setActiveSet(null)}
                     />
                 ) : (
                     <>
                         <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
                             <div>
-                                <h1 className="text-3xl google-title font-medium mb-1 text-[var(--text-primary)] flex items-center gap-3">
-                                    <Brain className="w-8 h-8 text-[var(--color-google-blue)]" />
+                                <h1 className="text-3xl app-title font-medium mb-1 text-[var(--text-primary)] flex items-center gap-3">
+                                    <Brain className="w-8 h-8 text-[var(--color-brand-blue)]" />
                                     Flashcard Sets
                                 </h1>
                                 <p className="text-[var(--text-secondary)] font-normal">Review your progress and master your subjects.</p>
@@ -66,7 +65,7 @@ export default function FlashcardsList() {
                                         placeholder="Search decks..."
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
-                                        className="w-full h-12 pl-12 pr-6 rounded-full bg-[var(--bg-surface-highlight)] border-transparent focus:bg-[var(--bg-page)] focus:border-[var(--color-google-blue)] focus:ring-4 focus:ring-[var(--color-google-blue)]/10 transition-all outline-none font-medium placeholder-[var(--text-tertiary)] text-[var(--text-primary)] shadow-sm"
+                                        className="w-full h-12 pl-12 pr-6 rounded-full bg-[var(--bg-surface-highlight)] border-transparent focus:bg-[var(--bg-page)] focus:border-[var(--color-brand-blue)] focus:ring-4 focus:ring-[var(--color-brand-blue)]/10 transition-all outline-none font-medium placeholder-[var(--text-tertiary)] text-[var(--text-primary)] shadow-sm"
                                     />
                                 </div>
                             </div>
@@ -75,7 +74,7 @@ export default function FlashcardsList() {
                         {isLoading ? (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {[1, 2, 3, 4, 5, 6].map((i) => (
-                                    <div key={i} className="g-card p-6 h-64 flex flex-col justify-between">
+                                    <div key={i} className="app-card p-6 h-64 flex flex-col justify-between">
                                         <div>
                                             <div className="flex justify-between items-start mb-4">
                                                 <Skeleton className="w-10 h-10 rounded-xl" />

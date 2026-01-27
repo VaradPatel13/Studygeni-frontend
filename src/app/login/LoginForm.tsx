@@ -2,8 +2,10 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { Loader2, ArrowRight } from 'lucide-react';
+
+import { MdRefresh as Loader2, MdArrowForward as ArrowRight } from 'react-icons/md';
 import { authService } from '@/services/authService';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
@@ -43,31 +45,17 @@ export default function LoginForm() {
                 transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
             >
                 <div className="flex flex-col items-center mb-10">
-                    <Link href="/" className="mb-6 group">
-                        <div className="flex items-center gap-2">
-                            <div className="flex gap-1 group-hover:scale-110 transition-transform duration-300">
-                                <span className="w-2.5 h-2.5 rounded-full bg-[#4285F4]"></span>
-                                <span className="w-2.5 h-2.5 rounded-full bg-[#EA4335]"></span>
-                                <span className="w-2.5 h-2.5 rounded-full bg-[#FBBC05]"></span>
-                                <span className="w-2.5 h-2.5 rounded-full bg-[#34A853]"></span>
-                            </div>
-                            {/* Google-colored Text */}
-                            <span className="text-2xl font-medium tracking-tight ml-1.5">
-                                <span className="text-[#4285F4]">S</span>
-                                <span className="text-[#EA4335]">t</span>
-                                <span className="text-[#FBBC05]">u</span>
-                                <span className="text-[#4285F4]">d</span>
-                                <span className="text-[#34A853]">y</span>
-                                <span className="text-[#EA4335]">G</span>
-                                <span className="text-[#4285F4]">e</span>
-                                <span className="text-[#FBBC05]">n</span>
-                                <span className="text-[#34A853]">i</span>
+                    <Link href="/" className="mb-8 group">
+                        <div className="flex items-center gap-3">
+                            <Image src="/logo.png" alt="StudyMate Logo" width={48} height={48} className="w-12 h-12" />
+                            <span className="text-2xl font-bold tracking-tight text-[var(--text-primary)]">
+                                StudyMate.io
                             </span>
                         </div>
                     </Link>
 
                     <h1 className="text-[24px] font-normal text-[var(--text-primary)] mb-2">Sign in</h1>
-                    <p className="text-[var(--text-secondary)] text-base">to continue to StudyGeni</p>
+                    <p className="text-[var(--text-secondary)] text-base">to continue to StudyMate.io</p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-8">
@@ -90,14 +78,14 @@ export default function LoginForm() {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
-                                className="peer w-full h-[56px] px-4 rounded-[4px] border border-[var(--border-subtle)] bg-transparent text-[var(--text-primary)] placeholder-transparent focus:outline-none focus:border-[#1A73E8] focus:ring-2 focus:ring-[#1A73E8]/20 transition-all"
+                                className="peer w-full h-[56px] px-4 rounded-[4px] border border-[var(--border-subtle)] bg-transparent text-[var(--text-primary)] placeholder-transparent focus:outline-none focus:border-[var(--color-brand-blue)] focus:ring-2 focus:ring-[var(--color-brand-blue)]/20 transition-all"
                                 placeholder="Email"
                             />
                             {/* Label BG must match CARD BG (white or #1a1b1e) to cover the border correctly */}
                             <label
                                 htmlFor="email"
                                 className="absolute left-3 top-4 text-[var(--text-secondary)] text-base transition-all 
-                                peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-[#1A73E8] peer-focus:px-1
+                                peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-[var(--color-brand-blue)] peer-focus:px-1
                                 peer-focus:bg-white dark:peer-focus:bg-[#1a1b1e]
                                 peer-not-placeholder-shown:-top-2.5 peer-not-placeholder-shown:text-xs peer-not-placeholder-shown:px-1
                                 peer-not-placeholder-shown:bg-white dark:peer-not-placeholder-shown:bg-[#1a1b1e]
@@ -114,13 +102,13 @@ export default function LoginForm() {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
-                                className="peer w-full h-[56px] px-4 rounded-[4px] border border-[var(--border-subtle)] bg-transparent text-[var(--text-primary)] placeholder-transparent focus:outline-none focus:border-[#1A73E8] focus:ring-2 focus:ring-[#1A73E8]/20 transition-all"
+                                className="peer w-full h-[56px] px-4 rounded-[4px] border border-[var(--border-subtle)] bg-transparent text-[var(--text-primary)] placeholder-transparent focus:outline-none focus:border-[var(--color-brand-blue)] focus:ring-2 focus:ring-[var(--color-brand-blue)]/20 transition-all"
                                 placeholder="Password"
                             />
                             <label
                                 htmlFor="password"
                                 className="absolute left-3 top-4 text-[var(--text-secondary)] text-base transition-all 
-                                peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-[#1A73E8] peer-focus:px-1
+                                peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-[var(--color-brand-blue)] peer-focus:px-1
                                 peer-focus:bg-white dark:peer-focus:bg-[#1a1b1e]
                                 peer-not-placeholder-shown:-top-2.5 peer-not-placeholder-shown:text-xs peer-not-placeholder-shown:px-1
                                 peer-not-placeholder-shown:bg-white dark:peer-not-placeholder-shown:bg-[#1a1b1e]
@@ -132,17 +120,17 @@ export default function LoginForm() {
                     </div>
 
                     <div className="flex justify-start text-sm">
-                        <a href="#" className="font-medium text-[#1A73E8] hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded px-1 -ml-1 py-1 transition-colors">Forgot password?</a>
+                        <a href="#" className="font-medium text-[var(--color-brand-blue)] hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded px-1 -ml-1 py-1 transition-colors">Forgot password?</a>
                     </div>
 
                     <div className="flex justify-between items-center mt-12 pt-4">
-                        <Link href="/register" className="btn-google text-[#1A73E8] hover:bg-blue-50 dark:hover:bg-blue-900/20 px-0 h-10 text-sm font-medium hover:px-2 transition-all">
+                        <Link href="/register" className="btn-app btn-outline border-none text-[var(--color-brand-blue)] hover:bg-blue-50 dark:hover:bg-blue-900/20 px-4 h-10 text-sm font-medium transition-all">
                             Create account
                         </Link>
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="btn-google btn-google-primary px-6 h-10 text-sm font-medium shadow-none hover:shadow-md disabled:opacity-70 disabled:cursor-not-allowed"
+                            className="btn-app btn-primary px-6 h-10 text-sm font-medium shadow-none hover:shadow-md disabled:opacity-70 disabled:cursor-not-allowed"
                         >
                             {isLoading ? (
                                 <Loader2 className="w-5 h-5 animate-spin" />

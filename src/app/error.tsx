@@ -19,15 +19,15 @@ export default function Error({
     return (
         <div className="min-h-screen bg-[var(--bg-page)] flex flex-col items-center justify-center p-4 text-center animate-fade-in relative overflow-hidden text-[var(--text-primary)]">
             {/* Background Decorations */}
-            <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-[var(--color-google-red)]/5 rounded-full blur-3xl -z-10 animate-float" style={{ animationDelay: '0s' }}></div>
-            <div className="absolute bottom-1/4 left-1/4 w-64 h-64 bg-[var(--color-google-yellow)]/5 rounded-full blur-3xl -z-10 animate-float" style={{ animationDelay: '1s' }}></div>
+            <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-[var(--color-brand-red)]/5 rounded-full blur-3xl -z-10 animate-float" style={{ animationDelay: '0s' }}></div>
+            <div className="absolute bottom-1/4 left-1/4 w-64 h-64 bg-[var(--color-brand-yellow)]/5 rounded-full blur-3xl -z-10 animate-float" style={{ animationDelay: '1s' }}></div>
 
-            <div className="g-card p-12 max-w-lg w-full flex flex-col items-center border-[var(--color-google-red)]/20 shadow-red-500/5">
-                <div className="w-24 h-24 bg-[var(--color-google-red)]/10 rounded-full flex items-center justify-center mb-6">
-                    <AlertCircle className="w-12 h-12 text-[var(--color-google-red)]" />
+            <div className="app-card p-12 max-w-lg w-full flex flex-col items-center border-[var(--color-brand-red)]/20 shadow-red-500/5">
+                <div className="w-24 h-24 bg-[var(--color-brand-red)]/10 rounded-full flex items-center justify-center mb-6">
+                    <AlertCircle className="w-12 h-12 text-[var(--color-brand-red)]" />
                 </div>
 
-                <h1 className="google-title text-3xl font-medium text-[var(--text-primary)] mb-2">Something went wrong!</h1>
+                <h1 className="app-title text-3xl font-medium text-[var(--text-primary)] mb-2">Something went wrong!</h1>
                 <p className="text-[var(--text-secondary)] mb-2">
                     An unexpected error has occurred.
                 </p>
@@ -39,13 +39,13 @@ export default function Error({
                 <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
                     <button
                         onClick={reset}
-                        className="btn-google btn-google-primary h-12 px-8 rounded-full text-base shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+                        className="btn-app btn-primary h-12 px-8 rounded-full text-base shadow-md hover:shadow-lg flex items-center justify-center gap-2"
                     >
                         <RotateCcw className="w-4 h-4" /> Try Again
                     </button>
                     <Link
                         href="/"
-                        className="btn-google btn-google-outline h-12 px-8 rounded-full text-base flex items-center justify-center gap-2"
+                        className="btn-app btn-outline h-12 px-8 rounded-full text-base flex items-center justify-center gap-2"
                     >
                         <Home className="w-4 h-4" /> Go Home
                     </Link>

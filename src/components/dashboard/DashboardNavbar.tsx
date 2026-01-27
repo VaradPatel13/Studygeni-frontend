@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Bell, Search, User as UserIcon, Menu } from 'lucide-react';
+import { MdOutlineNotifications, MdOutlineSearch, MdMenu, MdLightMode, MdDarkMode } from 'react-icons/md';
 import { useTheme } from '@/components/ThemeProvider';
 
 interface DashboardNavbarProps {
@@ -12,7 +12,7 @@ export default function DashboardNavbar({ onMenuClick }: DashboardNavbarProps) {
     const { theme, toggleTheme } = useTheme();
     const [user, setUser] = useState<{ username: string; email: string; profileImage?: string }>({
         username: 'Alex',
-        email: 'alex@studygeni.com',
+        email: 'alex@studymate.io',
         profileImage: 'https://cdn-icons-png.flaticon.com/512/149/149071.png'
     });
 
@@ -23,7 +23,7 @@ export default function DashboardNavbar({ onMenuClick }: DashboardNavbarProps) {
                 const userData = JSON.parse(userStr);
                 setUser({
                     username: userData.username || 'Alex',
-                    email: userData.email || 'alex@studygeni.com',
+                    email: userData.email || 'alex@studymate.io',
                     profileImage: userData.profileImage || 'https://cdn-icons-png.flaticon.com/512/149/149071.png'
                 });
             } catch (e) {
@@ -43,12 +43,12 @@ export default function DashboardNavbar({ onMenuClick }: DashboardNavbarProps) {
                     onClick={onMenuClick}
                     className="md:hidden p-2 -ml-2 text-[var(--text-secondary)] hover:bg-[var(--bg-surface-highlight)] rounded-lg transition-colors"
                 >
-                    <Menu className="w-6 h-6" />
+                    <MdMenu className="w-6 h-6" />
                 </button>
 
                 {/* Search Bar - Hidden on small mobile, visible on desktop */}
                 <div className="hidden md:block relative w-96">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-tertiary)]" />
+                    <MdOutlineSearch className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-tertiary)]" />
                     <input
                         type="text"
                         placeholder="Search..."
@@ -67,9 +67,9 @@ export default function DashboardNavbar({ onMenuClick }: DashboardNavbarProps) {
                     title="Toggle Theme"
                 >
                     {theme === 'dark' ? (
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                        <MdLightMode className="w-6 h-6" />
                     ) : (
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+                        <MdDarkMode className="w-6 h-6" />
                     )}
                 </button>
 
@@ -80,8 +80,8 @@ export default function DashboardNavbar({ onMenuClick }: DashboardNavbarProps) {
                         className="p-2 md:p-2.5 rounded-full hover:bg-[var(--bg-surface-highlight)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors relative"
                         title="Notifications"
                     >
-                        <Bell className="w-5 h-5" />
-                        {/* <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-[#EA4335] rounded-full border-2 border-[var(--bg-page)]"></span> */}
+                        <MdOutlineNotifications className="w-6 h-6" />
+                        {/* <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-[var(--color-brand-red)] rounded-full border-2 border-[var(--bg-page)]"></span> */}
                     </button>
 
                     {showNotifications && (
@@ -112,7 +112,7 @@ export default function DashboardNavbar({ onMenuClick }: DashboardNavbarProps) {
 
                     {/* Text Info - Hidden on mobile */}
                     <div className="flex flex-col hidden md:flex">
-                        <span className="text-sm font-bold text-[var(--text-primary)] leading-none mb-1 group-hover:text-[#1A73E8] transition-colors">
+                        <span className="text-sm font-bold text-[var(--text-primary)] leading-none mb-1 group-hover:text-[var(--color-brand-blue)] transition-colors">
                             {user.username}
                         </span>
                         <span className="text-xs font-medium text-[var(--text-secondary)]">

@@ -1,4 +1,4 @@
-const DB_NAME = 'StudyGeniCache';
+const DB_NAME = 'StudyMateCache';
 const STORE_NAME = 'chatHistory';
 const SUMMARY_STORE = 'summaries';
 const EXPLANATION_STORE = 'explanations';

@@ -2,14 +2,14 @@
 @variant dark (&:where(.dark, .dark *));
 
 @theme {
-  /* Google / Material Palette */
-  --color-google-blue: #4285F4;
-  --color-google-red: #EA4335;
-  --color-google-yellow: #FBBC05;
-  --color-google-green: #34A853;
-  --color-google-grey-900: #202124;
-  --color-google-grey-800: #303134;
-  --color-google-grey-100: #f1f3f4;
+  /* App / Primary Palette */
+  --color-brand-blue: #4285F4;
+  --color-brand-red: #EA4335;
+  --color-brand-yellow: #FBBC05;
+  --color-brand-green: #34A853;
+  --color-neutral-900: #202124;
+  --color-neutral-800: #303134;
+  --color-neutral-100: #f1f3f4;
 
   --bg-page: #FFFFFF;
   --bg-surface: #F8F9FA;
@@ -21,6 +21,8 @@
   --text-primary: #202124;
   --text-secondary: #5F6368;
   --text-tertiary: #80868B;
+
+  --font-sans: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
 }
 
 /* Dark Mode Overrides */
@@ -125,12 +127,37 @@
 body {
   background-color: var(--bg-page);
   color: var(--text-primary);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: var(--font-outfit), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
-/* Google-style Card */
-.g-card {
+/* App Container */
+.app-container {
+  max-width: 80rem;
+  /* 7xl */
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .app-container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .app-container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+
+/* App Card */
+.app-card {
   background-color: var(--bg-page);
   border: 1px solid var(--border-subtle);
   border-radius: 1.5rem;
@@ -139,23 +166,23 @@ body {
   transition: all 0.2s ease;
 }
 
-.g-card:hover {
+.app-card:hover {
   border-color: var(--text-tertiary);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-/* Google Fonts & Typography */
-.google-title {
-  font-family: 'Google Sans', 'Roboto', sans-serif;
+/* Fonts & Typography */
+.app-title {
+  /* Inherit font from body */
   letter-spacing: -0.5px;
 }
 
 /* Buttons */
-.btn-google {
+.btn-app {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Google Sans', 'Roboto', sans-serif;
+  /* Inherit font from body */
   font-weight: 500;
   border-radius: 9999px;
   /* Pill */
@@ -163,42 +190,42 @@ body {
   cursor: pointer;
 }
 
-.btn-google-primary {
-  background-color: var(--color-google-blue);
+.btn-primary {
+  background-color: var(--color-brand-blue);
   color: white;
   box-shadow: 0 1px 2px rgba(66, 133, 244, 0.3);
 }
 
-.btn-google-primary:hover {
+.btn-primary:hover {
   background-color: #3367D6;
   /* Darker blue */
   box-shadow: 0 2px 4px rgba(66, 133, 244, 0.4);
 }
 
-.btn-google-outline {
+.btn-outline {
   background-color: transparent;
-  color: var(--color-google-blue);
+  color: var(--color-brand-blue);
   border: 1px solid var(--border-subtle);
 }
 
-.btn-google-outline:hover {
+.btn-outline:hover {
   background-color: rgba(66, 133, 244, 0.04);
-  border-color: var(--color-google-blue);
+  border-color: var(--color-brand-blue);
 }
 
-.dark .btn-google-outline {
+.dark .btn-outline {
   color: #8AB4F8;
   /* Lighter blue for dark mode */
   border-color: var(--border-subtle);
 }
 
-.dark .btn-google-outline:hover {
+.dark .btn-outline:hover {
   background-color: rgba(138, 180, 248, 0.08);
   border-color: #8AB4F8;
 }
 
 /* Utility for text gradients if needed */
-.text-gradient-google {
+.text-gradient-brand {
   background: linear-gradient(90deg, #4285F4, #EA4335, #FBBC05, #34A853);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

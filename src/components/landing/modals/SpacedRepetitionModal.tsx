@@ -33,7 +33,7 @@ export default function SpacedRepetitionModal({ isOpen, onClose }: SpacedRepetit
                 {/* Header */}
                 <div className="p-8 border-b border-[var(--border-subtle)] flex items-center justify-between flex-shrink-0 bg-white/50 dark:bg-[#1a1b1e]/50 backdrop-blur-sm">
                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-2xl bg-blue-100 dark:bg-blue-500/10 flex items-center justify-center text-[#4285F4]">
+                        <div className="w-12 h-12 rounded-2xl bg-blue-100 dark:bg-blue-500/10 flex items-center justify-center text-[var(--color-brand-blue)]">
                             <Brain className="w-6 h-6" />
                         </div>
                         <div>
@@ -97,22 +97,22 @@ export default function SpacedRepetitionModal({ isOpen, onClose }: SpacedRepetit
                                 <path
                                     d="M0,0 Q30,150 600,180"
                                     fill="none"
-                                    stroke="#EA4335"
+                                    stroke="var(--color-brand-red)"
                                     strokeWidth="3"
                                     strokeDasharray="6,6"
                                     className="opacity-40"
                                 />
                                 {animateGraph && (
-                                    <circle cx="0" cy="0" r="4" fill="#EA4335" className="animate-ping" style={{ offsetPath: 'path("M0,0 Q30,150 600,180")', animation: 'move 4s linear infinite', animationFillMode: 'forwards' }} />
+                                    <circle cx="0" cy="0" r="4" fill="var(--color-brand-red)" className="animate-ping" style={{ offsetPath: 'path("M0,0 Q30,150 600,180")', animation: 'move 4s linear infinite', animationFillMode: 'forwards' }} />
                                 )}
                             </svg>
 
-                            {/* Curve 2: With StudyGeni (Blue - Sawtooth) */}
+                            {/* Curve 2: With StudyMate.io (Blue - Sawtooth) */}
                             <svg className="absolute inset-0 w-full h-full overflow-visible" viewBox="0 0 600 200" preserveAspectRatio="none">
                                 <defs>
                                     <linearGradient id="gradientBlue" x1="0%" y1="0%" x2="0%" y2="100%">
-                                        <stop offset="0%" stopColor="#4285F4" stopOpacity="0.5" />
-                                        <stop offset="90%" stopColor="#4285F4" stopOpacity="0" />
+                                        <stop offset="0%" stopColor="var(--color-brand-blue)" stopOpacity="0.5" />
+                                        <stop offset="90%" stopColor="var(--color-brand-blue)" stopOpacity="0" />
                                     </linearGradient>
                                     <filter id="glow">
                                         <feGaussianBlur stdDeviation="4" result="coloredBlur" />
@@ -143,7 +143,7 @@ export default function SpacedRepetitionModal({ isOpen, onClose }: SpacedRepetit
                                 L320,5
                                 C380,15 450,25 600,35"
                                     fill="none"
-                                    stroke="#4285F4"
+                                    stroke="var(--color-brand-blue)"
                                     strokeWidth="4"
                                     strokeLinecap="round"
                                     strokeLinejoin="round"
@@ -177,11 +177,11 @@ export default function SpacedRepetitionModal({ isOpen, onClose }: SpacedRepetit
                     </div>
 
                     <div className="bg-blue-50/50 dark:bg-blue-500/5 rounded-2xl p-6 flex gap-5 items-start border border-blue-100 dark:border-blue-500/10">
-                        <div className="mt-1 bg-white dark:bg-blue-500/20 p-2 rounded-xl shadow-sm text-[#4285F4]">
+                        <div className="mt-1 bg-white dark:bg-blue-500/20 p-2 rounded-xl shadow-sm text-[var(--color-brand-blue)]">
                             <TrendingUp className="w-5 h-5" />
                         </div>
                         <div>
-                            <h4 className="font-bold text-[var(--text-primary)] text-base mb-2">StudyGeni solves this.</h4>
+                            <h4 className="font-bold text-[var(--text-primary)] text-base mb-2">StudyMate.io solves this.</h4>
                             <p className="text-[var(--text-secondary)] leading-relaxed">We track every quiz answer. Just before you're about to forget a concept, our AI schedules a rapid review session. This flattens the curve into near-permanent memory.</p>
                         </div>
                     </div>
@@ -191,7 +191,7 @@ export default function SpacedRepetitionModal({ isOpen, onClose }: SpacedRepetit
                 <div className="p-8 bg-[var(--bg-surface)] border-t border-[var(--border-subtle)] flex justify-end flex-shrink-0">
                     <button
                         onClick={onClose}
-                        className="btn-google btn-google-primary h-12 px-8 text-base font-medium shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all w-full sm:w-auto"
+                        className="btn-app btn-primary h-12 px-8 text-base font-medium shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all w-full sm:w-auto"
                     >
                         Start Learning Now
                     </button>

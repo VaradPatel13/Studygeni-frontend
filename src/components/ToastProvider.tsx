@@ -15,23 +15,23 @@ export default function ToastProvider() {
                     boxShadow: '0 2px 4px rgba(0,0,0,0.1), 0 8px 16px rgba(0,0,0,0.1)',
                     fontSize: '14px',
                     fontWeight: '500',
-                    fontFamily: "'Google Sans', 'Roboto', 'Inter', sans-serif"
+                    fontFamily: "var(--font-outfit), sans-serif"
                 },
                 success: {
                     iconTheme: {
-                        primary: 'var(--color-google-green)',
+                        primary: 'var(--color-brand-green)',
                         secondary: 'var(--bg-surface)',
                     },
                 },
                 error: {
                     iconTheme: {
-                        primary: 'var(--color-google-red)',
+                        primary: 'var(--color-brand-red)',
                         secondary: 'var(--bg-surface)',
                     },
                 },
                 loading: {
                     iconTheme: {
-                        primary: 'var(--color-google-blue)',
+                        primary: 'var(--color-brand-blue)',
                         secondary: 'var(--bg-surface)',
                     }
                 }

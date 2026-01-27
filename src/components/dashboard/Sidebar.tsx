@@ -1,7 +1,14 @@
 'use client';
 
 import Link from 'next/link';
-import { LayoutGrid, BookOpen, Brain, User, Zap, LogOut, Settings } from 'lucide-react';
+import Image from 'next/image';
+import {
+    MdOutlineDashboard,
+    MdOutlineLibraryBooks,
+    MdOutlinePsychology,
+    MdOutlineSettings,
+    MdLogout,
+} from 'react-icons/md';
 import { useRouter } from 'next/navigation';
 import { authService } from '@/services/authService';
 import toast from 'react-hot-toast';
@@ -23,10 +30,10 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen = false, onClo
     };
 
     const navItems = [
-        { id: 'home', label: 'Dashboard', icon: LayoutGrid },
-        { id: 'documents', label: 'Documents', icon: BookOpen },
-        { id: 'flashcards', label: 'Flashcards', icon: Brain },
-        { id: 'profile', label: 'Settings', icon: Settings },
+        { id: 'home', label: 'Dashboard', icon: MdOutlineDashboard },
+        { id: 'documents', label: 'Documents', icon: MdOutlineLibraryBooks },
+        { id: 'flashcards', label: 'Flashcards', icon: MdOutlinePsychology },
+        { id: 'profile', label: 'Settings', icon: MdOutlineSettings },
     ];
 
     return (
@@ -51,14 +58,9 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen = false, onClo
             `}>
                 {/* Logo Area */}
                 <div className="px-6 mb-8 flex items-center justify-between">
-                    <Link href="/" className="flex items-center gap-2 group">
-                        <div className="flex gap-1 group-hover:scale-110 transition-transform duration-300">
-                            <span className="w-2 h-2 rounded-full bg-[var(--color-google-blue)]"></span>
-                            <span className="w-2 h-2 rounded-full bg-[var(--color-google-red)]"></span>
-                            <span className="w-2 h-2 rounded-full bg-[var(--color-google-yellow)]"></span>
-                            <span className="w-2 h-2 rounded-full bg-[var(--color-google-green)]"></span>
-                        </div>
-                        <span className="google-title text-xl ml-1 text-[var(--text-primary)]">StudyGeni</span>
+                    <Link href="/" className="flex items-center gap-3 group">
+                        <Image src="/logo.png" alt="StudyMate Logo" width={32} height={32} className="w-8 h-8" />
+                        <span className="app-title text-xl font-medium tracking-tight text-[var(--text-primary)]">StudyMate.io</span>
                     </Link>
 
                     {/* Mobile Close Button */}
@@ -83,12 +85,12 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen = false, onClo
                                 onClick={() => setActiveTab(item.id)}
                                 className={`w-full flex items-center gap-4 px-6 py-3 text-sm font-medium rounded-r-full transition-colors relative
                                     ${isActive
-                                        ? 'bg-[var(--color-google-blue)]/10 text-[var(--color-google-blue)]'
+                                        ? 'bg-[var(--color-brand-blue)]/10 text-[var(--color-brand-blue)]'
                                         : 'text-[var(--text-secondary)] hover:bg-[var(--bg-surface-highlight)] hover:text-[var(--text-primary)]'
                                     }`
                                 }
                             >
-                                <item.icon className={`w-5 h-5 ${isActive ? 'text-current' : 'text-[var(--text-tertiary)] group-hover:text-[var(--text-secondary)]'}`} />
+                                <item.icon className={`w-6 h-6 ${isActive ? 'text-current' : 'text-[var(--text-tertiary)] group-hover:text-[var(--text-secondary)]'}`} />
                                 <span>{item.label}</span>
                             </button>
                         );
@@ -101,7 +103,7 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen = false, onClo
                         onClick={handleLogout}
                         className="w-full flex items-center gap-4 px-2 py-3 text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-highlight)] rounded-lg transition-colors"
                     >
-                        <LogOut className="w-5 h-5" />
+                        <MdLogout className="w-6 h-6" />
                         <span>Log out</span>
                     </button>
 

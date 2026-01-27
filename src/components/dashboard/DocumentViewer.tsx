@@ -4,7 +4,31 @@ import { documentService } from '@/services/documentService';
 import { aiService } from '@/services/aiService';
 import { flashcardService } from '@/services/flashcardService';
 import { quizService } from '@/services/quizService';
-import { ArrowLeft, MessageSquare, Zap, BookOpen, Brain, FileText, ExternalLink, Send, Bot, User, RotateCcw, Check, X, ChevronLeft, ChevronRight, ChevronDown, Loader2, Play, AlignLeft, Lightbulb, Star } from 'lucide-react';
+import confetti from 'canvas-confetti';
+import FlashcardPlayer from '@/components/dashboard/FlashcardPlayer';
+import {
+    MdOutlineArrowBack as ArrowLeft,
+    MdOutlineChatBubbleOutline as MessageSquare,
+    MdOutlineBolt as Zap,
+    MdOutlineMenuBook as BookOpen,
+    MdOutlinePsychology as Brain,
+    MdOutlineDescription as FileText,
+    MdOpenInNew as ExternalLink,
+    MdSend as Send,
+    MdSmartToy as Bot,
+    MdPerson as User,
+    MdRotateLeft as RotateCcw,
+    MdCheck as Check,
+    MdClose as X,
+    MdChevronLeft as ChevronLeft,
+    MdChevronRight as ChevronRight,
+    MdExpandMore as ChevronDown,
+    MdRefresh as Loader2,
+    MdPlayArrow as Play,
+    MdFormatAlignLeft as AlignLeft,
+    MdOutlineLightbulb as Lightbulb,
+    MdOutlineStar as Star
+} from 'react-icons/md';
 import { getCachedChatHistory, cacheChatHistory, getCachedSummary, cacheSummary, getCachedExplanation, cacheExplanation, getExplanationsByDocument } from '@/lib/cacheDB';
 import toast from 'react-hot-toast';
 
@@ -45,7 +69,7 @@ const TypingMarkdown = ({ content, shouldAnimate }: { content: string, shouldAni
     }, [content, shouldAnimate]);
 
     return (
-        <div className="prose dark:prose-invert max-w-none text-sm leading-relaxed [&>p]:mb-2 [&>p:last-child]:mb-0 [&>ul]:list-disc [&>ul]:pl-4 [&>ol]:list-decimal [&>ol]:pl-4">
+        <div className="prose dark:prose-invert max-w-none text-sm leading-relaxed break-words [&>p]:mb-2 [&>p:last-child]:mb-0 [&>ul]:list-disc [&>ul]:pl-4 [&>ol]:list-decimal [&>ol]:pl-4">
             <ReactMarkdown>{displayedContent}</ReactMarkdown>
         </div>
     );
@@ -181,6 +205,50 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
     const [quizAnswers, setQuizAnswers] = useState<Record<string, number>>({}); // questionIndex -> optionIndex
     const [isSubmittingQuiz, setIsSubmittingQuiz] = useState(false);
     const [quizResult, setQuizResult] = useState<any>(null);
+    const [showAnswers, setShowAnswers] = useState(false);
+
+    // Trigger confetti on good score
+    useEffect(() => {
+        if (quizResult && quizResult.percentage > 35) {
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#4285F4', '#34A853', '#FBBC05', '#EA4335']
+            });
+        }
+    }, [quizResult]);
+
+    // Touch handling for swipe
+    const touchStart = useRef<number | null>(null);
+    const touchEnd = useRef<number | null>(null);
+
+    const minSwipeDistance = 50;
+
+    const onTouchStart = (e: React.TouchEvent) => {
+        touchEnd.current = null;
+        touchStart.current = e.targetTouches[0].clientX;
+    };
+
+    const onTouchMove = (e: React.TouchEvent) => {
+        touchEnd.current = e.targetTouches[0].clientX;
+    };
+
+    const onTouchEnd = () => {
+        if (!touchStart.current || !touchEnd.current) return;
+        const distance = touchStart.current - touchEnd.current;
+        const isLeftSwipe = distance > minSwipeDistance;
+        const isRightSwipe = distance < -minSwipeDistance;
+
+        if (isLeftSwipe && currentCardIndex < flashcards.length - 1) {
+            setCurrentCardIndex(prev => prev + 1);
+            setIsFlipped(false);
+        }
+        if (isRightSwipe && currentCardIndex > 0) {
+            setCurrentCardIndex(prev => prev - 1);
+            setIsFlipped(false);
+        }
+    };
 
     useEffect(() => {
         const fetchDocument = async () => {
@@ -232,7 +300,6 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
             }
         };
 
-        fetchFlashcards();
         fetchFlashcards();
     }, [activeTab, documentId]);
 
@@ -471,12 +538,26 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
         try {
             const res = await aiService.generateFlashcards(documentId);
             const newSet = res.data || res;
-            // Update list and select it
-            setFlashcardsList(prev => [newSet, ...prev]);
+
+            setFlashcardsList(prev => {
+                const exists = prev.some(item => item._id === newSet._id);
+                if (exists) {
+                    return prev.map(item => item._id === newSet._id ? newSet : item);
+                }
+                return [newSet, ...prev];
+            });
+
+            if (res.message === 'Flashcards already exist') {
+                toast('Loaded existing flashcards', { icon: 'ℹ️' });
+            } else {
+                toast.success('Flashcards generated successfully!');
+            }
+
             setFlashcards(newSet.cards || []);
             setFlashcardSetId(newSet._id);
             setCurrentCardIndex(0);
         } catch (error) {
+            console.error(error);
             toast.error('Failed to generate flashcards');
         } finally {
             setIsGeneratingDecks(false);
@@ -490,8 +571,26 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
         setQuizAnswers({});
         try {
             const res = await aiService.generateQuiz(documentId);
-            setQuiz(res.quiz || res.data); // Adjust based on actual API response structure
+            const newQuiz = res.quiz || res.data; // Adjust based on actual API response structure
+
+            setQuizzesList(prev => {
+                // Check if quiz with same ID exists
+                const exists = prev.some(q => q._id === newQuiz._id);
+                if (exists) {
+                    return prev.map(q => q._id === newQuiz._id ? newQuiz : q);
+                }
+                return [newQuiz, ...prev];
+            });
+
+            if (res.message === 'Quiz already exists' || res.message === 'Quiz already exist') {
+                toast('Loaded existing quiz', { icon: 'ℹ️' });
+            } else {
+                toast.success('Quiz generated successfully!');
+            }
+
+            setQuiz(newQuiz);
         } catch (error) {
+            console.error(error);
             toast.error('Failed to generate quiz');
         } finally {
             setIsGeneratingQuiz(false);
@@ -553,7 +652,7 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
         return (
             <div className="flex-1 bg-[var(--bg-page)] p-8 flex items-center justify-center h-full">
                 <div className="flex flex-col items-center gap-4">
-                    <Loader2 className="w-10 h-10 animate-spin text-[var(--color-google-blue)]" />
+                    <Loader2 className="w-10 h-10 animate-spin text-[var(--color-brand-blue)]" />
                     <p className="font-medium text-[var(--text-secondary)]">Loading Document...</p>
                 </div>
             </div>
@@ -571,42 +670,50 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
         { id: 'quizzes', label: 'Quizzes', icon: Brain },
     ];
 
+    const isFlashcardActive = activeTab === 'flashcards' && flashcards.length > 0;
+    const isQuizActive = activeTab === 'quizzes' && !!quiz;
+    const isFocusMode = isFlashcardActive || isQuizActive;
+
     return (
         <div className="flex-1 bg-[var(--bg-page)] flex flex-col h-full overflow-hidden transition-colors duration-300">
             {/* Header */}
-            <div className="bg-[var(--bg-page)] border-b border-[var(--border-subtle)] p-4 shrink-0 shadow-sm z-10">
-                <button
-                    onClick={onBack}
-                    className="flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-medium mb-3 transition-colors text-sm"
-                >
-                    <ArrowLeft className="w-4 h-4" /> Back to Documents
-                </button>
-                <div className="flex justify-between items-center">
-                    <h1 className="text-xl font-medium google-title text-[var(--text-primary)] line-clamp-1">{document.title}</h1>
+            {!isFocusMode && (
+                <div className="bg-[var(--bg-page)] border-b border-[var(--border-subtle)] p-4 shrink-0 shadow-sm z-10">
+                    <button
+                        onClick={onBack}
+                        className="flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-medium mb-3 transition-colors text-sm"
+                    >
+                        <ArrowLeft className="w-4 h-4" /> Back to Documents
+                    </button>
+                    <div className="flex justify-between items-center">
+                        <h1 className="text-xl font-medium app-title text-[var(--text-primary)] line-clamp-1">{document.title}</h1>
+                    </div>
                 </div>
-            </div>
+            )}
 
             {/* Tabs */}
-            <div className="bg-[var(--bg-page)] border-b border-[var(--border-subtle)] px-4 shrink-0 overflow-x-auto">
-                <div className="flex gap-8">
-                    {tabs.map((tab) => (
-                        <button
-                            key={tab.id}
-                            onClick={() => setActiveTab(tab.id)}
-                            className={`flex items-center gap-2 py-4 font-medium border-b-2 transition-all text-sm ${activeTab === tab.id
-                                ? 'border-[var(--color-google-blue)] text-[var(--color-google-blue)]'
-                                : 'border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-                                }`}
-                        >
-                            <tab.icon className={`w-4 h-4 ${activeTab === tab.id ? 'stroke-[2.5px]' : ''}`} />
-                            {tab.label}
-                        </button>
-                    ))}
+            {!isFocusMode && (
+                <div className="bg-[var(--bg-page)] border-b border-[var(--border-subtle)] px-4 py-3 shrink-0">
+                    <div className="grid grid-cols-3 gap-2 md:flex md:flex-wrap md:gap-4">
+                        {tabs.map((tab) => (
+                            <button
+                                key={tab.id}
+                                onClick={() => setActiveTab(tab.id)}
+                                className={`flex flex-col md:flex-row items-center justify-center gap-1.5 md:gap-2 px-2 py-2 md:px-4 md:py-2.5 font-medium rounded-xl transition-all text-xs md:text-sm ${activeTab === tab.id
+                                    ? 'bg-[var(--color-brand-blue)]/10 text-[var(--color-brand-blue)]'
+                                    : 'text-[var(--text-secondary)] hover:bg-[var(--bg-surface-highlight)] hover:text-[var(--text-primary)]'
+                                    }`}
+                            >
+                                <tab.icon className={`w-5 h-5 md:w-4 md:h-4`} />
+                                {tab.label}
+                            </button>
+                        ))}
+                    </div>
                 </div>
-            </div>
+            )}
 
             {/* Tab Content */}
-            <div className="flex-1 p-6 overflow-hidden">
+            <div className={`flex-1 overflow-hidden ${isFocusMode ? '' : 'p-6'}`}>
                 {activeTab === 'content' && (
                     <div className="h-full flex flex-col border border-[var(--border-subtle)] bg-[var(--bg-page)] rounded-2xl overflow-hidden shadow-sm">
                         <div className="bg-[var(--bg-surface-highlight)] border-b border-[var(--border-subtle)] p-3 flex items-center justify-between shrink-0">
@@ -633,7 +740,7 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
                                 href={document.fileUrl || document.filepath}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="flex items-center gap-1 text-[var(--color-google-blue)] font-medium text-sm hover:underline"
+                                className="flex items-center gap-1 text-[var(--color-brand-blue)] font-medium text-sm hover:underline"
                             >
                                 <ExternalLink className="w-4 h-4" /> Open in new tab
                             </a>
@@ -660,14 +767,14 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
                                                         <FileText className="w-16 h-16 mx-auto mb-4 text-[var(--text-tertiary)]" />
                                                         <h3 className="text-lg font-medium text-[var(--text-primary)] mb-2">Preview Unavailable in Development</h3>
                                                         <p className="text-sm text-[var(--text-secondary)] mb-6">
-                                                            We cannot use external viewers (like Google Docs) to preview files hosted on localhost.
+                                                            We cannot use external viewers (like Docs Viewer) to preview files hosted on localhost.
                                                             This feature will work correctly in production.
                                                         </p>
                                                         <a
                                                             href={url}
                                                             target="_blank"
                                                             rel="noopener noreferrer"
-                                                            className="btn-google btn-google-primary px-6 py-2 rounded-full inline-flex items-center gap-2"
+                                                            className="btn-app btn-primary px-6 py-2 rounded-full inline-flex items-center gap-2"
                                                         >
                                                             <ExternalLink className="w-4 h-4" /> Download File
                                                         </a>
@@ -701,7 +808,7 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
                                                             if (type === 'application/pdf' || url.endsWith('.pdf')) {
                                                                 return url;
                                                             }
-                                                            // Fallback to Google Docs Viewer
+                                                            // Fallback to Docs Viewer
                                                             return `https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`;
                                                         })()}
                                                         className="w-full h-full"
@@ -744,8 +851,8 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
                 )}
 
                 {activeTab === 'chat' && (
-                    <div className="h-full flex flex-col bg-[var(--bg-page)] border border-[var(--border-subtle)] rounded-2xl overflow-hidden shadow-sm">
-                        <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-[var(--bg-surface-highlight)]/30">
+                    <div className="h-full flex flex-col bg-[var(--bg-page)]">
+                        <div className="flex-1 overflow-y-auto p-4 md:p-8 space-y-8">
                             {isHistoryLoading ? (
                                 <div className="flex flex-col items-center justify-center h-full text-[var(--text-tertiary)]">
                                     <Loader2 className="w-8 h-8 animate-spin mb-4 opacity-50" />
@@ -754,30 +861,41 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
                             ) : (
                                 <>
                                     {messages.length === 0 && (
-                                        <div className="text-center text-[var(--text-tertiary)] mt-20">
-                                            <Bot className="w-12 h-12 mx-auto mb-4 opacity-20" />
-                                            <h3 className="font-bold text-lg text-[var(--text-secondary)]">Chat with {document.title}</h3>
-                                            <p className="text-sm">Ask questions about specific sections, summaries, or concepts.</p>
+                                        <div className="text-center text-[var(--text-tertiary)] mt-20 max-w-md mx-auto">
+                                            <div className="w-16 h-16 bg-[var(--bg-surface-highlight)] rounded-full flex items-center justify-center mx-auto mb-6">
+                                                <Bot className="w-8 h-8 opacity-40" />
+                                            </div>
+                                            <h3 className="font-medium text-lg text-[var(--text-primary)] mb-2">Chat with {document.title}</h3>
+                                            <p className="text-sm">Ask questions, request summaries, or clarify concepts directly from your document.</p>
                                         </div>
                                     )}
 
-
                                     {messages.map((msg: any, idx) => (
-                                        <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                                            <div className={`max-w-[85%] rounded-2xl px-5 py-3.5 shadow-sm text-sm leading-relaxed ${msg.role === 'user'
-                                                ? 'bg-[var(--color-google-blue)] text-white rounded-tr-sm'
-                                                : 'bg-[var(--bg-page)] border border-[var(--border-subtle)] text-[var(--text-primary)] rounded-tl-sm'
-                                                }`}>
-                                                <div className={`flex items-center gap-2 mb-1 text-[10px] font-bold uppercase tracking-wider ${msg.role === 'user' ? 'text-blue-100' : 'text-[var(--text-tertiary)]'
+                                        <div key={idx} className={`flex w-full ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                                            <div className={`flex gap-4 max-w-[85%] md:max-w-[75%] ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+
+                                                {/* Avatar */}
+                                                <div className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center mt-1 ${msg.role === 'user'
+                                                    ? 'bg-[var(--color-brand-blue)] text-white'
+                                                    : 'bg-[var(--color-brand-green)] text-white'
                                                     }`}>
-                                                    {msg.role === 'user' ? <User className="w-3 h-3" /> : <Bot className="w-3 h-3" />}
-                                                    {msg.role === 'user' ? 'You' : 'StudyGeni AI'}
+                                                    {msg.role === 'user' ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
                                                 </div>
-                                                <div className="whitespace-pre-wrap">
+
+                                                {/* Message Content */}
+                                                <div className={`flex flex-col min-w-0 flex-1 ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
+                                                    <span className="text-[11px] font-bold text-[var(--text-tertiary)] mb-1 uppercase tracking-wider">
+                                                        {msg.role === 'user' ? 'You' : 'StudyMate AI'}
+                                                    </span>
+
                                                     {msg.role === 'user' ? (
-                                                        msg.content
+                                                        <div className="px-5 py-3 rounded-2xl bg-[var(--bg-surface-highlight)] text-[var(--text-primary)] text-sm leading-relaxed border border-[var(--border-subtle)]">
+                                                            <div className="whitespace-pre-wrap break-words">{msg.content}</div>
+                                                        </div>
                                                     ) : (
-                                                        <TypingMarkdown content={msg.content} shouldAnimate={msg.animate} />
+                                                        <div className="text-[var(--text-primary)] text-sm leading-relaxed w-full">
+                                                            <TypingMarkdown content={msg.content} shouldAnimate={msg.animate} />
+                                                        </div>
                                                     )}
                                                 </div>
                                             </div>
@@ -786,33 +904,46 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
                                 </>
                             )}
                             {isChatLoading && (
-                                <div className="flex justify-start">
-                                    <div className="bg-[var(--bg-page)] border border-[var(--border-subtle)] rounded-2xl rounded-tl-sm p-4 flex items-center gap-3 shadow-sm">
-                                        <Loader2 className="w-4 h-4 animate-spin text-[var(--color-google-blue)]" />
-                                        <span className="text-sm font-medium text-[var(--text-secondary)]">AI is thinking...</span>
+                                <div className="flex w-full justify-start">
+                                    <div className="flex gap-4 max-w-[75%]">
+                                        <div className="shrink-0 w-8 h-8 rounded-full bg-[var(--color-brand-green)] text-white flex items-center justify-center mt-1">
+                                            <Bot className="w-4 h-4" />
+                                        </div>
+                                        <div>
+                                            <span className="text-[11px] font-bold text-[var(--text-tertiary)] mb-1 uppercase tracking-wider block">StudyMate AI</span>
+                                            <div className="flex items-center gap-2 text-[var(--text-secondary)] text-sm">
+                                                <Loader2 className="w-4 h-4 animate-spin" />
+                                                <span>Thinking...</span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             )}
                             <div ref={chatEndRef} />
                         </div>
-                        <div className="p-4 bg-[var(--bg-page)] border-t border-[var(--border-subtle)]">
-                            <div className="flex gap-3">
+
+                        {/* Input Area */}
+                        <div className="p-6 md:p-8 pt-4 pb-8 bg-[var(--bg-page)] relative">
+                            <div className="max-w-4xl mx-auto relative">
                                 <input
                                     type="text"
                                     value={chatInput}
                                     onChange={(e) => setChatInput(e.target.value)}
                                     onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
                                     placeholder="Ask something about this document..."
-                                    className="flex-1 h-12 px-4 rounded-xl bg-[var(--bg-surface-highlight)] border-none focus:ring-2 focus:ring-[var(--border-focus)]/20 text-[var(--text-primary)] placeholder-[var(--text-tertiary)] transition-all"
+                                    className="w-full h-14 pl-6 pr-14 rounded-full bg-[var(--bg-surface)] border border-[var(--border-subtle)] focus:ring-2 focus:ring-[var(--border-focus)]/20 focus:border-[var(--border-focus)] text-[var(--text-primary)] placeholder-[var(--text-tertiary)] transition-all shadow-sm"
                                 />
                                 <button
                                     onClick={handleSendMessage}
                                     disabled={isChatLoading || !chatInput.trim()}
-                                    className="btn-google btn-google-primary w-12 h-12 rounded-xl flex items-center justify-center shrink-0 disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
+                                    className="absolute right-2 top-2 w-10 h-10 rounded-full bg-[var(--color-brand-blue)] text-white flex items-center justify-center hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                 >
                                     <Send className="w-5 h-5" />
                                 </button>
                             </div>
+                            <p className="text-center text-[10px] text-[var(--text-tertiary)] mt-3">
+                                AI can make mistakes. Please verify important information.
+                            </p>
                         </div>
                     </div>
                 )}
@@ -821,16 +952,16 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
 
                 {activeTab === 'summary' && (
                     <div className="h-full flex flex-col gap-6 overflow-y-auto max-w-4xl mx-auto w-full pb-8">
-                        <div className="g-card p-8 text-center shrink-0 flex flex-col items-center">
-                            <div className="w-16 h-16 bg-[var(--color-google-yellow)]/10 rounded-full flex items-center justify-center mb-6">
-                                <Zap className="w-8 h-8 text-[var(--color-google-yellow)]" />
+                        <div className="app-card p-8 text-center shrink-0 flex flex-col items-center">
+                            <div className="w-16 h-16 bg-[var(--color-brand-yellow)]/10 rounded-full flex items-center justify-center mb-6">
+                                <Zap className="w-8 h-8 text-[var(--color-brand-yellow)]" />
                             </div>
-                            <h3 className="text-2xl google-title font-medium mb-2 text-[var(--text-primary)]">Summarize Document</h3>
+                            <h3 className="text-2xl app-title font-medium mb-2 text-[var(--text-primary)]">Summarize Document</h3>
                             <p className="text-[var(--text-secondary)] mb-8 font-normal max-w-lg mx-auto">Get a concise summary of the entire document to grasp key points quickly.</p>
                             <button
                                 onClick={handleSummarize}
                                 disabled={isSummarizing}
-                                className="btn-google btn-google-primary h-12 px-8 rounded-full text-base shadow-lg"
+                                className="btn-app btn-primary h-12 px-8 rounded-full text-base shadow-lg"
                             >
                                 {isSummarizing ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <Zap className="w-5 h-5 mr-2" />}
                                 {isSummarizing ? 'Generating Summary...' : 'Generate Summary'}
@@ -838,7 +969,7 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
                         </div>
                         {summary && (
                             <div className="bg-[var(--bg-page)] border border-[var(--border-subtle)] p-8 rounded-3xl shadow-sm animate-in slide-in-from-bottom-4">
-                                <h4 className="font-medium border-b border-[var(--border-subtle)] pb-4 mb-6 text-xl google-title text-[var(--text-primary)]">Summary Result</h4>
+                                <h4 className="font-medium border-b border-[var(--border-subtle)] pb-4 mb-6 text-xl app-title text-[var(--text-primary)]">Summary Result</h4>
                                 <div className="prose dark:prose-invert max-w-none">
                                     <p className="text-[var(--text-primary)] leading-relaxed whitespace-pre-wrap">{summary}</p>
                                 </div>
@@ -849,11 +980,11 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
 
                 {activeTab === 'explain' && (
                     <div className="h-full flex flex-col gap-6 overflow-y-auto max-w-4xl mx-auto w-full pb-8">
-                        <div className="g-card p-8 text-center shrink-0 flex flex-col items-center">
-                            <div className="w-16 h-16 bg-[var(--color-google-yellow)]/10 rounded-full flex items-center justify-center mb-6">
-                                <Lightbulb className="w-8 h-8 text-[var(--color-google-yellow)]" />
+                        <div className="app-card p-8 text-center shrink-0 flex flex-col items-center">
+                            <div className="w-16 h-16 bg-[var(--color-brand-yellow)]/10 rounded-full flex items-center justify-center mb-6">
+                                <Lightbulb className="w-8 h-8 text-[var(--color-brand-yellow)]" />
                             </div>
-                            <h3 className="text-2xl google-title font-medium mb-2 text-[var(--text-primary)]">Explain Concept</h3>
+                            <h3 className="text-2xl app-title font-medium mb-2 text-[var(--text-primary)]">Explain Concept</h3>
                             <p className="text-[var(--text-secondary)] mb-8 font-normal max-w-lg mx-auto">Confused about a topic? Ask AI to explain it in simple terms.</p>
                             <div className="max-w-xl mx-auto w-full flex flex-col gap-4">
                                 <input
@@ -867,7 +998,7 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
                                 <button
                                     onClick={handleExplain}
                                     disabled={isExplaining || !explainConceptStr.trim()}
-                                    className="btn-google btn-google-primary h-12 px-8 rounded-full text-base shadow-lg w-full"
+                                    className="btn-app btn-primary h-12 px-8 rounded-full text-base shadow-lg w-full"
                                 >
                                     {isExplaining ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <Brain className="w-5 h-5 mr-2" />}
                                     {isExplaining ? 'Explaining...' : 'Explain It'}
@@ -876,9 +1007,9 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
                         </div>
                         {explanation && (
                             <div className="bg-[var(--bg-page)] border border-[var(--border-subtle)] p-8 rounded-3xl shadow-sm animate-in slide-in-from-bottom-4">
-                                <h4 className="font-medium border-b border-[var(--border-subtle)] pb-4 mb-6 text-xl google-title text-[var(--text-primary)]">Explanation: <span className="text-[var(--color-google-blue)] capitalize">{explainConceptStr}</span></h4>
-                                <div className="prose dark:prose-invert max-w-none">
-                                    <p className="text-[var(--text-primary)] leading-relaxed whitespace-pre-wrap">{explanation}</p>
+                                <h4 className="font-medium border-b border-[var(--border-subtle)] pb-4 mb-6 text-xl app-title text-[var(--text-primary)]">Explanation: <span className="text-[var(--color-brand-blue)] capitalize">{explainConceptStr}</span></h4>
+                                <div className="prose dark:prose-invert max-w-none text-[var(--text-primary)] leading-relaxed">
+                                    <ReactMarkdown>{explanation}</ReactMarkdown>
                                 </div>
                             </div>
                         )}
@@ -897,7 +1028,9 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
                                                 <ChevronDown className="w-5 h-5 text-[var(--text-tertiary)] group-open:rotate-180 transition-transform duration-300" />
                                             </summary>
                                             <div className="p-6 border-t border-[var(--border-subtle)] bg-[var(--bg-page)] animate-in slide-in-from-top-2">
-                                                <p className="text-[var(--text-secondary)] leading-relaxed whitespace-pre-wrap text-sm">{expl.explanation}</p>
+                                                <div className="prose dark:prose-invert max-w-none text-[var(--text-secondary)] leading-relaxed text-sm">
+                                                    <ReactMarkdown>{expl.explanation}</ReactMarkdown>
+                                                </div>
                                             </div>
                                         </details>
                                     ))}
@@ -912,20 +1045,22 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
                         <div className="h-full flex flex-col w-full p-6 overflow-hidden">
                             {flashcards.length === 0 ? (
                                 <div className="w-full h-full flex flex-col">
-                                    <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4 shrink-0">
-                                        <div>
-                                            <h2 className="text-2xl google-title font-medium mb-1 text-[var(--text-primary)]">Flashcard Decks</h2>
-                                            <p className="text-[var(--text-secondary)]">Select a deck or generate a new one.</p>
+                                    {flashcardsList.length === 0 && (
+                                        <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4 shrink-0">
+                                            <div>
+                                                <h2 className="text-2xl app-title font-medium mb-1 text-[var(--text-primary)]">Flashcard Decks</h2>
+                                                <p className="text-[var(--text-secondary)]">Select a deck or generate a new one.</p>
+                                            </div>
+                                            <button
+                                                onClick={handleGenerateFlashcards}
+                                                disabled={isGeneratingDecks}
+                                                className="btn-app btn-primary h-11 px-6 rounded-full text-sm font-medium flex items-center justify-center gap-2 whitespace-nowrap shadow-md"
+                                            >
+                                                {isGeneratingDecks ? <Loader2 className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4 fill-current" />}
+                                                {isGeneratingDecks ? 'Generating...' : 'New Deck'}
+                                            </button>
                                         </div>
-                                        <button
-                                            onClick={handleGenerateFlashcards}
-                                            disabled={isGeneratingDecks}
-                                            className="btn-google btn-google-primary h-11 px-6 rounded-full text-sm font-medium flex items-center justify-center gap-2 whitespace-nowrap shadow-md"
-                                        >
-                                            {isGeneratingDecks ? <Loader2 className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4 fill-current" />}
-                                            {isGeneratingDecks ? 'Generating...' : 'New Deck'}
-                                        </button>
-                                    </div>
+                                    )}
 
                                     {flashcardsList.length === 0 ? (
                                         <div className="flex-1 flex flex-col items-center justify-center text-center opacity-60">
@@ -935,7 +1070,7 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
                                             <p className="font-medium text-lg text-[var(--text-secondary)]">No flashcards yet.</p>
                                         </div>
                                     ) : (
-                                        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 pb-20 overflow-y-auto">
+                                        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 pb-20 overflow-y-auto w-full">
                                             {flashcardsList.map((deck) => {
                                                 const cards = deck.cards || [];
                                                 const total = cards.length;
@@ -944,10 +1079,14 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
                                                 const starredCount = cards.filter((c: any) => c.isStarred).length;
 
                                                 return (
-                                                    <div key={deck._id} className="g-card p-6 flex flex-col justify-between h-64 hover:-translate-y-1 transition-transform duration-300">
+                                                    <div
+                                                        key={deck._id}
+                                                        className="app-card p-6 flex flex-col justify-between h-64 hover:-translate-y-1 transition-transform duration-300 cursor-pointer group"
+                                                        onClick={() => handleSelectFlashcardSet(deck)}
+                                                    >
                                                         <div>
                                                             <div className="flex justify-between items-start mb-4">
-                                                                <div className="w-10 h-10 bg-[var(--color-google-green)]/10 flex items-center justify-center rounded-xl text-[var(--color-google-green)]">
+                                                                <div className="w-10 h-10 bg-[var(--color-brand-green)]/10 flex items-center justify-center rounded-xl text-[var(--color-brand-green)] transition-colors group-hover:bg-[var(--color-brand-green)]/20">
                                                                     <BookOpen className="w-6 h-6" />
                                                                 </div>
                                                                 <span className="text-[10px] font-bold text-[var(--text-tertiary)] bg-[var(--bg-surface-highlight)] px-2 py-1 rounded-md uppercase tracking-wide">
@@ -961,7 +1100,7 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
                                                                     <BookOpen className="w-3.5 h-3.5 text-[var(--text-tertiary)]" /> {total} Cards
                                                                 </div>
                                                                 {starredCount > 0 && (
-                                                                    <div className="flex items-center gap-1.5 text-[var(--color-google-yellow)]">
+                                                                    <div className="flex items-center gap-1.5 text-[var(--color-brand-yellow)]">
                                                                         <Star className="w-3.5 h-3.5 fill-current" /> {starredCount}
                                                                     </div>
                                                                 )}
@@ -976,17 +1115,20 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
                                                                 </div>
                                                                 <div className="w-full h-1.5 bg-[var(--bg-surface-highlight)] rounded-full overflow-hidden">
                                                                     <div
-                                                                        className={`h-full rounded-full transition-all duration-500 ease-out ${progress === 100 ? 'bg-[var(--color-google-green)]' : 'bg-[var(--color-google-yellow)]'}`}
+                                                                        className={`h-full rounded-full transition-all duration-500 ease-out ${progress === 100 ? 'bg-[var(--color-brand-green)]' : 'bg-[var(--color-brand-yellow)]'}`}
                                                                         style={{ width: `${progress}%` }}
                                                                     ></div>
                                                                 </div>
                                                             </div>
 
                                                             <button
-                                                                onClick={() => handleSelectFlashcardSet(deck)}
-                                                                className="w-full py-2.5 font-medium text-sm rounded-lg border border-[var(--border-subtle)] hover:border-[var(--color-google-blue)] hover:text-[var(--color-google-blue)] hover:bg-[var(--color-google-blue)]/5 transition-all text-[var(--text-secondary)]"
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    handleSelectFlashcardSet(deck);
+                                                                }}
+                                                                className="w-full py-2.5 font-medium text-sm rounded-lg border border-[var(--border-subtle)] hover:border-[var(--color-brand-blue)] hover:text-[var(--color-brand-blue)] hover:bg-[var(--color-brand-blue)]/5 transition-all text-[var(--text-secondary)] group-hover:border-[var(--color-brand-blue)] group-hover:text-[var(--color-brand-blue)]"
                                                             >
-                                                                Start Studying
+                                                                Start Learning
                                                             </button>
                                                         </div>
                                                     </div>
@@ -996,77 +1138,15 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
                                     )}
                                 </div>
                             ) : (
-                                <div className="w-full max-w-2xl flex flex-col items-center mb-8">
-                                    <div className="flex justify-between w-full mb-6 items-center">
-                                        <span className="font-bold text-[var(--text-secondary)] text-sm uppercase tracking-wider">Card {currentCardIndex + 1} / {flashcards.length}</span>
-                                        <button
-                                            onClick={() => { setFlashcards([]); setCurrentCardIndex(0); }}
-                                            className="text-[var(--color-google-red)] font-semibold hover:bg-[var(--color-google-red)]/10 px-3 py-1.5 rounded-lg transition-colors text-sm"
-                                        >
-                                            Close Deck
-                                        </button>
-                                    </div>
-
-                                    <div
-                                        className="perspective-1000 w-full h-80 cursor-pointer group"
-                                        onClick={() => {
-                                            setIsFlipped(!isFlipped)
-                                            if (!isFlipped) handleMarkReview({ stopPropagation: () => { } } as React.MouseEvent);
+                                <div className="w-full h-full flex flex-col pt-8">
+                                    <FlashcardPlayer
+                                        cards={flashcards}
+                                        setId={flashcardSetId || ''}
+                                        onClose={() => {
+                                            setFlashcards([]);
+                                            setCurrentCardIndex(0);
                                         }}
-                                    >
-                                        <div className={`relative w-full h-full transition-transform duration-500 transform-style-3d ${isFlipped ? 'rotate-y-180' : ''}`}>
-                                            {/* Front */}
-                                            <div className="absolute w-full h-full backface-hidden bg-[var(--bg-page)] border border-[var(--border-subtle)] rounded-3xl p-8 flex flex-col items-center justify-center shadow-lg hover:shadow-xl transition-all">
-                                                <div className="absolute top-6 left-6 right-6 flex justify-between items-center z-10">
-                                                    <span className="text-xs font-bold uppercase text-[var(--text-tertiary)] tracking-widest">Question</span>
-                                                    <button
-                                                        onClick={handleToggleStar}
-                                                        className="hover:scale-110 transition-transform p-2 rounded-full hover:bg-[var(--bg-surface-highlight)]"
-                                                    >
-                                                        <Star
-                                                            className={`w-5 h-5 ${flashcards[currentCardIndex]?.isStarred ? 'fill-[var(--color-google-yellow)] text-[var(--color-google-yellow)]' : 'text-[var(--text-tertiary)]'}`}
-                                                        />
-                                                    </button>
-                                                </div>
-                                                <p className="text-2xl font-medium text-center leading-relaxed text-[var(--text-primary)]">
-                                                    {flashcards[currentCardIndex]?.front || flashcards[currentCardIndex]?.question}
-                                                </p>
-                                                <p className="text-xs text-[var(--text-tertiary)] font-bold absolute bottom-6 uppercase tracking-wider">Click to reveal</p>
-                                            </div>
-
-                                            {/* Back */}
-                                            <div className="absolute w-full h-full backface-hidden bg-[#202124] text-white rounded-3xl p-8 flex flex-col items-center justify-center shadow-lg rotate-y-180">
-                                                <span className="text-xs font-bold uppercase text-gray-500 absolute top-6 left-6 tracking-widest">Answer</span>
-                                                <p className="text-xl font-medium text-center leading-relaxed">
-                                                    {flashcards[currentCardIndex]?.back || flashcards[currentCardIndex]?.answer}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-                                    <div className="flex gap-4 mt-8">
-                                        <button
-                                            onClick={() => {
-                                                setCurrentCardIndex(prev => Math.max(0, prev - 1));
-                                                setIsFlipped(false);
-                                            }}
-                                            disabled={currentCardIndex === 0}
-                                            className="w-14 h-14 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-page)] flex items-center justify-center text-[var(--text-secondary)] hover:bg-[var(--bg-surface-highlight)] hover:text-[var(--text-primary)] disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
-                                        >
-                                            <ChevronLeft className="w-6 h-6" />
-                                        </button>
-                                        <button
-                                            onClick={() => {
-                                                setCurrentCardIndex(prev => Math.min(flashcards.length - 1, prev + 1));
-                                                setIsFlipped(false);
-                                            }}
-                                            disabled={currentCardIndex === flashcards.length - 1}
-                                            className="w-14 h-14 rounded-full bg-[var(--text-primary)] text-[var(--bg-page)] flex items-center justify-center hover:bg-[var(--text-secondary)] disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md"
-                                        >
-                                            <ChevronRight className="w-6 h-6" />
-                                        </button>
-                                    </div>
+                                    />
                                 </div>
                             )}
                         </div>
@@ -1074,18 +1154,18 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
                 }
 
                 {activeTab === 'quizzes' && (
-                    <div className="h-full flex flex-col items-center justify-center overflow-y-auto w-full p-4 mb-4">
+                    <div className="h-full flex flex-col items-center w-full bg-[var(--bg-page)]">
                         {!quiz ? (
-                            <div className="w-full max-w-4xl h-full flex flex-col">
+                            <div className="w-full max-w-4xl h-full flex flex-col p-4 md:p-6">
                                 <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4 shrink-0">
                                     <div>
-                                        <h2 className="text-2xl google-title font-medium mb-1 text-[var(--text-primary)]">Practice Quizzes</h2>
+                                        <h2 className="text-2xl app-title font-medium mb-1 text-[var(--text-primary)]">Practice Quizzes</h2>
                                         <p className="text-[var(--text-secondary)]">Select a quiz to review or start a new one.</p>
                                     </div>
                                     <button
                                         onClick={handleGenerateQuiz}
                                         disabled={isGeneratingQuiz}
-                                        className="btn-google btn-google-primary h-11 px-6 rounded-full text-sm font-medium flex items-center justify-center gap-2 whitespace-nowrap shadow-md"
+                                        className="btn-app btn-primary h-11 px-6 rounded-full text-sm font-medium flex items-center justify-center gap-2 whitespace-nowrap shadow-md"
                                     >
                                         {isGeneratingQuiz ? <Loader2 className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4 fill-current" />}
                                         {isGeneratingQuiz ? 'Generating...' : 'New Quiz'}
@@ -1108,7 +1188,7 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
                                             const pct = total > 0 ? Math.round((score / total) * 100) : 0;
 
                                             return (
-                                                <div key={q._id} className="g-card p-6 flex flex-col justify-between h-48 hover:-translate-y-1 transition-transform duration-300">
+                                                <div key={q._id} className="app-card p-6 flex flex-col justify-between h-48 hover:-translate-y-1 transition-transform duration-300">
                                                     <div>
                                                         <div className="flex justify-between items-start mb-2">
                                                             {isCompleted ? (
@@ -1131,7 +1211,7 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
                                                         onClick={() => handleSelectQuiz(q)}
                                                         className={`w-full py-2.5 font-medium text-sm rounded-lg transition-all ${isCompleted
                                                             ? 'bg-[var(--bg-surface-highlight)] text-[var(--text-primary)] hover:bg-[var(--border-subtle)]'
-                                                            : 'bg-[var(--color-google-blue)] text-white hover:bg-[#3367d6] shadow-md hover:shadow-lg'
+                                                            : 'bg-[var(--color-brand-blue)] text-white hover:bg-[#3367d6] shadow-md hover:shadow-lg'
                                                             }`}
                                                     >
                                                         {isCompleted ? 'View Results' : 'Start Quiz'}
@@ -1144,123 +1224,148 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
                             </div>
                         ) : quizResult ? (
                             <div className="w-full max-w-3xl h-full flex flex-col bg-[var(--bg-page)] border border-[var(--border-subtle)] rounded-2xl overflow-hidden shadow-sm animate-in slide-in-from-bottom-4">
-                                <div className="p-8 border-b border-[var(--border-subtle)] flex flex-col items-center justify-center bg-[var(--bg-surface-highlight)]/20">
-                                    <h3 className="text-2xl google-title font-medium mb-4 text-[var(--text-primary)]">Quiz Results</h3>
-                                    <div className="text-6xl font-light mb-4 flex justify-center items-center gap-2 tracking-tighter">
-                                        <span className={quizResult.percentage >= 70 ? 'text-[var(--color-google-green)]' : 'text-[var(--color-google-yellow)]'}>
-                                            {quizResult.percentage}%
-                                        </span>
+                                <div className="h-full overflow-y-auto w-full">
+                                    <div className="p-8 border-b border-[var(--border-subtle)] flex flex-col items-center justify-center bg-[var(--bg-surface-highlight)]/20">
+                                        <h3 className="text-2xl app-title font-medium mb-4 text-[var(--text-primary)]">Quiz Results</h3>
+                                        <div className="text-6xl font-light mb-4 flex justify-center items-center gap-2 tracking-tighter">
+                                            <span className={quizResult.percentage >= 70 ? 'text-[var(--color-brand-green)]' : 'text-[var(--color-brand-yellow)]'}>
+                                                {quizResult.percentage}%
+                                            </span>
+                                        </div>
+                                        <p className="text-lg font-medium text-[var(--text-secondary)] mb-6">
+                                            You got {quizResult.score} out of {quizResult.total} correct.
+                                        </p>
+                                        <div className="flex flex-col gap-3 w-full max-w-sm mx-auto">
+                                            <button
+                                                onClick={() => {
+                                                    setQuizResult(null);
+                                                    setQuizAnswers({});
+                                                    setShowAnswers(false);
+                                                }}
+                                                className="btn-app btn-primary w-full h-12 rounded-full flex items-center justify-center gap-2 font-medium shadow-md transition-transform active:scale-95 text-base"
+                                            >
+                                                <RotateCcw className="w-5 h-5" /> Retake Quiz
+                                            </button>
+
+                                            <button
+                                                onClick={() => setShowAnswers(!showAnswers)}
+                                                className="btn-app btn-outline w-full h-12 rounded-full flex items-center justify-center gap-2 font-medium border border-[var(--border-subtle)] hover:bg-[var(--bg-surface-highlight)] transition-colors text-base"
+                                            >
+                                                {showAnswers ? 'Hide Answers' : 'View Answers'}
+                                            </button>
+
+                                            <button
+                                                onClick={() => {
+                                                    setQuiz(null);
+                                                    setQuizResult(null);
+                                                    setQuizAnswers({});
+                                                    setShowAnswers(false);
+                                                }}
+                                                className="btn-app btn-ghost w-full h-12 rounded-full font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-surface-highlight)] transition-colors text-base"
+                                            >
+                                                Close
+                                            </button>
+                                        </div>
                                     </div>
-                                    <p className="text-lg font-medium text-[var(--text-secondary)] mb-6">
-                                        You got {quizResult.score} out of {quizResult.total} correct.
-                                    </p>
-                                    <div className="flex gap-4 w-full max-w-sm">
-                                        <button
-                                            onClick={() => {
-                                                setQuizResult(null);
-                                                setQuizAnswers({});
-                                            }}
-                                            className="btn-google btn-google-primary flex-1 h-11 rounded-full flex items-center justify-center gap-2"
-                                        >
-                                            <RotateCcw className="w-4 h-4" /> Retake
-                                        </button>
-                                        <button
-                                            onClick={() => {
-                                                setQuiz(null);
-                                                setQuizResult(null);
-                                                setQuizAnswers({});
-                                            }}
-                                            className="btn-google btn-google-outline flex-1 h-11 rounded-full"
-                                        >
-                                            Close
-                                        </button>
-                                    </div>
-                                </div>
 
-                                <div className="flex-1 overflow-y-auto p-8 space-y-8 bg-[var(--bg-page)]">
-                                    <h4 className="font-bold text-xs uppercase tracking-widest text-[var(--text-tertiary)] mb-4 pb-2 border-b border-[var(--border-subtle)]">Answer Review</h4>
-                                    {quiz.questions?.map((q: any, qIdx: number) => {
-                                        const userAnswerIdx = quizAnswers[qIdx] !== undefined ? quizAnswers[qIdx] : -1;
-                                        const correctIdx = parseInt(q.correctAnswer);
-                                        const isCorrect = userAnswerIdx === correctIdx;
+                                    {showAnswers && (
+                                        <div className="p-4 md:p-8 space-y-8 bg-[var(--bg-page)] animate-in slide-in-from-bottom-10 fade-in duration-500">
+                                            <h4 className="font-bold text-xs uppercase tracking-widest text-[var(--text-tertiary)] mb-4 pb-2 border-b border-[var(--border-subtle)]">Answer Review</h4>
+                                            {quiz.questions?.map((q: any, qIdx: number) => {
+                                                const userAnswerIdx = quizAnswers[qIdx] !== undefined ? quizAnswers[qIdx] : -1;
+                                                const correctIdx = parseInt(q.correctAnswer);
+                                                const isCorrect = userAnswerIdx === correctIdx;
 
-                                        return (
-                                            <div key={qIdx} className={`p-6 rounded-2xl border ${isCorrect ? 'border-[var(--color-google-green)]/20 bg-[var(--color-google-green)]/5' : 'border-[var(--color-google-red)]/20 bg-[var(--color-google-red)]/5'}`}>
-                                                <p className="font-medium text-lg mb-4 flex gap-3 text-[var(--text-primary)]">
-                                                    <span className="text-[var(--text-tertiary)] font-mono text-base pt-0.5">0{qIdx + 1}.</span>
-                                                    {q.question}
-                                                </p>
+                                                return (
+                                                    <div key={qIdx} className={`p-6 rounded-2xl border ${isCorrect ? 'border-[var(--color-brand-green)]/20 bg-[var(--color-brand-green)]/5' : 'border-[var(--color-brand-red)]/20 bg-[var(--color-brand-red)]/5'}`}>
+                                                        <p className="font-medium text-lg mb-4 flex gap-3 text-[var(--text-primary)]">
+                                                            <span className="text-[var(--text-tertiary)] font-mono text-base pt-0.5">0{qIdx + 1}.</span>
+                                                            {q.question}
+                                                        </p>
 
-                                                <div className="grid grid-cols-1 gap-2 mb-4">
-                                                    {q.options?.map((opt: string, optIdx: number) => {
-                                                        let itemClass = "p-3 rounded-lg border text-sm transition-all ";
-                                                        if (optIdx === correctIdx) {
-                                                            itemClass += "bg-[var(--color-google-green)] text-white border-[var(--color-google-green)] font-semibold shadow-sm";
-                                                        } else if (optIdx === userAnswerIdx && !isCorrect) {
-                                                            itemClass += "bg-[var(--color-google-red)] text-white border-[var(--color-google-red)] font-semibold shadow-sm";
-                                                        } else {
-                                                            itemClass += "bg-[var(--bg-page)] border-transparent text-[var(--text-secondary)] opacity-80";
-                                                        }
+                                                        <div className="grid grid-cols-1 gap-2 mb-4">
+                                                            {q.options?.map((opt: string, optIdx: number) => {
+                                                                let itemClass = "p-3 rounded-lg border text-sm transition-all ";
+                                                                if (optIdx === correctIdx) {
+                                                                    itemClass += "bg-[var(--color-brand-green)] text-white border-[var(--color-brand-green)] font-semibold shadow-sm";
+                                                                } else if (optIdx === userAnswerIdx && !isCorrect) {
+                                                                    itemClass += "bg-[var(--color-brand-red)] text-white border-[var(--color-brand-red)] font-semibold shadow-sm";
+                                                                } else {
+                                                                    itemClass += "bg-[var(--bg-page)] border-transparent text-[var(--text-secondary)] opacity-80";
+                                                                }
 
-                                                        return (
-                                                            <div key={optIdx} className={itemClass}>
-                                                                {opt} {optIdx === correctIdx && <span className="ml-2 text-xs opacity-80 font-normal">(Correct)</span>} {optIdx === userAnswerIdx && !isCorrect && <span className="ml-2 text-xs opacity-80 font-normal">(Your Answer)</span>}
+                                                                return (
+                                                                    <div key={optIdx} className={itemClass}>
+                                                                        {opt} {optIdx === correctIdx && <span className="ml-2 text-xs opacity-80 font-normal">(Correct)</span>} {optIdx === userAnswerIdx && !isCorrect && <span className="ml-2 text-xs opacity-80 font-normal">(Your Answer)</span>}
+                                                                    </div>
+                                                                )
+                                                            })}
+                                                        </div>
+
+                                                        {!isCorrect && q.explanation && (
+                                                            <div className="bg-[var(--bg-page)] p-4 rounded-xl border-l-4 border-[var(--color-brand-blue)] text-sm shadow-sm">
+                                                                <span className="font-bold text-[var(--color-brand-blue)] block mb-1 text-xs uppercase tracking-wide">Explanation</span>
+                                                                <span className="text-[var(--text-secondary)] leading-relaxed">{q.explanation}</span>
                                                             </div>
-                                                        )
-                                                    })}
-                                                </div>
-
-                                                {!isCorrect && q.explanation && (
-                                                    <div className="bg-[var(--bg-page)] p-4 rounded-xl border-l-4 border-[var(--color-google-blue)] text-sm shadow-sm">
-                                                        <span className="font-bold text-[var(--color-google-blue)] block mb-1 text-xs uppercase tracking-wide">Explanation</span>
-                                                        <span className="text-[var(--text-secondary)] leading-relaxed">{q.explanation}</span>
+                                                        )}
                                                     </div>
-                                                )}
-                                            </div>
-                                        );
-                                    })}
+                                                );
+                                            })}
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         ) : (
-                            <div className="w-full max-w-3xl h-full flex flex-col">
-                                <div className="flex justify-between items-center mb-6">
-                                    <h2 className="text-2xl google-title font-medium text-[var(--text-primary)]">Quiz Time</h2>
-                                    <button onClick={() => setQuiz(null)} className="text-[var(--color-google-red)] font-semibold hover:bg-[var(--color-google-red)]/10 px-4 py-2 rounded-full transition-colors">Exit Quiz</button>
+                            <div className="w-full max-w-3xl h-full flex flex-col bg-[var(--bg-page)]">
+                                {/* Compact Header */}
+                                <div className="flex justify-between items-center py-4 px-6 border-b border-[var(--border-subtle)] bg-[var(--bg-page)] shrink-0 z-10">
+                                    <h2 className="text-lg app-title font-medium text-[var(--text-primary)]">Quiz Time</h2>
+                                    <button onClick={() => setQuiz(null)} className="text-sm font-medium text-[var(--color-brand-red)] hover:bg-[var(--color-brand-red)]/5 px-3 py-1.5 rounded-full transition-colors">Exit</button>
                                 </div>
 
-                                <div className="flex-1 overflow-y-auto space-y-8 pr-2 pb-8">
-                                    {quiz.questions?.map((q: any, qIdx: number) => (
-                                        <div key={qIdx} className="bg-[var(--bg-page)] border border-[var(--border-subtle)] p-8 rounded-3xl shadow-sm">
-                                            <p className="font-medium text-lg mb-6 flex gap-3 text-[var(--text-primary)]">
-                                                <span className="text-[var(--text-tertiary)] font-mono text-base pt-0.5">0{qIdx + 1}.</span>
-                                                {q.question}
-                                            </p>
-                                            <div className="grid grid-cols-1 gap-3">
-                                                {q.options?.map((opt: string, optIdx: number) => (
-                                                    <button
-                                                        key={optIdx}
-                                                        onClick={() => setQuizAnswers(prev => ({ ...prev, [qIdx]: optIdx }))}
-                                                        className={`p-4 text-left border rounded-xl font-medium transition-all text-sm ${quizAnswers[qIdx] === optIdx
-                                                            ? 'bg-[var(--text-primary)] text-[var(--bg-page)] border-[var(--text-primary)] shadow-md transform scale-[1.01]'
-                                                            : 'bg-[var(--bg-page)] border-[var(--border-subtle)] hover:border-[var(--text-primary)] text-[var(--text-secondary)]'
-                                                            }`}
-                                                    >
-                                                        {opt}
-                                                    </button>
-                                                ))}
+                                {/* Scrollable Questions */}
+                                <div className="flex-1 overflow-y-auto px-6 py-6 pb-20">
+                                    <div className="space-y-8">
+                                        {quiz.questions?.map((q: any, qIdx: number) => (
+                                            <div key={qIdx} className="bg-[var(--bg-page)] border border-[var(--border-subtle)] p-6 rounded-3xl shadow-sm">
+                                                <p className="font-medium text-lg leading-relaxed mb-6 flex gap-3 text-[var(--text-primary)]">
+                                                    <span className="text-[var(--text-tertiary)] font-mono text-base pt-0.5 opacity-50">0{qIdx + 1}.</span>
+                                                    {q.question}
+                                                </p>
+                                                <div className="grid grid-cols-1 gap-3">
+                                                    {q.options?.map((opt: string, optIdx: number) => (
+                                                        <button
+                                                            key={optIdx}
+                                                            onClick={() => setQuizAnswers(prev => ({ ...prev, [qIdx]: optIdx }))}
+                                                            className={`p-4 text-left border rounded-xl font-medium transition-all text-sm relative overflow-hidden ${quizAnswers[qIdx] === optIdx
+                                                                ? 'bg-[var(--color-brand-blue)]/5 border-[var(--color-brand-blue)] text-[var(--color-brand-blue)] shadow-sm'
+                                                                : 'bg-[var(--bg-page)] border-[var(--border-subtle)] hover:border-[var(--text-tertiary)] text-[var(--text-secondary)]'
+                                                                }`}
+                                                        >
+                                                            <div className="flex items-center gap-3 relative z-10">
+                                                                <div className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 transition-colors ${quizAnswers[qIdx] === optIdx ? 'border-[var(--color-brand-blue)] bg-[var(--color-brand-blue)]' : 'border-[var(--text-tertiary)]'}`}>
+                                                                    {quizAnswers[qIdx] === optIdx && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                                                                </div>
+                                                                {opt}
+                                                            </div>
+                                                        </button>
+                                                    ))}
+                                                </div>
                                             </div>
-                                        </div>
-                                    ))}
-                                </div>
+                                        ))}
 
-                                <div className="pt-6 mt-6 border-t border-[var(--border-subtle)]">
-                                    <button
-                                        onClick={handleSubmitQuiz}
-                                        disabled={isSubmittingQuiz || Object.keys(quizAnswers).length !== quiz.questions?.length}
-                                        className="btn-google btn-google-primary w-full h-14 rounded-xl font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
-                                    >
-                                        {isSubmittingQuiz ? 'Submitting...' : 'Submit Answers'}
-                                    </button>
+                                        {/* Submit Button (Inline) */}
+                                        <div className="mt-8">
+                                            <button
+                                                onClick={handleSubmitQuiz}
+                                                disabled={isSubmittingQuiz || Object.keys(quizAnswers).length !== quiz.questions?.length}
+                                                className="btn-app btn-primary w-full h-12 rounded-full font-bold text-base disabled:opacity-50 disabled:cursor-not-allowed shadow-md transition-all hover:shadow-lg active:scale-[0.99] flex items-center justify-center gap-2"
+                                            >
+                                                {isSubmittingQuiz ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                                                {isSubmittingQuiz ? 'Submitting...' : 'Submit Answers'}
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         )}

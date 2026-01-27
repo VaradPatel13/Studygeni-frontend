@@ -1,18 +1,18 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Login - StudyGeni',
-    description: 'Access your StudyGeni account to continue your AI-powered study sessions.',
+    title: 'Login',
+    description: 'Access your StudyMate.io account to continue your AI-powered study sessions.',
     openGraph: {
-        title: 'Login - StudyGeni',
-        description: 'Welcome back. Enter your credentials to access your workspace.',
-        url: 'https://studygeni.com/login',
-        siteName: 'StudyGeni',
+        title: 'Login - StudyMate.io',
+        description: 'Access your StudyMate.io account.',
+        url: 'https://studymate.io/login',
+        siteName: 'StudyMate.io',
         type: 'website',
     },
     twitter: {
-        title: 'Login - StudyGeni',
-        description: 'Access your StudyGeni account.',
+        title: 'Login - StudyMate.io',
+        description: 'Access your StudyMate.io account.',
         card: 'summary',
     },
 };
