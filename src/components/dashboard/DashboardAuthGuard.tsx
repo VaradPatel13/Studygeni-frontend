@@ -12,8 +12,8 @@ export default function DashboardAuthGuard({
     const router = useRouter();
 
     useEffect(() => {
-        // Check if user is authenticated
-        const token = Cookies.get('token');
+        // Check if user is authenticated (using localStorage since cookie is httpOnly)
+        const token = localStorage.getItem('token');
         if (!token) {
             router.push('/login');
         }

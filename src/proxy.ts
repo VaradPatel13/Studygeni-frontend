@@ -24,16 +24,19 @@ export default async function proxy(req: NextRequest) {
     token = req.cookies.get('token')?.value || null;
   }
 
+  const isApi = req.nextUrl.pathname.startsWith('/api');
+
   if (!token) {
-    return NextResponse.json({ success: false, message: 'Not authorized, no token' }, { status: 401 });
+    if (isApi) {
+      return NextResponse.json({ success: false, message: 'Not authorized, no token' }, { status: 401 });
+    }
+    return NextResponse.redirect(new URL('/login', req.url));
   }
 
   try {
-    // Verify JWT in Edge Middleware
     const secret = new TextEncoder().encode(process.env.JWT_SECRET!);
     const { payload } = await jose.jwtVerify(token, secret);
 
-    // Add user ID to headers for access in route handlers
     const requestHeaders = new Headers(req.headers);
     requestHeaders.set('x-user-id', payload.id as string);
 
@@ -43,8 +46,10 @@ export default async function proxy(req: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Middleware Auth Error:', error);
-    return NextResponse.json({ success: false, message: 'Not authorized, invalid token' }, { status: 401 });
+    if (isApi) {
+      return NextResponse.json({ success: false, message: 'Not authorized, invalid token' }, { status: 401 });
+    }
+    return NextResponse.redirect(new URL('/login', req.url));
   }
 }
 
