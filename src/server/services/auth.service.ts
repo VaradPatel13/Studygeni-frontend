@@ -1,14 +1,16 @@
 import { UserRepository } from '../repositories/user.repository';
 import { RegisterInput, LoginInput } from '../validations/auth.schema';
-import jwt from 'jsonwebtoken';
+import jwt, { SignOptions } from 'jsonwebtoken';
 
 const userRepository = new UserRepository();
 
 export class AuthService {
   private generateToken(id: string) {
-    return jwt.sign({ id }, process.env.JWT_SECRET!, {
-      expiresIn: process.env.JWT_EXPIRE || '30d',
-    });
+    const secret = process.env.JWT_SECRET!;
+    const options: SignOptions = {
+      expiresIn: (process.env.JWT_EXPIRE || '30d') as any
+    };
+    return jwt.sign({ id }, secret, options);
   }
 
   async registerUser(input: RegisterInput) {

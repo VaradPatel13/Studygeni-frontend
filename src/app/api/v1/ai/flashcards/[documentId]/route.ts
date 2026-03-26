@@ -10,7 +10,7 @@ const documentRepository = new DocumentRepository();
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { documentId: string } }
+  { params }: { params: Promise<{ documentId: string }> }
 ) {
   try {
     const userId = req.headers.get('x-user-id')!;
