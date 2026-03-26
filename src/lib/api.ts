@@ -2,8 +2,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import toast from 'react-hot-toast';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://studymate-io-backend.vercel.app/api';
-// https://studymate-io-backend.vercel.app/api
+const API_URL = '/api/v1';
 const api = axios.create({
     baseURL: API_URL,
     headers: {
@@ -67,19 +66,16 @@ api.interceptors.response.use(
             // Use (error.config as any)?.skipGlobalError if checking strict types
             const skipGlobalError = (error.config as any)?.skipGlobalError;
 
-            if (!skipGlobalError) {
+            if (!skipGlobalError && typeof window !== 'undefined') {
                 if (status === 403) {
                     toast.error('Access Denied: You do not have permission.');
                 } else if (status === 404) {
-                    // Sometimes 404 is expected (check exists), so maybe less intrusive?
-                    // But usually for API calls it's an error.
                     toast.error(errorMessage || 'Resource not found');
                 } else if (status === 429) {
                     toast.error('Too many requests. Please try again later.');
                 } else if (status >= 500) {
                     toast.error('Server error. Please try again later.');
                 } else {
-                    // 400 or other client errors
                     toast.error(errorMessage);
                 }
             }
