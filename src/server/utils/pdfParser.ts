@@ -1,10 +1,33 @@
 import axios from 'axios';
-// @ts-ignore
-import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
-import 'pdfjs-dist/legacy/build/pdf.worker.mjs';
+// Polyfill for Node.js environment (needed for pdfjs-dist v4+)
+if (typeof window === 'undefined') {
+    if (!(global as any).DOMMatrix) {
+        (global as any).DOMMatrix = class DOMMatrix {
+            a = 1; b = 0; c = 0; d = 1; e = 0; f = 0;
+            constructor() { }
+            static fromFloat32Array() { return new DOMMatrix(); }
+            static fromFloat64Array() { return new DOMMatrix(); }
+        };
+    }
+    if (!(global as any).ImageData) {
+        (global as any).ImageData = class ImageData {
+            constructor() { }
+        };
+    }
+    if (!(global as any).Path2D) {
+        (global as any).Path2D = class Path2D {
+            constructor() { }
+        };
+    }
+}
 
 export async function extractTextFromPdf(pdfUrl: string) {
     try {
+
+        const pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.mjs');
+        // @ts-ignore
+        await import('pdfjs-dist/legacy/build/pdf.worker.mjs');
+
         console.log(`[PDF Extract] Downloading from: ${pdfUrl}`);
         const response = await axios.get(pdfUrl, {
             responseType: 'arraybuffer',
@@ -15,6 +38,7 @@ export async function extractTextFromPdf(pdfUrl: string) {
         const loadingTask = pdfjsLib.getDocument({
             data: pdfData,
             useSystemFonts: true,
+            disableFontFace: true, // Recommended for Node.js to avoid font-loading issues
         });
 
         const pdfDocument = await loadingTask.promise;
