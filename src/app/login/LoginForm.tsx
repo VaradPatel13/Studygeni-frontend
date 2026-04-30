@@ -25,7 +25,10 @@ export default function LoginForm() {
         try {
             await authService.login({ email, password });
             toast.success('Welcome back!');
-            router.push('/dashboard');
+            // Small delay to ensure token is saved and state is flushed
+            setTimeout(() => {
+                router.push('/dashboard');
+            }, 100);
         } catch (err: any) {
             console.error('Login error:', err);
             const msg = err?.response?.data?.message || 'Invalid email or password.';
