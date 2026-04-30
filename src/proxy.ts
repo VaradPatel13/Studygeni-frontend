@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server';
 import * as jose from 'jose';
 
 // Routes that require authentication
-const PROTECTED_ROUTES = ['/api/v1/documents', '/api/v1/flashcards', '/api/v1/ai', '/api/v1/quizzes', '/dashboard'];
+const PROTECTED_ROUTES = ['/api/v1/documents', '/api/v1/flashcards', '/api/v1/ai', '/api/v1/quizzes', '/api/v1/progress', '/dashboard'];
 
 export default async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
