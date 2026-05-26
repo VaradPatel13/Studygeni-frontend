@@ -1,3 +1,4 @@
+import axios from 'axios';
 import api from '@/lib/api';
 
 export const aiService = {
@@ -7,8 +8,23 @@ export const aiService = {
     },
 
     async generateQuiz(documentId: string, count: number = 5, difficulty: string = 'mixed') {
-        const response = await api.post(`/ai/quiz/${documentId}`, { count, difficulty });
-        return response.data;
+        try {
+            const response = await api.post(
+                `/ai/quiz/${documentId}`,
+                { count, difficulty },
+                { headers: { 'x-skip-global-error': 'true' } }
+            );
+            return response.data;
+        } catch (error: unknown) {
+            if (axios.isAxiosError(error) && error.response?.status === 403) {
+                return {
+                    featureUnavailable: true,
+                    redirectToBilling: true,
+                };
+            }
+
+            throw error;
+        }
     },
 
     async generateSummary(documentId: string, length: string = 'medium') {

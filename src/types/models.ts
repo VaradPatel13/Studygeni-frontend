@@ -6,6 +6,7 @@ export interface IUser extends MongooseDocument {
   password?: string;
   profileImage?: string;
   mobileNumber: string;
+  subscriptionPlan?: 'free' | 'starter' | 'professional' | 'enterprise';
   matchPassword: (candidatePassword: string) => Promise<boolean>;
   createdAt: Date;
   updatedAt: Date;

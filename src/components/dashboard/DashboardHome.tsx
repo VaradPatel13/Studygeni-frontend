@@ -25,11 +25,13 @@ import { useRouter } from 'next/navigation';
 
 interface DashboardHomeProps {
     onViewAllDocuments: () => void;
+    onUpgradeClick?: () => void;
+    currentPlan?: string;
 }
 
 import { Skeleton } from '@/components/ui/Skeleton';
 
-export default function DashboardHome({ onViewAllDocuments }: DashboardHomeProps) {
+export default function DashboardHome({ onViewAllDocuments, onUpgradeClick, currentPlan }: DashboardHomeProps) {
     const router = useRouter();
     const [userName, setUserName] = useState('User');
     const [recentDocuments, setRecentDocuments] = useState<any[]>([]); // Keep for backwards compatibility if needed, or remove
@@ -187,6 +189,27 @@ export default function DashboardHome({ onViewAllDocuments }: DashboardHomeProps
         <div className="flex-1 bg-[var(--bg-page)] p-4 md:p-8 overflow-y-auto transition-colors duration-300 relative">
             <div className="max-w-6xl mx-auto space-y-6 md:space-y-8">
 
+                {/* Upgrade Banner */}
+                {stats?.featureUnavailable && (!currentPlan || !currentPlan.toLowerCase().includes('pro')) && (
+                    <div className="bg-gradient-to-r from-blue-500/5 via-indigo-500/5 to-purple-500/5 border border-blue-500/10 rounded-2xl p-4 flex items-center justify-between gap-4 animate-fade-in">
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 bg-[var(--color-brand-blue)]/10 text-[var(--color-brand-blue)] rounded-xl">
+                                <Zap className="w-5 h-5" />
+                            </div>
+                            <div>
+                                <h4 className="text-sm font-bold text-[var(--text-primary)]">Upgrade to Professional Plan</h4>
+                                <p className="text-xs text-[var(--text-secondary)] mt-0.5 font-medium hidden md:block">Unlock study streaks, average quiz accuracy, and detailed material insights.</p>
+                            </div>
+                        </div>
+                        <button
+                            onClick={onUpgradeClick}
+                            className="shrink-0 h-9 px-4 text-xs font-semibold rounded-full bg-[var(--color-brand-blue)] hover:bg-blue-600 text-white transition-all shadow-md shadow-blue-500/25 active:scale-95"
+                        >
+                            Upgrade to Pro
+                        </button>
+                    </div>
+                )}
+
                 {/* Header */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between pb-8 border-b border-[var(--border-subtle)] gap-4">
                     <div>
@@ -260,14 +283,18 @@ export default function DashboardHome({ onViewAllDocuments }: DashboardHomeProps
                                 <Zap className="w-24 h-24 rotate-12" />
                             </div>
                             <div className="flex justify-between items-start relative z-10">
-                                <span className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider">Daily Streak</span>
+                                <span className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider flex items-center gap-1">
+                                    Daily Streak {stats?.featureUnavailable && <span className="text-[10px]">🔒</span>}
+                                </span>
                                 <div className="p-2 bg-[var(--color-brand-yellow)]/10 rounded-2xl">
                                     <Zap className="w-5 h-5 text-[var(--color-brand-yellow)]" />
                                 </div>
                             </div>
                             <div className="relative z-10">
                                 <div className="flex items-baseline gap-1">
-                                    <span className="text-4xl font-bold text-[var(--text-primary)] tracking-tight">{stats?.stats?.streak?.current || 0}</span>
+                                    <span className="text-4xl font-bold text-[var(--text-primary)] tracking-tight">
+                                        {stats?.featureUnavailable ? '—' : (stats?.stats?.streak?.current || 0)}
+                                    </span>
                                     <span className="text-sm text-[var(--text-secondary)] font-medium">days</span>
                                 </div>
                                 <p className="text-xs text-[var(--text-tertiary)] mt-1">Keep it up! 🔥</p>
@@ -280,14 +307,18 @@ export default function DashboardHome({ onViewAllDocuments }: DashboardHomeProps
                                 <Target className="w-24 h-24 -rotate-12" />
                             </div>
                             <div className="flex justify-between items-start relative z-10">
-                                <span className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider">Avg Accuracy</span>
+                                <span className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider flex items-center gap-1">
+                                    Avg Accuracy {stats?.featureUnavailable && <span className="text-[10px]">🔒</span>}
+                                </span>
                                 <div className="p-2 bg-[var(--color-brand-blue)]/10 rounded-2xl">
                                     <Target className="w-5 h-5 text-[var(--color-brand-blue)]" />
                                 </div>
                             </div>
                             <div className="relative z-10">
                                 <div className="flex items-baseline gap-1">
-                                    <span className="text-4xl font-bold text-[var(--text-primary)] tracking-tight">{stats?.stats?.quizzes?.avgScore || 0}%</span>
+                                    <span className="text-4xl font-bold text-[var(--text-primary)] tracking-tight">
+                                        {stats?.featureUnavailable ? '—' : `${stats?.stats?.quizzes?.avgScore || 0}%`}
+                                    </span>
                                 </div>
                                 <p className="text-xs text-[var(--text-tertiary)] mt-1">Quiz Performance</p>
                             </div>
@@ -306,15 +337,23 @@ export default function DashboardHome({ onViewAllDocuments }: DashboardHomeProps
                                 <div className="p-3 bg-[var(--color-brand-yellow)]/10 rounded-2xl mb-1">
                                     <Brain className="w-6 h-6 text-[var(--color-brand-yellow)]" />
                                 </div>
-                                <span className="text-2xl font-bold text-[var(--text-primary)] tracking-tight">{stats?.stats?.flashcards?.totalSets || 0}</span>
-                                <span className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Flashcards</span>
+                                <span className="text-2xl font-bold text-[var(--text-primary)] tracking-tight">
+                                    {stats?.featureUnavailable ? '—' : (stats?.stats?.flashcards?.totalSets || 0)}
+                                </span>
+                                <span className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider flex items-center gap-1 justify-center">
+                                    Flashcards {stats?.featureUnavailable && <span className="text-[10px]">🔒</span>}
+                                </span>
                             </div>
                             <div className="flex-1 p-6 flex flex-col justify-center items-center text-center gap-2 hover:bg-[var(--bg-surface-highlight)] transition-colors">
                                 <div className="p-3 bg-[var(--color-brand-green)]/10 rounded-2xl mb-1">
                                     <Zap className="w-6 h-6 text-[var(--color-brand-green)]" />
                                 </div>
-                                <span className="text-2xl font-bold text-[var(--text-primary)] tracking-tight">{stats?.stats?.quizzes?.taken || 0}</span>
-                                <span className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Quizzes</span>
+                                <span className="text-2xl font-bold text-[var(--text-primary)] tracking-tight">
+                                    {stats?.featureUnavailable ? '—' : (stats?.stats?.quizzes?.taken || 0)}
+                                </span>
+                                <span className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider flex items-center gap-1 justify-center">
+                                    Quizzes {stats?.featureUnavailable && <span className="text-[10px]">🔒</span>}
+                                </span>
                             </div>
                         </div>
                     </div>

@@ -1,6 +1,6 @@
 {
   "name": "frontend",
-  "version": "0.1.0",
+  "version": "2.4.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -30,6 +30,7 @@
     "next": "^16.1.4",
     "office-text-extractor": "^4.0.0",
     "pdfjs-dist": "^5.5.207",
+    "razorpay": "^2.9.6",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "react-hot-toast": "^2.6.0",

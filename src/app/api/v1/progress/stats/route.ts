@@ -4,21 +4,24 @@ import Quiz from '@/models/Quiz';
 import Document from '@/models/Document';
 import { sendSuccess, sendError } from '@/lib/server/response';
 import connectDB from '@/lib/server/db';
+import { assertUserHasFeature } from '@/lib/server/planAccess';
 
 export async function GET(req: NextRequest) {
   try {
     const userId = req.headers.get('x-user-id')!;
     await connectDB();
 
+    await assertUserHasFeature(userId, 'Advanced analytics');
+
     const flashcardSets = await Flashcard.find({ userId });
     let totalFlashcards = 0;
     let totalCardsReviewed = 0;
     let flashcardsStarred = 0;
 
-    flashcardSets.forEach(set => {
+    flashcardSets.forEach((set) => {
       totalFlashcards += set.cards.length;
-      set.cards.forEach((card: any) => {
-        if (card.reviewCount > 0) totalCardsReviewed++;
+      set.cards.forEach((card: { reviewCount?: number; isStarred?: boolean }) => {
+        if ((card.reviewCount ?? 0) > 0) totalCardsReviewed++;
         if (card.isStarred) flashcardsStarred++;
       });
     });
@@ -50,7 +53,9 @@ export async function GET(req: NextRequest) {
       },
       recentData: { documents: recentDocs, quizzes: recentQuizzes }
     });
-  } catch (error: any) {
-    return sendError(error.message || 'Internal Server Error', 'INTERNAL_ERROR', 500);
+  } catch (error: unknown) {
+    const isFeatureBlocked = error instanceof Error && error.name === 'FEATURE_NOT_AVAILABLE';
+    const message = error instanceof Error ? error.message : 'Internal Server Error';
+    return sendError(message, isFeatureBlocked ? 'FORBIDDEN' : 'INTERNAL_ERROR', isFeatureBlocked ? 403 : 500);
   }
 }

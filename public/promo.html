@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyMate.io Promo Video</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- GSAP for advanced animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        outfit: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            blue: '#4285F4',
+                            red: '#EA4335',
+                            yellow: '#FBBC05',
+                            green: '#34A853',
+                        },
+                        neutral: {
+                            dark: '#202124',
+                            gray: '#5F6368',
+                            light: '#F8F9FA',
+                            border: '#DADCE0'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #202124; /* Dark gray page background to frame the white video */
+            overflow: hidden;
+        }
+        
+        .video-canvas {
+            width: 1280px;
+            height: 720px;
+            background-color: #FFFFFF; /* White container */
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+            border-radius: 16px;
+        }
+
+        .gradient-bg {
+            background-image: radial-gradient(circle at 80% 20%, rgba(66, 133, 244, 0.05) 0%, transparent 40%),
+                              radial-gradient(circle at 20% 80%, rgba(234, 67, 53, 0.05) 0%, transparent 40%),
+                              radial-gradient(circle at 50% 50%, rgba(251, 188, 5, 0.03) 0%, transparent 50%);
+        }
+
+        /* Scanline animation */
+        .scanline {
+            background: linear-gradient(to bottom, rgba(66, 133, 244, 0) 0%, rgba(66, 133, 244, 0.4) 50%, rgba(66, 133, 244, 0) 100%);
+            height: 30px;
+            width: 100%;
+            position: absolute;
+            top: -30px;
+            left: 0;
+            z-index: 10;
+        }
+
+        /* 3D Card Flip */
+        .flip-card-inner {
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .flip-card-front, .flip-card-back {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+
+        .flip-card-back {
+            transform: rotateY(180deg);
+        }
+
+        .text-gradient {
+            background: linear-gradient(90deg, #4285F4, #EA4335, #FBBC05, #34A853);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-4">
+
+    <!-- MAIN VIDEO CANVAS (1280x720, 16:9 Aspect Ratio) -->
+    <div id="videoCanvas" class="video-canvas gradient-bg flex items-center justify-center">
+        
+        <!-- ================= NAVBAR ================= -->
+        <div id="navbar" class="absolute top-0 left-0 w-full px-12 py-6 flex justify-between items-center z-50 opacity-0">
+            <div class="flex items-center gap-3">
+                <!-- Platform Logo PNG -->
+                <img src="logo.png" alt="StudyMate Logo" class="w-8 h-8 object-contain" />
+                <span class="font-outfit font-bold text-xl text-neutral-dark tracking-tight">StudyMate.io</span>
+            </div>
+            <div class="flex items-center gap-6">
+                <span class="text-xs font-semibold text-brand-blue bg-blue-50/80 px-3.5 py-1.5 rounded-full border border-blue-100/50">AI Study Suite</span>
+            </div>
+        </div>
+
+        <!-- ================= SCENE 1: LOGO INTRO ================= -->
+        <div id="scene1" class="absolute inset-0 flex flex-col items-center justify-center z-40">
+            <div class="relative w-32 h-32 mb-6 flex items-center justify-center">
+                <!-- Glowing Aura Rings -->
+                <div id="intro-glow-ring" class="absolute w-24 h-24 rounded-full border border-brand-blue/20 bg-brand-blue/5 opacity-0 scale-50"></div>
+                <div id="intro-glow-ring-2" class="absolute w-32 h-32 rounded-full border border-brand-red/15 opacity-0 scale-50"></div>
+                
+                <!-- Main logo image -->
+                <img id="intro-logo" src="logo.png" alt="StudyMate Logo" class="w-20 h-20 object-contain absolute opacity-0 scale-50" />
+            </div>
+            <h1 id="intro-title" class="font-outfit font-extrabold text-5xl text-neutral-dark tracking-tight mb-2 opacity-0">StudyMate.io</h1>
+            <p id="intro-subtitle" class="font-sans text-neutral-gray text-lg opacity-0 font-medium">Turn messy notes into top grades. Instantly.</p>
+        </div>
+
+        <!-- ================= SCENE 2: UPLOAD MATERIALS ================= -->
+        <div id="scene2" class="absolute inset-0 flex flex-col items-center justify-center px-16 py-20 opacity-0 z-10">
+            <div class="text-center max-w-xl mb-8">
+                <span class="text-xs font-bold text-brand-blue uppercase tracking-widest bg-blue-50 px-3.5 py-1.5 rounded-full border border-blue-100/50">1. Input Content</span>
+                <h2 class="font-outfit font-bold text-3xl text-neutral-dark mt-3">Upload any study material</h2>
+                <p class="text-neutral-gray mt-1.5 text-sm font-medium">Drag & drop lectures, research papers, YouTube videos, or images.</p>
+            </div>
+            
+            <div class="flex gap-8 w-full max-w-4xl justify-center items-center relative h-[250px]">
+                <!-- Drop Zone Card -->
+                <div id="upload-zone" class="w-1/2 aspect-[16/10] border-2 border-dashed border-neutral-border rounded-2xl flex flex-col items-center justify-center p-6 bg-white shadow-sm relative overflow-hidden">
+                    <div id="upload-icon-container" class="w-14 h-14 rounded-full bg-blue-50 text-brand-blue flex items-center justify-center mb-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
+                        </svg>
+                    </div>
+                    <span id="upload-text" class="text-sm font-semibold text-neutral-dark">Drag your documents here</span>
+                    <span id="upload-subtext" class="text-xs text-neutral-gray mt-1">PDF, DOCX, PNG, MP4 up to 50MB</span>
+                    
+                    <!-- Progress Bar -->
+                    <div id="upload-progress-container" class="w-4/5 h-2 bg-gray-100 rounded-full mt-4 overflow-hidden hidden">
+                        <div id="upload-progress-bar" class="h-full bg-brand-blue w-0"></div>
+                    </div>
+                    <span id="upload-percentage" class="text-xs font-bold text-brand-blue mt-2 hidden">Uploading: 0%</span>
+                </div>
+
+                <!-- Document Icon flying in -->
+                <div id="flying-doc" class="w-56 bg-white border border-neutral-border rounded-xl shadow-xl p-4 flex flex-col opacity-0 absolute right-8">
+                    <div class="flex items-center gap-3 border-b border-gray-100 pb-3 mb-3">
+                        <div class="w-10 h-10 rounded-lg bg-red-50 text-brand-red flex items-center justify-center flex-shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                            </svg>
+                        </div>
+                        <div class="flex flex-col overflow-hidden">
+                            <span class="text-xs font-bold text-neutral-dark truncate">Biology_Lecture_3.pdf</span>
+                            <span class="text-[10px] text-neutral-gray font-semibold font-sans">8.4 MB • PDF File</span>
+                        </div>
+                    </div>
+                    <!-- Tiny content mockup -->
+                    <div class="space-y-1.5 relative overflow-hidden">
+                        <div class="h-1.5 bg-gray-100 rounded w-full"></div>
+                        <div class="h-1.5 bg-gray-100 rounded w-5/6"></div>
+                        <div class="h-1.5 bg-gray-100 rounded w-4/5"></div>
+                        <!-- Scanline -->
+                        <div id="doc-scanline" class="scanline hidden"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= SCENE 3: AI PROCESSING & SUMMARIES ================= -->
+        <div id="scene3" class="absolute inset-0 flex flex-col items-center justify-center px-16 py-20 opacity-0 z-10">
+            <div class="text-center max-w-xl mb-8">
+                <span class="text-xs font-bold text-brand-red uppercase tracking-widest bg-red-50 px-3.5 py-1.5 rounded-full border border-red-100/50">2. AI Processing</span>
+                <h2 class="font-outfit font-bold text-3xl text-neutral-dark mt-3">Instant AI analysis & extraction</h2>
+                <p class="text-neutral-gray mt-1.5 text-sm font-medium">Key concepts, definitions, and summaries are generated in seconds.</p>
+            </div>
+
+            <div class="flex gap-12 w-full max-w-5xl justify-center items-center">
+                <!-- Left: Holographic AI Brain Model -->
+                <div class="w-1/2 flex items-center justify-center relative">
+                    <!-- Glowing Circles -->
+                    <div id="brain-glow-1" class="absolute w-44 h-44 rounded-full bg-brand-blue/5 border border-brand-blue/10"></div>
+                    <div id="brain-glow-2" class="absolute w-52 h-52 rounded-full bg-brand-red/5 border border-brand-red/10"></div>
+                    <!-- Brain SVG -->
+                    <svg id="ai-brain" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="w-36 h-36 text-brand-blue relative z-10">
+                        <path fill="currentColor" opacity="0.1" d="M50 15c-16.6 0-30 13.4-30 30 0 6.4 2 12.3 5.4 17.2C22.6 67.3 20 73.3 20 80c0 2.8 2.2 5 5 5h10c2.8 0 5-2.2 5-5v-5c0-5.5 4.5-10 10-10h10c5.5 0 10 4.5 10 10v5c0 2.8 2.2 5 5 5h10c2.8 0 5-2.2 5-5 0-6.7-2.6-12.7-5.4-17.8 3.4-4.9 5.4-10.8 5.4-17.2 0-16.6-13.4-30-30-30z"/>
+                        <path fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" d="M50 15v70M20 45h60M25.4 62.2l49.2-34.4M25.4 27.8l49.2 34.4" />
+                        <!-- Pulsing Nodes -->
+                        <circle cx="50" cy="15" r="4" class="fill-brand-blue" />
+                        <circle cx="50" cy="85" r="4" class="fill-brand-green" />
+                        <circle cx="20" cy="45" r="4" class="fill-brand-red" />
+                        <circle cx="80" cy="45" r="4" class="fill-brand-yellow" />
+                        <circle cx="35" cy="30" r="3.5" class="fill-brand-blue" />
+                        <circle cx="65" cy="30" r="3.5" class="fill-brand-red" />
+                        <circle cx="35" cy="60" r="3.5" class="fill-brand-yellow" />
+                        <circle cx="65" cy="60" r="3.5" class="fill-brand-green" />
+                    </svg>
+                </div>
+
+                <!-- Right: Summary Card Reveal -->
+                <div id="summary-card" class="w-1/2 bg-white border border-neutral-border rounded-2xl shadow-xl p-6 opacity-0">
+                    <div class="flex items-center gap-2.5 mb-4 border-b border-gray-50 pb-3">
+                        <span class="w-3 h-3 rounded-full bg-brand-red"></span>
+                        <h3 class="font-outfit font-bold text-lg text-neutral-dark">Smart Summary</h3>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <!-- Bullet 1 -->
+                        <div id="bullet-1" class="flex gap-3 opacity-0">
+                            <span class="text-brand-red font-bold text-sm">01</span>
+                            <div>
+                                <h4 class="text-sm font-bold text-neutral-dark">Mitochondria Function</h4>
+                                <p class="text-xs text-neutral-gray mt-1 leading-relaxed">Primary site of ATP generation via aerobic respiration, acting as the cellular powerhouse.</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Bullet 2 -->
+                        <div id="bullet-2" class="flex gap-3 opacity-0">
+                            <span class="text-brand-red font-bold text-sm">02</span>
+                            <div>
+                                <h4 class="text-sm font-bold text-neutral-dark">Double Membrane Structure</h4>
+                                <p class="text-xs text-neutral-gray mt-1 leading-relaxed">Inner membrane folded into cristae to maximize surface area for chemical reactions.</p>
+                            </div>
+                        </div>
+
+                        <!-- Bullet 3 -->
+                        <div id="bullet-3" class="flex gap-3 opacity-0">
+                            <span class="text-brand-red font-bold text-sm">03</span>
+                            <div>
+                                <h4 class="text-sm font-bold text-neutral-dark">Independent DNA</h4>
+                                <p class="text-xs text-neutral-gray mt-1 leading-relaxed">Contains mitochondrial DNA (mtDNA) inherited maternally, supporting the endosymbiotic theory.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= SCENE 4: ACTIVE RECALL (FLASHCARDS & QUIZZES) ================= -->
+        <div id="scene4" class="absolute inset-0 flex flex-col items-center justify-center px-16 py-20 opacity-0 z-10">
+            <div class="text-center max-w-xl mb-6">
+                <span class="text-xs font-bold text-brand-yellow uppercase tracking-widest bg-yellow-50 px-3.5 py-1.5 rounded-full border border-yellow-100/50">3. Active Recall</span>
+                <h2 class="font-outfit font-bold text-3xl text-neutral-dark mt-3">Study with active recall</h2>
+                <p class="text-neutral-gray mt-1.5 text-sm font-medium">Retain knowledge longer with AI-generated flashcards & quizzes.</p>
+            </div>
+
+            <div class="flex gap-8 w-full max-w-5xl justify-center items-stretch relative">
+                <!-- Left: 3D Flashcard -->
+                <div class="w-1/2 flex flex-col justify-between p-2">
+                    <span class="text-xs font-bold text-neutral-gray uppercase tracking-wider mb-3 block text-center">Spaced Repetition Flashcard</span>
+                    
+                    <div id="flashcard-container" class="perspective-1000 w-full h-[220px]">
+                        <div id="flashcard-inner" class="flip-card-inner relative w-full h-full text-center">
+                            
+                            <!-- Front Page -->
+                            <div class="flip-card-front absolute inset-0 bg-white border border-neutral-border rounded-2xl shadow-lg p-6 flex flex-col justify-between">
+                                <div class="flex justify-between items-center text-xs font-semibold text-neutral-gray">
+                                    <span>Card #4 of 12</span>
+                                    <span class="text-brand-blue font-bold">Biology 101</span>
+                                </div>
+                                <div class="my-auto text-base font-bold text-neutral-dark px-4 leading-relaxed">
+                                    What is the inner membrane fold of a mitochondrion called?
+                                </div>
+                                <div class="text-xs text-brand-blue font-bold bg-blue-50 py-1.5 px-3 rounded-full self-center">
+                                    Flipping Card...
+                                </div>
+                            </div>
+                            
+                            <!-- Back Page -->
+                            <div class="flip-card-back absolute inset-0 bg-yellow-50/30 border border-brand-yellow/30 rounded-2xl shadow-lg p-6 flex flex-col justify-between">
+                                <div class="flex justify-between items-center text-xs font-semibold text-neutral-gray">
+                                    <span class="font-bold text-brand-yellow">Answer Revealed</span>
+                                    <span class="text-brand-yellow flex items-center gap-1 font-bold">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+                                            <path fill-rule="evenodd" d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.6 3.1-.214 4.717c-.038.834.856 1.48 1.579 1.014L10 15.611l4.29 2.507c.723.466 1.617-.18 1.579-1.014l-.214-4.717 3.6-3.1c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z" clip-rule="evenodd" />
+                                        </svg>
+                                        Starred Card
+                                    </span>
+                                </div>
+                                <div class="my-auto text-xl font-bold text-neutral-dark px-4 font-outfit">
+                                    Cristae <span class="text-sm font-medium text-neutral-gray block mt-1 font-sans">(singular: Crista)</span>
+                                </div>
+                                <div class="text-xs text-neutral-gray font-semibold">
+                                    Saved to study vault
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Interactive Quiz -->
+                <div id="quiz-card" class="w-1/2 bg-white border border-neutral-border rounded-2xl shadow-lg p-6 flex flex-col justify-between opacity-0 relative">
+                    <div class="flex justify-between items-center text-xs font-semibold text-neutral-gray">
+                        <span>Instant Quiz</span>
+                        <span class="text-neutral-gray bg-gray-50 px-2.5 py-0.5 rounded border border-gray-100 font-semibold" id="quiz-score-badge">Score: 0/1</span>
+                    </div>
+
+                    <div class="my-4">
+                        <h4 class="text-xs font-bold text-neutral-dark mb-3 leading-relaxed">Which of the following processes occurs in the mitochondrial matrix?</h4>
+                        
+                        <div class="space-y-2 font-sans">
+                            <!-- Option A -->
+                            <div id="quiz-opt-a" class="border border-neutral-border rounded-xl p-2.5 text-xs text-neutral-dark flex items-center justify-between bg-white">
+                                <span>A) Glycolysis</span>
+                                <div class="w-4 h-4 rounded-full border border-neutral-border"></div>
+                            </div>
+                            
+                            <!-- Option B (Correct Answer) -->
+                            <div id="quiz-opt-b" class="border border-neutral-border rounded-xl p-2.5 text-xs text-neutral-dark flex items-center justify-between relative overflow-hidden bg-white">
+                                <span class="relative z-10">B) Citric Acid (Krebs) Cycle</span>
+                                <div id="opt-b-radio" class="w-4 h-4 rounded-full border border-neutral-border relative z-10"></div>
+                                <div id="opt-b-check" class="hidden text-brand-green relative z-10">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+                                        <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <!-- Option C -->
+                            <div id="quiz-opt-c" class="border border-neutral-border rounded-xl p-2.5 text-xs text-neutral-dark flex items-center justify-between bg-white">
+                                <span>C) Electron Transport Chain</span>
+                                <div class="w-4 h-4 rounded-full border border-neutral-border"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cursor indicator -->
+                    <div id="click-cursor" class="absolute w-6 h-6 z-30 opacity-0 pointer-events-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-neutral-dark drop-shadow-md">
+                            <path d="M5.625 2.125a.75.75 0 00-1.125.65v13.5a.75.75 0 001.28.53l3.565-3.566h6.155a.75.75 0 00.53-1.28L5.625 2.125z" />
+                        </svg>
+                    </div>
+
+                    <div class="flex justify-between items-center border-t border-gray-50 pt-3 text-[10px] font-semibold text-neutral-gray">
+                        <span>Selected Answer: <span id="selected-ans-label">None</span></span>
+                        <span id="quiz-feedback" class="font-bold text-brand-green hidden">Correct! (+100 XP)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= SCENE 5: CHAT WITH DOCUMENT ================= -->
+        <div id="scene5" class="absolute inset-0 flex flex-col items-center justify-center px-16 py-20 opacity-0 z-10">
+            <div class="text-center max-w-xl mb-6">
+                <span class="text-xs font-bold text-brand-blue uppercase tracking-widest bg-blue-50 px-3.5 py-1.5 rounded-full border border-blue-100/50">4. Interactive Chat</span>
+                <h2 class="font-outfit font-bold text-3xl text-neutral-dark mt-3">Chat directly with your notes</h2>
+                <p class="text-neutral-gray mt-1.5 text-sm font-medium">Ask questions, request breakdowns, and locate source citations instantly.</p>
+            </div>
+
+            <!-- Chat Window Mockup -->
+            <div id="chat-window" class="w-full max-w-2xl bg-white border border-neutral-border rounded-2xl shadow-xl flex flex-col h-[280px] overflow-hidden opacity-0">
+                <!-- Chat Header -->
+                <div class="bg-neutral-light border-b border-neutral-border px-5 py-3.5 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <!-- Website exact color icon -->
+                        <div class="w-2.5 h-2.5 rounded-full bg-brand-blue shadow-sm"></div>
+                        <span class="font-outfit font-bold text-xs text-neutral-dark">StudyMate AI Assistant</span>
+                    </div>
+                    <span class="text-[10px] text-neutral-gray font-semibold font-sans">Source: Biology_Lecture_3.pdf</span>
+                </div>
+
+                <!-- Chat Messages Body -->
+                <div id="chat-messages" class="flex-grow p-5 space-y-4 overflow-y-auto flex flex-col">
+                    <!-- Message 1 (User) - Website Brand Blue -->
+                    <div id="msg-user" class="self-end bg-brand-blue text-white rounded-2xl rounded-tr-none px-4 py-2.5 max-w-[80%] text-xs shadow-sm opacity-0 font-medium">
+                        How is oxygen used in the mitochondria?
+                    </div>
+
+                    <!-- Message 2 (AI Assistant) - Website Neutral 100/F1F3F4 -->
+                    <div id="msg-ai" class="self-start bg-[#F1F3F4] text-neutral-dark rounded-2xl rounded-tl-none px-4 py-2.5 max-w-[85%] text-xs shadow-sm opacity-0 flex flex-col gap-2">
+                        <span id="ai-response-text" class="leading-relaxed whitespace-pre-wrap"></span>
+                        <!-- Source Citation -->
+                        <div id="citation-badge" class="flex items-center gap-1.5 text-[10px] text-brand-blue font-bold border-t border-neutral-border/40 pt-2 opacity-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-3.5 h-3.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5-3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                            </svg>
+                            <span>Found in Biology_Lecture_3.pdf (Page 4)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Input Footer Mockup -->
+                <div class="border-t border-neutral-border px-4 py-3 bg-neutral-light flex items-center justify-between">
+                    <span class="text-xs text-neutral-gray font-medium">Ask a follow-up question...</span>
+                    <button class="bg-brand-blue hover:bg-blue-600 text-white rounded-full p-1.5 shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+                            <path d="M3.105 2.289a.75.75 0 00-.826.95l1.414 4.925A1.5 1.5 0 005.135 9.25h6.115a.75.75 0 010 1.5H5.135a1.5 1.5 0 00-1.442 1.086l-1.414 4.926a.75.75 0 00.826.95 28.896 28.896 0 0015.293-7.154.75.75 0 000-1.115A28.897 28.897 0 003.105 2.289z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= SCENE 6: OUTRO / CALL TO ACTION ================= -->
+        <div id="scene6" class="absolute inset-0 flex flex-col items-center justify-center opacity-0 z-10 px-12">
+            <!-- Background glow visual effects -->
+            <div id="outro-glow-1" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[450px] rounded-full bg-brand-blue/5 blur-3xl z-0 pointer-events-none"></div>
+            <div id="outro-glow-2" class="absolute top-1/3 left-1/3 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full bg-brand-red/5 blur-2xl z-0 pointer-events-none"></div>
+
+            <!-- Platform Logo PNG in Outro -->
+            <img id="outro-logo" src="logo.png" alt="StudyMate Logo" class="w-20 h-20 object-contain mb-4 relative z-10 opacity-0" />
+
+            <h2 id="outro-title" class="font-outfit font-extrabold text-5xl text-neutral-dark tracking-tight mb-4 relative z-10 opacity-0">
+                StudyMate.io
+            </h2>
+            
+            <p id="outro-slogan" class="font-sans text-neutral-gray text-lg mb-8 max-w-lg text-center leading-relaxed relative z-10 font-medium opacity-0">
+                Join the AI study revolution. Get summaries, flashcards, and quizzes created automatically.
+            </p>
+
+            <button id="outro-btn" class="bg-brand-blue hover:bg-blue-600 text-white font-bold font-outfit text-md px-8 py-3.5 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform relative z-10 flex items-center gap-2 opacity-0">
+                <span>Start Studying for Free</span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
+                    <path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 11-1.04-1.08l4.158-3.92H3.75A.75.75 0 013 10z" clip-rule="evenodd" />
+                </svg>
+            </button>
+
+            <span id="outro-subtext" class="text-xs text-neutral-gray mt-4 relative z-10 font-semibold opacity-0">No credit card required. Cancel anytime.</span>
+        </div>
+
+    </div>
+
+    <!-- ================= VIDEO PLAYBACK CONTROLS ================= -->
+    <div class="mt-6 w-[1280px] bg-neutral-900 rounded-xl px-6 py-4 flex items-center justify-between text-white shadow-2xl border border-[#2c2e33]">
+        <!-- Play / Pause Buttons -->
+        <div class="flex items-center gap-4">
+            <button id="btn-play-pause" class="bg-white text-neutral-dark p-2 rounded-full hover:bg-gray-100 transition-colors shadow">
+                <!-- Play Icon (Default) -->
+                <svg id="icon-play" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
+                    <path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.269l9.324-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                </svg>
+                <!-- Pause Icon (Hidden) -->
+                <svg id="icon-pause" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 hidden">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+            </button>
+            <button id="btn-restart" class="text-gray-400 hover:text-white transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                </svg>
+            </button>
+            <span id="video-timer" class="font-mono text-sm text-gray-400 select-none">00:00 / 00:25</span>
+        </div>
+
+        <!-- Video Seek Bar / Progress Track -->
+        <div class="flex-grow mx-8 relative flex items-center group">
+            <div class="w-full h-1.5 bg-gray-700 rounded-full cursor-pointer relative" id="seek-track">
+                <div id="playhead-progress" class="h-full bg-brand-blue rounded-full w-0 transition-all duration-100"></div>
+                <div id="playhead" class="w-3.5 h-3.5 bg-white border-2 border-brand-blue rounded-full absolute -top-1 -ml-1.5 shadow opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            </div>
+        </div>
+
+        <!-- Active Scene indicator -->
+        <div class="flex items-center gap-2">
+            <span class="text-xs text-gray-400 font-semibold uppercase tracking-wider select-none">Scene:</span>
+            <span id="active-scene-name" class="text-xs font-bold text-brand-blue bg-blue-500/10 px-2.5 py-1 rounded border border-blue-500/20 select-none">1. Intro</span>
+        </div>
+    </div>
+
+    <!-- Script to execute GSAP timeline animation -->
+    <script>
+        // Register TextPlugin
+        gsap.registerPlugin(TextPlugin);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Responsive canvas scaling to fit any viewport/iframe
+            function resizeVideoCanvas() {
+                const canvas = document.getElementById('videoCanvas');
+                if (!canvas) return;
+                
+                const urlParams = new URLSearchParams(window.location.search);
+                const hideControls = urlParams.get('hidecontrols') === 'true';
+                
+                if (hideControls) {
+                    canvas.style.position = 'absolute';
+                    canvas.style.top = '50%';
+                    canvas.style.left = '50%';
+                    
+                    const scaleX = window.innerWidth / 1280;
+                    const scaleY = window.innerHeight / 720;
+                    const scale = Math.min(scaleX, scaleY);
+                    
+                    canvas.style.transform = `translate(-50%, -50%) scale(${scale})`;
+                } else {
+                    canvas.style.position = 'relative';
+                    canvas.style.top = 'auto';
+                    canvas.style.left = 'auto';
+                    
+                    const containerWidth = window.innerWidth - 32; // padding
+                    const scale = Math.min(1, containerWidth / 1280);
+                    
+                    canvas.style.transform = `scale(${scale})`;
+                    canvas.style.transformOrigin = 'top center';
+                    
+                    const controls = document.querySelector('.mt-6.w-\\[1280px\\]');
+                    if (controls) {
+                        controls.style.transform = `scale(${scale})`;
+                        controls.style.transformOrigin = 'top center';
+                        controls.style.marginTop = `${(scale - 1) * 720 + 24}px`;
+                    }
+                }
+            }
+            window.addEventListener('resize', resizeVideoCanvas);
+            
+            // Check hidecontrols parameter to hide controls element
+            const urlParams = new URLSearchParams(window.location.search);
+            const hideControls = urlParams.get('hidecontrols') === 'true';
+            if (hideControls) {
+                const controls = document.querySelector('.mt-6.w-\\[1280px\\]');
+                if (controls) {
+                    controls.style.display = 'none';
+                }
+                document.body.className = "flex items-center justify-center min-h-screen m-0 p-0 overflow-hidden bg-[#202124]";
+            }
+            
+            // Initial call to set size
+            resizeVideoCanvas();
+
+            const tl = gsap.timeline({ paused: true, repeat: -1, onUpdate: updateTimelineProgress });
+            let isPlaying = false;
+            let outroPulse = null; // Store reference to outro button loop animation
+            const TOTAL_DURATION = 25; // seconds
+            
+            // Elements
+            const playPauseBtn = document.getElementById('btn-play-pause');
+            const iconPlay = document.getElementById('icon-play');
+            const iconPause = document.getElementById('icon-pause');
+            const restartBtn = document.getElementById('btn-restart');
+            const timerLabel = document.getElementById('video-timer');
+            const playheadProgress = document.getElementById('playhead-progress');
+            const playhead = document.getElementById('playhead');
+            const activeSceneLabel = document.getElementById('active-scene-name');
+            const seekTrack = document.getElementById('seek-track');
+
+            // Setup GSAP animation steps
+            function createAnimationTimeline() {
+                tl.clear();
+                if (outroPulse) {
+                    outroPulse.kill();
+                    outroPulse = null;
+                }
+                
+                // Set initial states
+                gsap.set("#scene1", { opacity: 1, zIndex: 40 });
+                gsap.set(["#scene2", "#scene3", "#scene4", "#scene5", "#scene6"], { opacity: 0, zIndex: 10 });
+                gsap.set("#navbar", { opacity: 0, y: -20 });
+                
+                // Intro branding animation initial state
+                gsap.set("#intro-logo", { opacity: 0, scale: 0.3, rotation: -45 });
+                gsap.set("#intro-glow-ring", { opacity: 0, scale: 0.3 });
+                gsap.set("#intro-glow-ring-2", { opacity: 0, scale: 0.3 });
+                
+                gsap.set("#upload-zone", { scale: 0.9, opacity: 0 });
+                gsap.set("#flying-doc", { opacity: 0, x: 250, y: 0, scale: 0.8 });
+                gsap.set("#upload-progress-container, #upload-percentage", { display: 'none' });
+                gsap.set("#upload-progress-bar", { width: 0 });
+                gsap.set("#upload-icon-container", { scale: 1 });
+                gsap.set("#doc-scanline", { display: 'none', top: '-30px' });
+                gsap.set("#summary-card", { opacity: 0, x: 50 });
+                gsap.set(["#bullet-1", "#bullet-2", "#bullet-3"], { opacity: 0, x: -20 });
+                gsap.set("#flashcard-inner", { rotationY: 0 });
+                gsap.set("#quiz-card", { opacity: 0, x: 50 });
+                gsap.set("#opt-b-radio", { display: 'block' });
+                gsap.set("#opt-b-check", { display: 'none' });
+                gsap.set("#quiz-opt-b", { backgroundColor: 'transparent', borderColor: '#DADCE0' });
+                gsap.set("#click-cursor", { opacity: 0, x: 120, y: 120 });
+                gsap.set("#quiz-feedback", { display: 'none' });
+                gsap.set("#selected-ans-label", { textContent: 'None' });
+                gsap.set("#quiz-score-badge", { textContent: 'Score: 0/1', className: 'text-neutral-gray bg-gray-50 px-2.5 py-0.5 rounded border border-gray-100' });
+                
+                // Chat window and bubbles initial states for zoom & type
+                gsap.set("#chat-window", { opacity: 0, scale: 0.75, y: 30 });
+                gsap.set("#msg-user", { opacity: 0, scale: 0.5 });
+                gsap.set("#msg-ai", { opacity: 0, scale: 0.5 });
+                gsap.set("#ai-response-text", { textContent: "" });
+                gsap.set("#citation-badge", { opacity: 0, y: 10 });
+                
+                gsap.set("#outro-logo", { opacity: 0, scale: 0.5, y: 20 });
+                gsap.set(["#outro-title", "#outro-slogan", "#outro-btn", "#outro-subtext"], { opacity: 0, y: 20 });
+                gsap.set("#outro-btn", { scale: 1 });
+                
+                // ================= SCENE 1: INTRO (0s - 3s) =================
+                tl.addLabel("scene1", 0)
+                  .add(() => {
+                      if (outroPulse) {
+                          outroPulse.kill();
+                          outroPulse = null;
+                      }
+                  }, 0)
+                  // Scale and rotate the logo in with a gorgeous modern ring glow
+                  .to("#intro-logo", { duration: 1.0, opacity: 1, scale: 1, rotation: 0, ease: "back.out(1.5)" }, 0.2)
+                  .to("#intro-glow-ring", { duration: 0.8, opacity: 0.6, scale: 1, ease: "power2.out" }, 0.4)
+                  .to("#intro-glow-ring-2", { duration: 1.0, opacity: 0.4, scale: 1, ease: "power2.out" }, 0.6)
+                  
+                  // Pulse fade the aura rings
+                  .to(["#intro-glow-ring", "#intro-glow-ring-2"], { duration: 0.6, opacity: 0, scale: 1.2, ease: "power1.out" }, 1.3)
+                  
+                  .to("#intro-title", { duration: 0.6, opacity: 1, ease: "power2.out" }, 1.4)
+                  .to("#intro-subtitle", { duration: 0.6, opacity: 1, ease: "power2.out" }, 1.6)
+                  
+                  // Transition out of Scene 1
+                  .to("#scene1", { duration: 0.6, opacity: 0, scale: 0.95, ease: "power2.inOut" }, 2.5)
+                  .to("#navbar", { duration: 0.6, opacity: 1, y: 0, ease: "power2.out" }, 2.8);
+
+                // ================= SCENE 2: UPLOAD (3s - 7.5s) =================
+                tl.addLabel("scene2", 3.0)
+                  .to("#scene2", { duration: 0.4, opacity: 1, zIndex: 30 }, 3.0)
+                  .to("#upload-zone", { duration: 0.5, scale: 1, opacity: 1, ease: "back.out(1.4)" }, 3.3)
+                  .to("#flying-doc", { duration: 0.7, opacity: 1, x: 0, scale: 1, ease: "power2.out" }, 3.7)
+                  
+                  // Drop file into upload-zone
+                  .to("#flying-doc", { duration: 0.5, x: -220, y: 15, scale: 0.75, opacity: 0.8, ease: "power2.in" }, 4.7)
+                  .to("#upload-icon-container", { duration: 0.2, scale: 0.9, ease: "power1.in" }, 5.2)
+                  .to("#upload-icon-container", { duration: 0.3, scale: 1.1, ease: "back.out(1.6)" }, 5.4)
+                  
+                  // Start progress loader
+                  .set("#upload-progress-container, #upload-percentage", { display: 'block' }, 5.4)
+                  .to("#upload-progress-bar", { duration: 1.1, width: '100%', ease: "power1.inOut" }, 5.4)
+                  .to({}, { 
+                      duration: 1.1, 
+                      onUpdate: function() {
+                          const pct = Math.round(this.progress() * 100);
+                          document.getElementById('upload-percentage').innerText = `Uploading: ${pct}%`;
+                      } 
+                  }, 5.4)
+                  
+                  // Scanning animation
+                  .set("#doc-scanline", { display: 'block' }, 6.6)
+                  .to("#doc-scanline", { duration: 0.6, top: '100%', ease: "power1.inOut" }, 6.6)
+                  .to("#upload-percentage", { duration: 0.2, color: '#34A853', textContent: 'Upload Complete' }, 6.9)
+                  
+                  // Transition out of Scene 2
+                  .to("#scene2", { duration: 0.5, opacity: 0, scale: 0.95, ease: "power2.inOut" }, 7.5);
+
+                // ================= SCENE 3: AI PROCESSING (8.0s - 12.5s) =================
+                tl.addLabel("scene3", 8.0)
+                  .to("#scene3", { duration: 0.4, opacity: 1, zIndex: 30 }, 8.0)
+                  .to("#ai-brain", { duration: 0.8, scale: 1.1, repeat: 1, yoyo: true, ease: "power1.inOut" }, 8.2)
+                  .to("#brain-glow-1", { duration: 1.0, scale: 1.3, opacity: 0, ease: "power2.out" }, 8.2)
+                  .to("#summary-card", { duration: 0.6, opacity: 1, x: 0, ease: "back.out(1.2)" }, 8.6)
+                  
+                  // Staggered reveal of summary bullet points
+                  .to("#bullet-1", { duration: 0.4, opacity: 1, x: 0, ease: "power2.out" }, 9.2)
+                  .to("#bullet-2", { duration: 0.4, opacity: 1, x: 0, ease: "power2.out" }, 9.7)
+                  .to("#bullet-3", { duration: 0.4, opacity: 1, x: 0, ease: "power2.out" }, 10.2)
+                  
+                  // Transition out of Scene 3
+                  .to("#scene3", { duration: 0.5, opacity: 0, scale: 0.95, ease: "power2.inOut" }, 12.4);
+
+                // ================= SCENE 4: ACTIVE RECALL (12.9s - 17.5s) =================
+                tl.addLabel("scene4", 12.9)
+                  .to("#scene4", { duration: 0.4, opacity: 1, zIndex: 30 }, 12.9)
+                  .to("#quiz-card", { duration: 0.6, opacity: 1, x: 0, ease: "back.out(1.2)" }, 13.2)
+                  
+                  // Flashcard 3D flip animation
+                  .to("#flashcard-inner", { duration: 0.7, rotationY: 180, ease: "back.out(1)" }, 13.8)
+                  
+                  // Quiz Choice cursor animation
+                  .to("#click-cursor", { duration: 0.7, opacity: 1, x: 195, y: -45, ease: "power2.out" }, 14.6)
+                  // Click effect (shrink option and checkmark selection)
+                  .to("#quiz-opt-b", { duration: 0.1, scale: 0.97, ease: "power1.in" }, 15.3)
+                  .to("#quiz-opt-b", { 
+                      duration: 0.15, 
+                      scale: 1, 
+                      borderColor: '#34A853', 
+                      backgroundColor: 'rgba(52, 168, 83, 0.05)', 
+                      ease: "power1.out" 
+                  }, 15.4)
+                  .set("#opt-b-radio", { display: 'none' }, 15.4)
+                  .set("#opt-b-check", { display: 'block' }, 15.4)
+                  .set("#quiz-feedback", { display: 'block' }, 15.4)
+                  .set("#selected-ans-label", { textContent: 'B' }, 15.4)
+                  .to("#click-cursor", { duration: 0.3, opacity: 0, y: -20, ease: "power2.in" }, 15.6)
+                  
+                  // Score animation update
+                  .to({}, { 
+                      duration: 0.2, 
+                      onStart: () => {
+                          const badge = document.getElementById("quiz-score-badge");
+                          badge.innerText = "Score: 1/1";
+                          badge.className = "text-brand-green bg-green-50 px-2.5 py-0.5 rounded border border-green-100 font-bold";
+                      }
+                  }, 15.4)
+                  
+                  // Transition out of Scene 4
+                  .to("#scene4", { duration: 0.5, opacity: 0, scale: 0.95, ease: "power2.inOut" }, 17.4);
+
+                // ================= SCENE 5: CHAT (17.9s - 21.8s) =================
+                tl.addLabel("scene5", 17.9)
+                  .to("#scene5", { duration: 0.4, opacity: 1, zIndex: 30 }, 17.9)
+                  
+                  // Chat window zooms in from the center with a premium bounce
+                  .fromTo("#chat-window", { scale: 0.75, opacity: 0, y: 30 }, { duration: 0.7, scale: 1, opacity: 1, y: 0, ease: "back.out(1.4)" }, 18.2)
+                  
+                  // User Message bubble zooms in from bottom-right (transform-origin bottom right)
+                  .fromTo("#msg-user", { scale: 0.5, opacity: 0, transformOrigin: "bottom right" }, { duration: 0.45, scale: 1, opacity: 1, ease: "back.out(1.3)" }, 18.9)
+                  
+                  // AI Response Message container zooms in from top-left (transform-origin top left)
+                  .fromTo("#msg-ai", { scale: 0.5, opacity: 0, transformOrigin: "top left" }, { duration: 0.45, scale: 1, opacity: 1, ease: "back.out(1.3)" }, 19.6)
+                  
+                  // Text types out letter-by-letter inside the AI bubble using GSAP TextPlugin
+                  .to("#ai-response-text", { 
+                      duration: 1.4, 
+                      text: "Oxygen acts as the final electron acceptor in the electron transport chain inside the inner membrane. It combines with electrons and hydrogen ions to form water, driving the synthesis of ATP.", 
+                      ease: "none" 
+                  }, 20.0)
+                  
+                  // Citation badge slides and fades in after typing is complete
+                  .fromTo("#citation-badge", { opacity: 0, y: 10 }, { duration: 0.4, opacity: 1, y: 0, ease: "power2.out" }, 21.4)
+                  
+                  // Transition out of Scene 5
+                  .to("#scene5", { duration: 0.5, opacity: 0, scale: 0.95, ease: "power2.inOut" }, 21.7);
+
+                // ================= SCENE 6: OUTRO (22.2s - 25.0s) =================
+                tl.addLabel("scene6", 22.2)
+                  .to("#scene6", { duration: 0.4, opacity: 1, zIndex: 40 }, 22.2)
+                  // Fade in and scale up the platform logo in outro
+                  .fromTo("#outro-logo", { scale: 0.6, opacity: 0, y: 20 }, { duration: 0.6, scale: 1, opacity: 1, y: 0, ease: "back.out(1.4)" }, 22.4)
+                  .fromTo("#outro-title", { y: 20, opacity: 0 }, { duration: 0.5, y: 0, opacity: 1, ease: "power2.out" }, 22.6)
+                  .fromTo("#outro-slogan", { y: 20, opacity: 0 }, { duration: 0.5, y: 0, opacity: 1, ease: "power2.out" }, 22.8)
+                  .fromTo("#outro-btn", { y: 30, opacity: 0 }, { duration: 0.6, y: 0, opacity: 1, ease: "back.out(1.5)" }, 23.1)
+                  .fromTo("#outro-subtext", { opacity: 0 }, { duration: 0.4, opacity: 1 }, 23.5)
+                  .add(() => {
+                      // Trigger infinite loop pulse animation at the very end of timeline to avoid infinite duration
+                      if (tl.progress() > 0.95) {
+                          outroPulse = gsap.to("#outro-btn", { duration: 1.5, scale: 1.05, repeat: -1, yoyo: true, ease: "sine.inOut" });
+                      }
+                  }, 24.0);
+            }
+
+            // Sync seek bar and active scene indicator
+            function updateTimelineProgress() {
+                const progress = tl.progress();
+                const curTime = tl.time();
+                
+                // Playhead positioning
+                playheadProgress.style.width = `${progress * 100}%`;
+                playhead.style.left = `${progress * 100}%`;
+                
+                // Timer labeling
+                const formatTime = (secs) => {
+                    const m = Math.floor(secs / 60).toString().padStart(2, '0');
+                    const s = Math.floor(secs % 60).toString().padStart(2, '0');
+                    return `${m}:${s}`;
+                };
+                timerLabel.innerText = `${formatTime(curTime)} / ${formatTime(TOTAL_DURATION)}`;
+                
+                // Scene indicators
+                if (curTime < 3.0) {
+                    activeSceneLabel.innerText = "1. Intro";
+                    activeSceneLabel.className = "text-xs font-bold text-brand-blue bg-blue-500/10 px-2.5 py-1 rounded border border-blue-500/20 select-none";
+                } else if (curTime < 8.0) {
+                    activeSceneLabel.innerText = "2. Upload";
+                    activeSceneLabel.className = "text-xs font-bold text-brand-blue bg-blue-500/10 px-2.5 py-1 rounded border border-blue-500/20 select-none";
+                } else if (curTime < 12.9) {
+                    activeSceneLabel.innerText = "3. AI Processing";
+                    activeSceneLabel.className = "text-xs font-bold text-brand-red bg-red-500/10 px-2.5 py-1 rounded border border-red-500/20 select-none";
+                } else if (curTime < 17.9) {
+                    activeSceneLabel.innerText = "4. Active Recall";
+                    activeSceneLabel.className = "text-xs font-bold text-brand-yellow bg-yellow-500/10 px-2.5 py-1 rounded border border-yellow-500/20 select-none";
+                } else if (curTime < 22.2) {
+                    activeSceneLabel.innerText = "5. Chat & Research";
+                    activeSceneLabel.className = "text-xs font-bold text-brand-blue bg-blue-500/10 px-2.5 py-1 rounded border border-blue-500/20 select-none";
+                } else {
+                    activeSceneLabel.innerText = "6. Outro";
+                    activeSceneLabel.className = "text-xs font-bold text-brand-green bg-green-500/10 px-2.5 py-1 rounded border border-green-500/20 select-none";
+                }
+
+                // Check end
+                if (progress >= 1.0 && tl.repeat() !== -1) {
+                    isPlaying = false;
+                    togglePlayIcons();
+                }
+            }
+
+            // Click-to-seek timeline logic
+            seekTrack.addEventListener('click', (e) => {
+                const rect = seekTrack.getBoundingClientRect();
+                const clickX = e.clientX - rect.left;
+                const pct = Math.max(0, Math.min(1, clickX / rect.width));
+                if (outroPulse) {
+                    outroPulse.kill();
+                    outroPulse = null;
+                }
+                tl.progress(pct);
+                if (isPlaying) tl.play();
+            });
+
+            // Play / Pause control
+            playPauseBtn.addEventListener('click', () => {
+                if (isPlaying) {
+                    tl.pause();
+                    isPlaying = false;
+                } else {
+                    if (tl.progress() >= 1.0) tl.restart();
+                    else tl.play();
+                    isPlaying = true;
+                }
+                togglePlayIcons();
+            });
+
+            function togglePlayIcons() {
+                if (isPlaying) {
+                    iconPlay.classList.add('hidden');
+                    iconPause.classList.remove('hidden');
+                } else {
+                    iconPlay.classList.remove('hidden');
+                    iconPause.classList.add('hidden');
+                }
+            }
+
+            // Restart control
+            restartBtn.addEventListener('click', () => {
+                tl.restart();
+                isPlaying = true;
+                togglePlayIcons();
+            });
+
+            // Initialize timeline and start playing immediately
+            createAnimationTimeline();
+            tl.play();
+            isPlaying = true;
+            togglePlayIcons();
+        });
+    </script>
+</body>
+</html>

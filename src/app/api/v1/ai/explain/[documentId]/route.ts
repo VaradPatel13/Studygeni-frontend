@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server';
 import { AIService } from '@/server/services/ai.service';
 import { DocumentRepository } from '@/server/repositories/document.repository';
 import { sendSuccess, sendError } from '@/lib/server/response';
+import { assertUserHasFeature } from '@/lib/server/planAccess';
 
 const aiService = new AIService();
 const documentRepository = new DocumentRepository();
@@ -15,6 +16,8 @@ export async function POST(
     const { documentId } = await params;
     const { concept, level = 'simple' } = await req.json();
 
+    await assertUserHasFeature(userId, 'Concept explanations');
+
     if (!concept) return sendError('Concept is required', 'VALIDATION_ERROR', 400);
 
     const document = await documentRepository.findById(documentId, userId);
@@ -22,7 +25,9 @@ export async function POST(
 
     const explanation = await aiService.explainConcept(document, concept, level);
     return sendSuccess('Concept explained successfully', { documentId, concept, level, explanation });
-  } catch (error: any) {
-    return sendError(error.message || 'Internal Server Error', 'INTERNAL_ERROR', 500);
+  } catch (error: unknown) {
+    const isFeatureBlocked = error instanceof Error && error.name === 'FEATURE_NOT_AVAILABLE';
+    const message = error instanceof Error ? error.message : 'Internal Server Error';
+    return sendError(message, isFeatureBlocked ? 'FORBIDDEN' : 'INTERNAL_ERROR', isFeatureBlocked ? 403 : 500);
   }
 }

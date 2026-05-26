@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { documentService } from '@/services/documentService';
 import { aiService } from '@/services/aiService';
 import { flashcardService } from '@/services/flashcardService';
@@ -77,6 +78,7 @@ const TypingMarkdown = ({ content, shouldAnimate }: { content: string, shouldAni
 
 export default function DocumentViewer({ documentId, onBack }: DocumentViewerProps) {
     const searchParams = useSearchParams();
+    const router = useRouter();
     const [document, setDocument] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('content');
@@ -571,6 +573,12 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
         setQuizAnswers({});
         try {
             const res = await aiService.generateQuiz(documentId);
+            if (res?.featureUnavailable) {
+                if (res.redirectToBilling) {
+                    router.push('/dashboard?tab=billing');
+                }
+                return;
+            }
             const newQuiz = res.quiz || res.data; // Adjust based on actual API response structure
 
             setQuizzesList(prev => {

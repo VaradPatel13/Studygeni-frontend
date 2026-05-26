@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 import { MdRefresh as Loader2, MdArrowForward as ArrowRight } from 'react-icons/md';
 import { authService } from '@/services/authService';
@@ -12,6 +12,8 @@ import { motion } from 'framer-motion';
 
 export default function LoginForm() {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const plan = searchParams.get('plan');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -27,7 +29,11 @@ export default function LoginForm() {
             toast.success('Welcome back!');
             // Small delay to ensure token is saved and state is flushed
             setTimeout(() => {
-                router.push('/dashboard');
+                if (plan && plan !== 'free') {
+                    router.push('/dashboard?tab=billing');
+                } else {
+                    router.push('/dashboard');
+                }
             }, 100);
         } catch (err: any) {
             console.error('Login error:', err);
@@ -127,7 +133,7 @@ export default function LoginForm() {
                     </div>
 
                     <div className="flex justify-between items-center mt-12 pt-4">
-                        <Link href="/register" className="btn-app btn-outline border-none text-[var(--color-brand-blue)] hover:bg-blue-50 dark:hover:bg-blue-900/20 px-4 h-10 text-sm font-medium transition-all">
+                        <Link href={`/register${plan ? `?plan=${plan}` : ''}`} className="btn-app btn-outline border-none text-[var(--color-brand-blue)] hover:bg-blue-50 dark:hover:bg-blue-900/20 px-4 h-10 text-sm font-medium transition-all">
                             Create account
                         </Link>
                         <button

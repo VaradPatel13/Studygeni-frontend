@@ -3,12 +3,15 @@ import type { NextRequest } from 'next/server';
 import * as jose from 'jose';
 
 // Routes that require authentication
-const PROTECTED_ROUTES = ['/api/v1/documents', '/api/v1/flashcards', '/api/v1/ai', '/api/v1/quizzes', '/api/v1/progress', '/dashboard'];
+const PROTECTED_ROUTES = ['/api/v1/documents', '/api/v1/flashcards', '/api/v1/ai', '/api/v1/quizzes', '/api/v1/progress', '/api/v1/payments', '/api/v1/subscriptions', '/dashboard'];
 
 export default async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // Check if current route is protected (ignoring login/register)
+  if (pathname.startsWith('/api/v1/payments/webhook')) {
+    return NextResponse.next();
+  }
+
   const isProtected = PROTECTED_ROUTES.some((route) => pathname.startsWith(route)) || 
                      (pathname.startsWith('/api/v1/auth') && (pathname.includes('/profile') || pathname.includes('/change-password')));
 
@@ -16,7 +19,6 @@ export default async function proxy(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // Extract token from header or cookie
   const authHeader = req.headers.get('authorization');
   let token = authHeader?.startsWith('Bearer ') ? authHeader.split(' ')[1] : null;
 

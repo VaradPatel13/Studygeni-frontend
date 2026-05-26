@@ -7,6 +7,7 @@ import {
     MdOutlineLibraryBooks,
     MdOutlinePsychology,
     MdOutlineSettings,
+    MdOutlinePayments,
     MdLogout,
 } from 'react-icons/md';
 import { useRouter } from 'next/navigation';
@@ -18,9 +19,10 @@ interface SidebarProps {
     setActiveTab: (tab: string) => void;
     isOpen?: boolean;
     onClose?: () => void;
+    currentPlan?: string;
 }
 
-export default function Sidebar({ activeTab, setActiveTab, isOpen = false, onClose }: SidebarProps) {
+export default function Sidebar({ activeTab, setActiveTab, isOpen = false, onClose, currentPlan = 'Free Plan' }: SidebarProps) {
     const router = useRouter();
 
     const handleLogout = () => {
@@ -33,6 +35,7 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen = false, onClo
         { id: 'home', label: 'Dashboard', icon: MdOutlineDashboard },
         { id: 'documents', label: 'Documents', icon: MdOutlineLibraryBooks },
         { id: 'flashcards', label: 'Flashcards', icon: MdOutlinePsychology },
+        { id: 'billing', label: 'Billing', icon: MdOutlinePayments },
         { id: 'profile', label: 'Settings', icon: MdOutlineSettings },
     ];
 
@@ -109,7 +112,7 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen = false, onClo
 
                     <div className="mt-4 px-2 flex justify-between text-[10px] text-[var(--text-tertiary)]">
                         <span>v2.4.0</span>
-                        <span>Pro Plan</span>
+                        <span>{currentPlan}</span>
                     </div>
                 </div>
             </aside>

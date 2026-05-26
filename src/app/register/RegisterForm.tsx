@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 import { MdRefresh as Loader2 } from 'react-icons/md';
 import { authService } from '@/services/authService';
@@ -12,6 +12,8 @@ import { motion } from 'framer-motion';
 
 export default function RegisterForm() {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const plan = searchParams.get('plan');
     const [formData, setFormData] = useState({
         username: '',
         email: '',
@@ -41,7 +43,11 @@ export default function RegisterForm() {
             toast.success('Account created successfully!');
             // Small delay to ensure token is saved and state is flushed
             setTimeout(() => {
-                router.push('/dashboard');
+                if (plan && plan !== 'free') {
+                    router.push('/dashboard?tab=billing');
+                } else {
+                    router.push('/dashboard');
+                }
             }, 100);
         } catch (err: any) {
             console.error('Registration error:', err);
@@ -188,7 +194,7 @@ export default function RegisterForm() {
                     </div>
 
                     <div className="flex justify-between items-center mt-8 pt-4">
-                        <Link href="/login" className="btn-app btn-outline border-none text-[var(--color-brand-blue)] hover:bg-blue-50 dark:hover:bg-blue-900/20 px-4 h-10 text-sm font-medium transition-all">
+                        <Link href={`/login${plan ? `?plan=${plan}` : ''}`} className="btn-app btn-outline border-none text-[var(--color-brand-blue)] hover:bg-blue-50 dark:hover:bg-blue-900/20 px-4 h-10 text-sm font-medium transition-all">
                             Sign in instead
                         </Link>
                         <button

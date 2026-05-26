@@ -3,6 +3,7 @@ import { AIService } from '@/server/services/ai.service';
 import { ChatRepository } from '@/server/repositories/chat.repository';
 import { DocumentRepository } from '@/server/repositories/document.repository';
 import { sendSuccess, sendError } from '@/lib/server/response';
+import { assertUserHasFeature } from '@/lib/server/planAccess';
 
 const aiService = new AIService();
 const chatRepository = new ChatRepository();
@@ -16,6 +17,8 @@ export async function POST(
     const userId = req.headers.get('x-user-id')!;
     const { documentId } = await params;
     const { message } = await req.json();
+
+    await assertUserHasFeature(userId, 'Chat with documents');
 
     if (!message) return sendError('Message is required', 'VALIDATION_ERROR', 400);
 
@@ -35,8 +38,10 @@ export async function POST(
     );
 
     return sendSuccess('Chat response generated successfully', { documentId, response: aiResponse });
-  } catch (error: any) {
-    return sendError(error.message || 'Internal Server Error', 'INTERNAL_ERROR', 500);
+  } catch (error: unknown) {
+    const isFeatureBlocked = error instanceof Error && error.name === 'FEATURE_NOT_AVAILABLE';
+    const message = error instanceof Error ? error.message : 'Internal Server Error';
+    return sendError(message, isFeatureBlocked ? 'FORBIDDEN' : 'INTERNAL_ERROR', isFeatureBlocked ? 403 : 500);
   }
 }
 
@@ -47,11 +52,14 @@ export async function GET(
   try {
     const userId = req.headers.get('x-user-id')!;
     const { documentId } = await params;
+    await assertUserHasFeature(userId, 'Chat with documents');
     const chatHistory = await chatRepository.findByDocument(documentId, userId);
     
     if (!chatHistory) return sendSuccess('No chat history found', { documentId, messages: [] });
     return sendSuccess('Chat history retrieved successfully', chatHistory);
-  } catch (error: any) {
-    return sendError(error.message || 'Internal Server Error', 'INTERNAL_ERROR', 500);
+  } catch (error: unknown) {
+    const isFeatureBlocked = error instanceof Error && error.name === 'FEATURE_NOT_AVAILABLE';
+    const message = error instanceof Error ? error.message : 'Internal Server Error';
+    return sendError(message, isFeatureBlocked ? 'FORBIDDEN' : 'INTERNAL_ERROR', isFeatureBlocked ? 403 : 500);
   }
 }

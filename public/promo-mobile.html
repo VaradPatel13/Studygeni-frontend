@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>StudyMate.io Mobile Promo Video</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- GSAP for advanced animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        outfit: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            blue: '#4285F4',
+                            red: '#EA4335',
+                            yellow: '#FBBC05',
+                            green: '#34A853',
+                        },
+                        neutral: {
+                            dark: '#202124',
+                            gray: '#5F6368',
+                            light: '#F8F9FA',
+                            border: '#DADCE0'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #121214;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-h: screen;
+            margin: 0;
+            padding: 16px;
+        }
+        
+        /* Mobile Portrait Viewport Frame - Desktop Bezel Mode */
+        .phone-frame {
+            width: 360px;
+            height: 640px;
+            background-color: #FFFFFF;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 25px 60px -10px rgba(0, 0, 0, 0.8);
+            border-radius: 40px;
+            border: 12px solid #2d2e33;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        /* Google Dynamic Island Bezel notch */
+        .dynamic-island {
+            width: 110px;
+            height: 28px;
+            background-color: #2d2e33;
+            border-radius: 14px;
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 8px;
+            font-weight: 700;
+            white-space: nowrap;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .gradient-bg {
+            background-image: radial-gradient(circle at 80% 20%, rgba(66, 133, 244, 0.06) 0%, transparent 45%),
+                               radial-gradient(circle at 20% 80%, rgba(234, 67, 53, 0.06) 0%, transparent 45%),
+                               radial-gradient(circle at 50% 50%, rgba(251, 188, 5, 0.04) 0%, transparent 50%);
+        }
+
+        /* Scanline animation */
+        .scanline {
+            background: linear-gradient(to bottom, rgba(66, 133, 244, 0) 0%, rgba(66, 133, 244, 0.4) 50%, rgba(66, 133, 244, 0) 100%);
+            height: 25px;
+            width: 100%;
+            position: absolute;
+            top: -25px;
+            left: 0;
+            z-index: 10;
+        }
+
+        /* 3D Card Flip */
+        .flip-card-inner {
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .flip-card-front, .flip-card-back {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+
+        .flip-card-back {
+            transform: rotateY(180deg);
+        }
+
+        /* Music wave bars styling */
+        @keyframes wave {
+            0%, 100% { height: 3px; }
+            50% { height: 12px; }
+        }
+        .bar-anim {
+            animation: wave 0.8s ease-in-out infinite alternate;
+        }
+        .visualizer-playing .bar-anim:nth-child(1) { animation-delay: 0.1s; }
+        .visualizer-playing .bar-anim:nth-child(2) { animation-delay: 0.4s; }
+        .visualizer-playing .bar-anim:nth-child(3) { animation-delay: 0.2s; }
+        .visualizer-playing .bar-anim:nth-child(4) { animation-delay: 0.6s; }
+        .visualizer-paused .bar-anim {
+            animation-play-state: paused !important;
+            height: 4px !important;
+        }
+
+        /* Floating particle system */
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        /* AI Typing indicator dots */
+        @keyframes typingBounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-4px); }
+        }
+        .typing-dot {
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            background-color: #9AA0A6;
+            animation: typingBounce 1.2s infinite;
+        }
+        .typing-dot:nth-child(2) { animation-delay: 0.15s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.3s; }
+
+        /* Confetti piece */
+        .confetti-piece {
+            position: absolute;
+            width: 6px; height: 6px;
+            border-radius: 1px;
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        /* Animated gradient mesh per scene */
+        .scene-mesh {
+            position: absolute; inset: 0;
+            pointer-events: none; z-index: 0;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+        }
+        .mesh-blue {
+            background: radial-gradient(ellipse at 30% 20%, rgba(66,133,244,0.08) 0%, transparent 50%),
+                        radial-gradient(ellipse at 70% 80%, rgba(52,168,83,0.06) 0%, transparent 50%);
+        }
+        .mesh-red {
+            background: radial-gradient(ellipse at 60% 30%, rgba(234,67,53,0.08) 0%, transparent 50%),
+                        radial-gradient(ellipse at 30% 70%, rgba(66,133,244,0.06) 0%, transparent 50%);
+        }
+        .mesh-yellow {
+            background: radial-gradient(ellipse at 50% 25%, rgba(251,188,5,0.1) 0%, transparent 50%),
+                        radial-gradient(ellipse at 20% 75%, rgba(234,67,53,0.06) 0%, transparent 50%);
+        }
+        .mesh-green {
+            background: radial-gradient(ellipse at 40% 40%, rgba(52,168,83,0.08) 0%, transparent 50%),
+                        radial-gradient(ellipse at 80% 20%, rgba(66,133,244,0.06) 0%, transparent 50%);
+        }
+
+        /* Responsive full-screen mobile styling */
+        @media (max-width: 480px), (max-height: 700px) {
+            body {
+                padding: 0 !important;
+                background-color: #ffffff;
+            }
+            .phone-frame {
+                width: 100vw !important;
+                height: 100vh !important;
+                border: none !important;
+                border-radius: 0 !important;
+                box-shadow: none !important;
+            }
+            .dynamic-island {
+                top: env(safe-area-inset-top, 12px) !important;
+            }
+            #navbar {
+                top: calc(env(safe-area-inset-top, 12px) + 36px) !important;
+            }
+            .playback-controls {
+                position: fixed !important;
+                bottom: calc(env(safe-area-inset-bottom, 0px) + 16px) !important;
+                left: 50% !important;
+                transform: translateX(-50%) !important;
+                width: calc(100% - 32px) !important;
+                max-width: 340px !important;
+                z-index: 100 !important;
+                background-color: rgba(20, 21, 23, 0.88) !important;
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+                margin-top: 0 !important;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- AUDIO TARGETS (ROYALTY FREE / PUBLIC DOMAIN AUDIO FILES) -->
+    <audio id="bg-music" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" loop></audio>
+    <audio id="sfx-click" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3" preload="auto"></audio>
+    <audio id="sfx-success" src="https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3" preload="auto"></audio>
+    <audio id="sfx-upload" src="https://assets.mixkit.co/active_storage/sfx/2018/2018-preview.mp3" preload="auto"></audio>
+
+    <!-- INTRO START OVERLAY -->
+    <div id="startOverlay" class="absolute inset-0 bg-neutral-900/95 z-[999] flex flex-col items-center justify-center text-center p-6 transition-opacity duration-500">
+        <div class="bg-neutral-800 rounded-3xl p-8 border border-neutral-700/50 shadow-2xl max-w-sm m-4">
+            <span class="text-xs font-bold text-brand-blue uppercase tracking-widest block mb-2">StudyMate Mobile Showcase</span>
+            <h2 class="font-outfit font-bold text-2xl text-white mb-4">Interactive Video & Sound Demo</h2>
+            <p class="text-xs text-gray-400 leading-relaxed mb-6">
+                Tap the button to start the presentation with synced study music and animations.
+            </p>
+            <button id="btn-start-presentation" class="bg-brand-blue hover:bg-blue-600 text-white font-bold px-6 py-3 rounded-full flex items-center justify-center gap-2 w-full active:scale-95 transition-all shadow-lg shadow-blue-500/20">
+                <span>Start Presentation 🎵</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN PHONE FRAME -->
+    <div id="phoneFrame" class="phone-frame gradient-bg flex flex-col justify-between">
+        
+        <!-- Floating Particles Container -->
+        <div id="particles-container" class="absolute inset-0 z-[1] pointer-events-none overflow-hidden"></div>
+
+        <!-- Per-Scene Gradient Mesh Overlays -->
+        <div id="mesh-blue" class="scene-mesh mesh-blue"></div>
+        <div id="mesh-red" class="scene-mesh mesh-red"></div>
+        <div id="mesh-yellow" class="scene-mesh mesh-yellow"></div>
+        <div id="mesh-green" class="scene-mesh mesh-green"></div>
+
+        <!-- Confetti Container -->
+        <div id="confetti-container" class="absolute inset-0 z-[60] pointer-events-none overflow-hidden"></div>
+
+        <!-- Google Dynamic Island Bezel notch -->
+        <div id="dynamic-island" class="dynamic-island">
+            <div id="island-dot" class="w-2.5 h-2.5 rounded-full bg-black/40 absolute left-2.5"></div>
+            <span id="island-text" class="opacity-0 transition-opacity duration-300"></span>
+        </div>
+
+        <!-- ================= HEADER NAVBAR ================= -->
+        <div id="navbar" class="absolute top-12 left-0 w-full px-6 flex justify-between items-center z-50 opacity-0">
+            <div class="flex items-center gap-2">
+                <img src="logo.png" alt="StudyMate Logo" class="w-6 h-6 object-contain" />
+                <span class="font-outfit font-bold text-sm text-neutral-dark tracking-tight">StudyMate.io</span>
+            </div>
+            <span class="text-[9px] font-bold text-brand-blue bg-blue-50 px-2 py-1 rounded-full border border-blue-100/50">AI Suite</span>
+        </div>
+
+        <!-- ================= SCENE 1: LOGO INTRO ================= -->
+        <div id="scene1" class="absolute inset-0 flex flex-col items-center justify-center z-40 px-6">
+            <div class="relative w-24 h-24 mb-4 flex items-center justify-center">
+                <div id="intro-glow-ring" class="absolute w-20 h-20 rounded-full border border-brand-blue/20 bg-brand-blue/5 opacity-0 scale-50"></div>
+                <div id="intro-glow-ring-2" class="absolute w-28 h-28 rounded-full border border-brand-red/15 opacity-0 scale-50"></div>
+                <img id="intro-logo" src="logo.png" alt="StudyMate Logo" class="w-16 h-16 object-contain absolute opacity-0 scale-50" />
+            </div>
+            <h1 id="intro-title" class="font-outfit font-extrabold text-3xl text-neutral-dark tracking-tight mb-2 opacity-0 text-center">StudyMate.io</h1>
+            <p id="intro-subtitle" class="font-sans text-neutral-gray text-xs opacity-0 font-medium text-center max-w-[200px]">Turn messy notes into top grades. Instantly.</p>
+        </div>
+
+        <!-- ================= SCENE 2: UPLOAD MATERIALS ================= -->
+        <div id="scene2" class="absolute inset-0 flex flex-col items-center justify-center px-6 py-16 opacity-0 z-10">
+            <div class="text-center max-w-xs mb-6">
+                <span class="text-[10px] font-bold text-brand-blue uppercase tracking-widest bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100/50">1. Input Content</span>
+                <h2 class="font-outfit font-bold text-xl text-neutral-dark mt-2.5">Upload study files</h2>
+                <p class="text-neutral-gray mt-1 text-[11px] font-medium leading-relaxed">Drag lectures, documents, YouTube videos, or images.</p>
+            </div>
+            
+            <div class="flex flex-col gap-4 w-full justify-center items-center relative h-[280px]">
+                <!-- Drop Zone Card -->
+                <div id="upload-zone" class="w-full max-w-[260px] aspect-[1.1] border-2 border-dashed border-neutral-border rounded-2xl flex flex-col items-center justify-center p-4 bg-white shadow-sm relative overflow-hidden">
+                    <div id="upload-icon-container" class="w-10 h-10 rounded-full bg-blue-50 text-brand-blue flex items-center justify-center mb-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
+                        </svg>
+                    </div>
+                    <span id="upload-text" class="text-xs font-bold text-neutral-dark text-center leading-tight">Drag your documents here</span>
+                    <span id="upload-subtext" class="text-[10px] text-neutral-gray mt-0.5">PDF, MP4 up to 50MB</span>
+                    
+                    <!-- Progress Bar -->
+                    <div id="upload-progress-container" class="w-4/5 h-1.5 bg-gray-100 rounded-full mt-3 overflow-hidden hidden">
+                        <div id="upload-progress-bar" class="h-full bg-brand-blue w-0"></div>
+                    </div>
+                    <span id="upload-percentage" class="text-[9px] font-bold text-brand-blue mt-1.5 hidden">Uploading: 0%</span>
+                </div>
+
+                <!-- Document Icon flying in -->
+                <div id="flying-doc" class="w-full max-w-[240px] bg-white border border-neutral-border rounded-xl shadow-xl p-3 flex flex-col opacity-0 absolute bottom-4">
+                    <div class="flex items-center gap-2 pb-2 mb-2 border-b border-gray-100">
+                        <div class="w-8 h-8 rounded-lg bg-red-50 text-brand-red flex items-center justify-center flex-shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                            </svg>
+                        </div>
+                        <div class="flex flex-col overflow-hidden">
+                            <span class="text-[10px] font-bold text-neutral-dark truncate">Biology_Lecture_3.pdf</span>
+                            <span class="text-[8px] text-neutral-gray font-semibold">8.4 MB • PDF File</span>
+                        </div>
+                    </div>
+                    <div class="space-y-1 relative overflow-hidden">
+                        <div class="h-1 bg-gray-100 rounded w-full"></div>
+                        <div class="h-1 bg-gray-100 rounded w-5/6"></div>
+                        <div id="doc-scanline" class="scanline hidden"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= SCENE 3: AI PROCESSING & SUMMARIES ================= -->
+        <div id="scene3" class="absolute inset-0 flex flex-col items-center justify-center px-6 py-16 opacity-0 z-10">
+            <div class="text-center max-w-xs mb-4">
+                <span class="text-[10px] font-bold text-brand-red uppercase tracking-widest bg-red-50 px-2.5 py-1 rounded-full border border-red-100/50">2. AI Processing</span>
+                <h2 class="font-outfit font-bold text-xl text-neutral-dark mt-2.5">Instant AI extraction</h2>
+                <p class="text-neutral-gray mt-1 text-[11px] font-medium leading-relaxed">Key concepts generated automatically in seconds.</p>
+            </div>
+
+            <!-- Vertical Stack Layout -->
+            <div class="flex flex-col gap-4 w-full items-center">
+                <!-- Holographic AI Brain Model -->
+                <div class="flex items-center justify-center relative h-[80px]">
+                    <div id="brain-glow-1" class="absolute w-24 h-24 rounded-full bg-brand-blue/5 border border-brand-blue/10"></div>
+                    <svg id="ai-brain" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="w-16 h-16 text-brand-blue relative z-10">
+                        <path fill="currentColor" opacity="0.1" d="M50 15c-16.6 0-30 13.4-30 30 0 6.4 2 12.3 5.4 17.2C22.6 67.3 20 73.3 20 80c0 2.8 2.2 5 5 5h10c2.8 0 5-2.2 5-5v-5c0-5.5 4.5-10 10-10h10c5.5 0 10 4.5 10 10v5c0 2.8 2.2 5 5 5h10c2.8 0 5-2.2 5-5 0-6.7-2.6-12.7-5.4-17.8 3.4-4.9 5.4-10.8 5.4-17.2 0-16.6-13.4-30-30-30z"/>
+                        <path fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" d="M50 15v70M20 45h60M25.4 62.2l49.2-34.4M25.4 27.8l49.2 34.4" />
+                        <circle cx="50" cy="15" r="4" class="fill-brand-blue" />
+                        <circle cx="50" cy="85" r="4" class="fill-brand-green" />
+                        <circle cx="20" cy="45" r="4" class="fill-brand-red" />
+                        <circle cx="80" cy="45" r="4" class="fill-brand-yellow" />
+                    </svg>
+                </div>
+
+                <!-- Summary Card Reveal -->
+                <div id="summary-card" class="w-full max-w-[280px] bg-white border border-neutral-border rounded-2xl shadow-xl p-4 opacity-0">
+                    <div class="flex items-center gap-2 mb-3 border-b border-gray-50 pb-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-brand-red animate-pulse"></span>
+                        <h3 class="font-outfit font-bold text-sm text-neutral-dark">Smart Summary</h3>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <div id="bullet-1" class="flex gap-2 opacity-0">
+                            <span class="text-brand-red font-bold text-xs">01</span>
+                            <div>
+                                <h4 class="text-xs font-bold text-neutral-dark">Mitochondria Function</h4>
+                                <p class="text-[10px] text-neutral-gray leading-normal">Cellular powerhouse producing ATP via aerobic respiration.</p>
+                            </div>
+                        </div>
+                        
+                        <div id="bullet-2" class="flex gap-2 opacity-0">
+                            <span class="text-brand-red font-bold text-xs">02</span>
+                            <div>
+                                <h4 class="text-xs font-bold text-neutral-dark">Double Membrane Structure</h4>
+                                <p class="text-[10px] text-neutral-gray leading-normal">Inner membrane folded into cristae to maximize surface area.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= SCENE 4: ACTIVE RECALL (FLASHCARDS & QUIZZES) ================= -->
+        <div id="scene4" class="absolute inset-0 flex flex-col items-center justify-center px-6 py-16 opacity-0 z-10">
+            <div class="text-center max-w-xs mb-4">
+                <span class="text-[10px] font-bold text-brand-yellow uppercase tracking-widest bg-yellow-50 px-2.5 py-1 rounded-full border border-yellow-100/50">3. Active Recall</span>
+                <h2 class="font-outfit font-bold text-xl text-neutral-dark mt-2.5">Active Recall Studying</h2>
+            </div>
+
+            <div class="w-full flex flex-col items-center relative h-[320px]">
+                
+                <!-- Card 1: 3D Flashcard container -->
+                <div id="flashcard-container" class="perspective-1000 w-full max-w-[270px] h-[180px] absolute z-20">
+                    <div id="flashcard-inner" class="flip-card-inner relative w-full h-full text-center">
+                        <!-- Front -->
+                        <div class="flip-card-front absolute inset-0 bg-white border border-neutral-border rounded-2xl shadow-lg p-4 flex flex-col justify-between">
+                            <div class="flex justify-between items-center text-[9px] font-semibold text-neutral-gray">
+                                <span>Flashcard #4</span>
+                                <span class="text-brand-blue font-bold">Biology 101</span>
+                            </div>
+                            <div class="my-auto text-sm font-bold text-neutral-dark px-2 leading-relaxed">
+                                What is the inner membrane fold of a mitochondrion called?
+                            </div>
+                            <div class="text-[9px] text-brand-blue font-bold bg-blue-50 py-1 px-2.5 rounded-full self-center">
+                                Flipping Card...
+                            </div>
+                        </div>
+                        
+                        <!-- Back -->
+                        <div class="flip-card-back absolute inset-0 bg-yellow-50/30 border border-brand-yellow/30 rounded-2xl shadow-lg p-4 flex flex-col justify-between">
+                            <div class="flex justify-between items-center text-[9px] font-semibold text-neutral-gray">
+                                <span class="font-bold text-brand-yellow">Answer Revealed</span>
+                                <span class="text-brand-yellow font-bold">Starred Card</span>
+                            </div>
+                            <div class="my-auto text-base font-bold text-neutral-dark px-2 font-outfit">
+                                Cristae <span class="text-[10px] font-medium text-neutral-gray block font-sans">(singular: Crista)</span>
+                            </div>
+                            <div class="text-[9px] text-neutral-gray font-semibold">
+                                Saved to study vault
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Interactive Quiz card -->
+                <div id="quiz-card" class="w-full max-w-[270px] bg-white border border-neutral-border rounded-2xl shadow-lg p-4 flex flex-col justify-between opacity-0 absolute h-[240px] top-6 z-10">
+                    <div class="flex justify-between items-center text-[9px] font-semibold text-neutral-gray">
+                        <span>Instant Quiz</span>
+                        <span class="text-neutral-gray bg-gray-50 px-2 py-0.5 rounded border border-gray-100 font-semibold" id="quiz-score-badge">Score: 0/1</span>
+                    </div>
+
+                    <div class="my-2">
+                        <h4 class="text-[10px] font-bold text-neutral-dark mb-2 leading-normal">Which process occurs in the mitochondrial matrix?</h4>
+                        
+                        <div class="space-y-1.5 font-sans">
+                            <div id="quiz-opt-a" class="border border-neutral-border rounded-lg p-2 text-[9px] text-neutral-dark flex items-center justify-between bg-white">
+                                <span>A) Glycolysis</span>
+                                <div class="w-3 h-3 rounded-full border border-neutral-border"></div>
+                            </div>
+                            
+                            <div id="quiz-opt-b" class="border border-neutral-border rounded-lg p-2 text-[9px] text-neutral-dark flex items-center justify-between relative overflow-hidden bg-white">
+                                <span class="relative z-10">B) Citric Acid Cycle</span>
+                                <div id="opt-b-check" class="hidden text-brand-green relative z-10">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3.5 h-3.5">
+                                        <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                <!-- Localized Material Tap Ripple inside B -->
+                                <div id="tap-ripple" class="absolute inset-0 bg-brand-blue/20 scale-0 opacity-0 pointer-events-none z-0 rounded-lg"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center border-t border-gray-50 pt-2 text-[8px] font-semibold text-neutral-gray">
+                        <span>Answer: <span id="selected-ans-label">None</span></span>
+                        <span id="quiz-feedback" class="font-bold text-brand-green hidden">Correct! (+100 XP)</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ================= SCENE 5: CHAT WITH DOCUMENT ================= -->
+        <div id="scene5" class="absolute inset-0 flex flex-col items-center justify-center px-4 py-16 opacity-0 z-10">
+            <div class="text-center max-w-xs mb-3">
+                <span class="text-[10px] font-bold text-brand-blue uppercase tracking-widest bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100/50">4. Interactive Chat</span>
+                <h2 class="font-outfit font-bold text-xl text-neutral-dark mt-2.5">Chat with your notes</h2>
+            </div>
+
+            <!-- Chat Window Mockup -->
+            <div id="chat-window" class="w-full max-w-[310px] bg-white border border-neutral-border rounded-2xl shadow-xl flex flex-col h-[280px] overflow-hidden opacity-0">
+                <div class="bg-neutral-light border-b border-neutral-border px-4 py-2.5 flex items-center justify-between">
+                    <div class="flex items-center gap-1.5">
+                        <div class="w-2 h-2 rounded-full bg-brand-blue shadow-sm"></div>
+                        <span class="font-outfit font-bold text-[10px] text-neutral-dark font-sans">StudyMate AI</span>
+                    </div>
+                    <span class="text-[8px] text-neutral-gray font-semibold truncate max-w-[120px]">Biology_Lecture_3.pdf</span>
+                </div>
+
+                <!-- Messages -->
+                <div id="chat-messages" class="flex-grow p-3 space-y-3 overflow-y-auto flex flex-col">
+                    <div id="msg-user" class="self-end bg-brand-blue text-white rounded-2xl rounded-tr-none px-3 py-2 max-w-[85%] text-[10px] shadow-sm opacity-0 font-medium leading-normal">
+                        How is oxygen used in mitochondria?
+                    </div>
+
+                    <!-- Typing Indicator Dots -->
+                    <div id="typing-indicator" class="self-start bg-[#F1F3F4] rounded-2xl rounded-tl-none px-3 py-2.5 flex gap-1 opacity-0">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+
+                    <div id="msg-ai" class="self-start bg-[#F1F3F4] text-neutral-dark rounded-2xl rounded-tl-none px-3 py-2 max-w-[90%] text-[10px] shadow-sm opacity-0 flex flex-col gap-1.5 leading-relaxed">
+                        <span id="ai-response-text" class="whitespace-pre-wrap"></span>
+                        <div id="citation-badge" class="flex items-center gap-1 text-[8px] text-brand-blue font-bold border-t border-neutral-border/40 pt-1.5 opacity-0">
+                            <span>Found in Biology_Lecture_3.pdf (P. 4)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border-t border-neutral-border px-3 py-2 bg-neutral-light flex items-center justify-between">
+                    <span class="text-[9px] text-neutral-gray font-medium">Ask a follow-up...</span>
+                    <button class="bg-brand-blue text-white rounded-full p-1 shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3.5 h-3.5">
+                            <path d="M3.105 2.289a.75.75 0 00-.826.95l1.414 4.925A1.5 1.5 0 005.135 9.25h6.115a.75.75 0 010 1.5H5.135a1.5 1.5 0 00-1.442 1.086l-1.414 4.926a.75.75 0 00.826.95 28.896 28.896 0 0015.293-7.154.75.75 0 000-1.115A28.897 28.897 0 003.105 2.289z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= SCENE 6: OUTRO / CALL TO ACTION ================= -->
+        <div id="scene6" class="absolute inset-0 flex flex-col items-center justify-center opacity-0 z-10 px-6 text-center">
+            <div id="outro-glow-1" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] h-[280px] rounded-full bg-brand-blue/5 blur-2xl pointer-events-none"></div>
+            
+            <img id="outro-logo" src="logo.png" alt="StudyMate Logo" class="w-16 h-16 object-contain mb-3 relative z-10 opacity-0" />
+            <h2 id="outro-title" class="font-outfit font-extrabold text-3xl text-neutral-dark tracking-tight mb-2 relative z-10 opacity-0">StudyMate.io</h2>
+            <p id="outro-slogan" class="font-sans text-neutral-gray text-xs mb-6 max-w-[220px] leading-relaxed relative z-10 font-medium opacity-0">
+                Join the AI study revolution. Get summaries, flashcards, and quizzes created automatically.
+            </p>
+
+            <button id="outro-btn" class="bg-brand-blue hover:bg-blue-600 text-white font-bold font-outfit text-sm px-6 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 relative z-10 flex items-center gap-1.5 opacity-0">
+                <span>Start Studying Free</span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+                    <path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 11-1.04-1.08l4.158-3.92H3.75A.75.75 0 013 10z" clip-rule="evenodd" />
+                </svg>
+            </button>
+            <span id="outro-subtext" class="text-[9px] text-neutral-gray mt-3 relative z-10 font-semibold opacity-0">No credit card required. Cancel anytime.</span>
+        </div>
+
+    </div>
+
+    <!-- ================= PLAYBACK CONTROLS ================= -->
+    <div id="controlsBar" class="playback-controls mt-4 w-[360px] bg-neutral-900 rounded-2xl px-4 py-3 flex items-center justify-between text-white shadow-2xl border border-[#2c2e33]">
+        <div class="flex items-center gap-3">
+            <button id="btn-play-pause" class="bg-white text-neutral-dark p-1.5 rounded-full hover:bg-gray-100 transition-colors shadow">
+                <svg id="icon-play" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+                    <path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.269l9.324-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                </svg>
+                <svg id="icon-pause" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 hidden">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+            </button>
+            <button id="btn-restart" class="text-gray-400 hover:text-white transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                </svg>
+            </button>
+            
+            <!-- Music Audio Toggle Button with Visualizer -->
+            <button id="btn-music-toggle" class="text-gray-400 hover:text-white transition-colors flex items-center justify-center gap-1.5 p-1 px-2 border border-neutral-700/50 rounded-lg bg-neutral-800/40">
+                <div class="flex items-end gap-0.5 h-3 w-4 visualizer-paused" id="audio-visualizer">
+                    <div class="w-0.5 bg-brand-blue rounded-full h-full bar-anim"></div>
+                    <div class="w-0.5 bg-brand-blue rounded-full h-1/2 bar-anim"></div>
+                    <div class="w-0.5 bg-brand-blue rounded-full h-3/4 bar-anim"></div>
+                    <div class="w-0.5 bg-brand-blue rounded-full h-1/3 bar-anim"></div>
+                </div>
+                <span class="text-[9px] font-bold">Music</span>
+            </button>
+        </div>
+
+        <div class="flex-grow mx-4 relative flex items-center group">
+            <div class="w-full h-1 bg-gray-700 rounded-full cursor-pointer relative" id="seek-track">
+                <div id="playhead-progress" class="h-full bg-brand-blue rounded-full w-0"></div>
+                <div id="playhead" class="w-2.5 h-2.5 bg-white border border-brand-blue rounded-full absolute -top-0.5 -ml-1 select-none"></div>
+            </div>
+        </div>
+
+        <span id="video-timer" class="font-mono text-[10px] text-gray-400 select-none">00:00 / 00:25</span>
+    </div>
+
+    <!-- Script to execute GSAP timeline animation -->
+    <script>
+        gsap.registerPlugin(TextPlugin);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const tl = gsap.timeline({ paused: true, repeat: -1, onUpdate: updateTimelineProgress });
+            let isPlaying = false;
+            let outroPulse = null;
+            const TOTAL_DURATION = 25; // seconds
+            
+            // Audio elements
+            const bgMusic = document.getElementById('bg-music');
+            const sfxClick = document.getElementById('sfx-click');
+            const sfxSuccess = document.getElementById('sfx-success');
+            const sfxUpload = document.getElementById('sfx-upload');
+            let isMusicMuted = false;
+
+            // ========== FLOATING PARTICLE SYSTEM ==========
+            const particlesContainer = document.getElementById('particles-container');
+            const PARTICLE_COUNT = 18;
+            const particleColors = ['#4285F4','#EA4335','#FBBC05','#34A853'];
+            let particleAnimations = [];
+            function createParticles() {
+                for (let i = 0; i < PARTICLE_COUNT; i++) {
+                    const p = document.createElement('div');
+                    p.classList.add('particle');
+                    const size = 3 + Math.random() * 5;
+                    p.style.width = size + 'px';
+                    p.style.height = size + 'px';
+                    p.style.backgroundColor = particleColors[Math.floor(Math.random() * particleColors.length)];
+                    p.style.left = Math.random() * 100 + '%';
+                    p.style.top = Math.random() * 100 + '%';
+                    particlesContainer.appendChild(p);
+                    const anim = gsap.to(p, {
+                        x: 'random(-60, 60)', y: 'random(-80, 80)',
+                        opacity: 'random(0.15, 0.4)',
+                        duration: 'random(4, 8)',
+                        repeat: -1, yoyo: true,
+                        ease: 'sine.inOut',
+                        delay: Math.random() * 3
+                    });
+                    particleAnimations.push(anim);
+                }
+            }
+            createParticles();
+
+            // ========== CONFETTI BURST ==========
+            function burstConfetti() {
+                const container = document.getElementById('confetti-container');
+                const colors = ['#4285F4','#EA4335','#FBBC05','#34A853','#8E24AA','#FF6D00'];
+                for (let i = 0; i < 30; i++) {
+                    const piece = document.createElement('div');
+                    piece.classList.add('confetti-piece');
+                    piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    piece.style.left = '50%';
+                    piece.style.top = '40%';
+                    piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '1px';
+                    piece.style.width = (4 + Math.random() * 5) + 'px';
+                    piece.style.height = (4 + Math.random() * 5) + 'px';
+                    container.appendChild(piece);
+                    gsap.to(piece, {
+                        x: (Math.random() - 0.5) * 250,
+                        y: (Math.random() - 0.5) * 300,
+                        rotation: Math.random() * 720,
+                        opacity: 1, duration: 0.15, ease: 'power2.out',
+                        onComplete: () => {
+                            gsap.to(piece, {
+                                opacity: 0, y: '+=80', duration: 1.2, ease: 'power1.in',
+                                onComplete: () => piece.remove()
+                            });
+                        }
+                    });
+                }
+            }
+
+            // ========== GRADIENT MESH SCENE ACTIVATOR ==========
+            function activateMesh(meshId) {
+                ['mesh-blue','mesh-red','mesh-yellow','mesh-green'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.style.opacity = id === meshId ? '1' : '0';
+                });
+            }
+
+            // Elements
+            const startOverlay = document.getElementById('startOverlay');
+            const startPresentationBtn = document.getElementById('btn-start-presentation');
+            const playPauseBtn = document.getElementById('btn-play-pause');
+            const iconPlay = document.getElementById('icon-play');
+            const iconPause = document.getElementById('icon-pause');
+            const restartBtn = document.getElementById('btn-restart');
+            const musicToggleBtn = document.getElementById('btn-music-toggle');
+            const audioVisualizer = document.getElementById('audio-visualizer');
+            const timerLabel = document.getElementById('video-timer');
+            const playheadProgress = document.getElementById('playhead-progress');
+            const playhead = document.getElementById('playhead');
+            const seekTrack = document.getElementById('seek-track');
+
+            // Responsive scale frame helper
+            function scalePhoneFrame() {
+                const frame = document.getElementById('phoneFrame');
+                const controls = document.getElementById('controlsBar');
+                const winW = window.innerWidth;
+                const winH = window.innerHeight;
+                
+                // If it is mobile portrait mode, let CSS handle full screen layout, don't apply scale transform
+                if (winW <= 480 || winH <= 700) {
+                    frame.style.transform = 'none';
+                    if (controls) {
+                        controls.style.transform = 'none';
+                        controls.style.marginTop = '0';
+                    }
+                    return;
+                }
+                
+                // Otherwise, on desktop viewports, apply the bezel-device scale scaling
+                const scale = Math.min(1, (winH - 120) / 720);
+                frame.style.transform = `scale(${scale})`;
+                frame.style.transformOrigin = 'center center';
+                if (controls) {
+                    controls.style.transform = `scale(${scale})`;
+                    controls.style.transformOrigin = 'center center';
+                    controls.style.marginTop = `${(scale - 1) * 200 + 16}px`;
+                }
+            }
+            window.addEventListener('resize', scalePhoneFrame);
+            scalePhoneFrame();
+
+            // Setup GSAP animation steps
+            function createAnimationTimeline() {
+                tl.clear();
+                if (outroPulse) {
+                    outroPulse.kill();
+                    outroPulse = null;
+                }
+                
+                // Set initial states
+                gsap.set("#scene1", { opacity: 1, zIndex: 40 });
+                gsap.set(["#scene2", "#scene3", "#scene4", "#scene5", "#scene6"], { opacity: 0, zIndex: 10 });
+                gsap.set("#navbar", { opacity: 0, y: -10 });
+                gsap.set("#typing-indicator", { opacity: 0, scale: 0.5 });
+                activateMesh(null);
+                
+                // Dynamic Island reset
+                gsap.set("#dynamic-island", { width: 110, height: 28, borderRadius: 14, backgroundColor: '#2d2e33' });
+                gsap.set("#island-dot", { opacity: 1 });
+                gsap.set("#island-text", { opacity: 0, textContent: "" });
+                
+                gsap.set("#intro-logo", { opacity: 0, scale: 0.3, rotation: -45 });
+                gsap.set("#intro-glow-ring", { opacity: 0, scale: 0.3 });
+                gsap.set("#intro-glow-ring-2", { opacity: 0, scale: 0.3 });
+                
+                gsap.set("#upload-zone", { scale: 0.9, opacity: 0 });
+                gsap.set("#flying-doc", { opacity: 0, y: 150, scale: 0.8 });
+                gsap.set("#upload-progress-container, #upload-percentage", { display: 'none' });
+                gsap.set("#upload-progress-bar", { width: 0 });
+                gsap.set("#upload-icon-container", { scale: 1 });
+                gsap.set("#doc-scanline", { display: 'none', top: '-25px' });
+                gsap.set("#summary-card", { opacity: 0, y: 30 });
+                gsap.set(["#bullet-1", "#bullet-2"], { opacity: 0, x: -10 });
+                gsap.set("#flashcard-inner", { rotationY: 0 });
+                gsap.set("#flashcard-container", { opacity: 1, y: 0 });
+                gsap.set("#quiz-card", { opacity: 0, y: 30 });
+                gsap.set("#quiz-opt-b", { backgroundColor: 'transparent', borderColor: '#DADCE0' });
+                gsap.set("#opt-b-check", { display: 'none' });
+                gsap.set("#tap-ripple", { scale: 0, opacity: 0 });
+                gsap.set("#quiz-feedback", { display: 'none' });
+                gsap.set("#selected-ans-label", { textContent: 'None' });
+                gsap.set("#quiz-score-badge", { textContent: 'Score: 0/1', className: 'text-neutral-gray bg-gray-50 px-2 py-0.5 rounded border border-gray-100 font-semibold' });
+                
+                gsap.set("#chat-window", { opacity: 0, scale: 0.8, y: 20 });
+                gsap.set("#msg-user", { opacity: 0, scale: 0.5 });
+                gsap.set("#msg-ai", { opacity: 0, scale: 0.5 });
+                gsap.set("#ai-response-text", { textContent: "" });
+                gsap.set("#citation-badge", { opacity: 0, y: 5 });
+                
+                gsap.set("#outro-logo", { opacity: 0, scale: 0.5, y: 15 });
+                gsap.set(["#outro-title", "#outro-slogan", "#outro-btn", "#outro-subtext"], { opacity: 0, y: 15 });
+                
+                // ================= SCENE 1: INTRO (0s - 3s) =================
+                tl.addLabel("scene1", 0)
+                  .add(() => activateMesh('mesh-blue'), 0)
+                  .to("#intro-logo", { duration: 1.0, opacity: 1, scale: 1, rotation: 0, ease: "back.out(1.5)" }, 0.2)
+                  .to("#intro-glow-ring", { duration: 0.8, opacity: 0.6, scale: 1, ease: "power2.out" }, 0.4)
+                  .to("#intro-glow-ring-2", { duration: 1.0, opacity: 0.4, scale: 1, ease: "power2.out" }, 0.6)
+                  .to(["#intro-glow-ring", "#intro-glow-ring-2"], { duration: 0.6, opacity: 0, scale: 1.2, ease: "power1.out" }, 1.3)
+                  .to("#intro-title", { duration: 0.5, opacity: 1, ease: "power2.out" }, 1.4)
+                  .to("#intro-subtitle", { duration: 0.5, opacity: 1, ease: "power2.out" }, 1.6)
+                  
+                  // Transition Scene 1
+                  .to("#scene1", { duration: 0.5, opacity: 0, scale: 0.95, ease: "power2.inOut" }, 2.5)
+                  .to("#navbar", { duration: 0.5, opacity: 1, y: 0, ease: "power2.out" }, 2.8);
+
+                // ================= SCENE 2: UPLOAD (3s - 7.5s) =================
+                tl.addLabel("scene2", 3.0)
+                  .add(() => activateMesh('mesh-blue'), 3.0)
+                  .to("#scene2", { duration: 0.4, opacity: 1, zIndex: 30 }, 3.0)
+                  .to("#upload-zone", { duration: 0.5, scale: 1, opacity: 1, ease: "back.out(1.4)" }, 3.3)
+                  
+                  // Dynamic Island expands for Uploading notification
+                  .to("#dynamic-island", { duration: 0.5, width: 220, height: 32, borderRadius: 16, backgroundColor: '#202124', ease: "back.out(1.2)" }, 3.7)
+                  .to("#island-dot", { duration: 0.2, opacity: 0 }, 3.7)
+                  .set("#island-text", { textContent: 'Uploading file: Biology_3.pdf...', className: 'text-white text-[9px] font-semibold text-center w-full block ml-2' }, 3.9)
+                  .to("#island-text", { duration: 0.3, opacity: 1 }, 3.9)
+                  
+                  .to("#flying-doc", { duration: 0.6, opacity: 1, y: 0, scale: 1, ease: "power2.out" }, 3.7)
+                  
+                  // Drop file into upload-zone
+                  .to("#flying-doc", { duration: 0.5, y: -70, scale: 0.7, opacity: 0, ease: "power2.in" }, 4.7)
+                  .add(() => { if (!isMusicMuted) sfxUpload.play().catch(e=>console.log(e)); }, 5.2)
+                  .to("#upload-icon-container", { duration: 0.2, scale: 0.8, ease: "power1.in" }, 5.2)
+                  .to("#upload-icon-container", { duration: 0.3, scale: 1.15, ease: "back.out(1.6)" }, 5.4)
+                  
+                  // Progress loader
+                  .set("#upload-progress-container, #upload-percentage", { display: 'block' }, 5.4)
+                  .to("#upload-progress-bar", { duration: 1.1, width: '100%', ease: "power1.inOut" }, 5.4)
+                  .to({}, { 
+                      duration: 1.1, 
+                      onUpdate: function() {
+                          const pct = Math.round(this.progress() * 100);
+                          document.getElementById('upload-percentage').innerText = `Uploading: ${pct}%`;
+                       } 
+                  }, 5.4)
+                  
+                  // Scanning animation
+                  .set("#doc-scanline", { display: 'block' }, 6.6)
+                  .to("#doc-scanline", { duration: 0.6, top: '100%', ease: "power1.inOut" }, 6.6)
+                  .to("#upload-percentage", { duration: 0.2, color: '#34A853', textContent: 'Complete' }, 6.9)
+                  
+                  // Dynamic Island shrinks back
+                  .to("#island-text", { duration: 0.2, opacity: 0 }, 6.8)
+                  .to("#dynamic-island", { duration: 0.5, width: 110, height: 28, borderRadius: 14, backgroundColor: '#2d2e33', ease: "power2.inOut" }, 7.0)
+                  .to("#island-dot", { duration: 0.2, opacity: 1 }, 7.0)
+                  
+                  // Transition Scene 2
+                  .to("#scene2", { duration: 0.5, opacity: 0, scale: 0.95, ease: "power2.inOut" }, 7.5);
+
+                // ================= SCENE 3: AI PROCESSING (8.0s - 12.5s) =================
+                tl.addLabel("scene3", 8.0)
+                  .add(() => activateMesh('mesh-red'), 8.0)
+                  .to("#scene3", { duration: 0.4, opacity: 1, zIndex: 30 }, 8.0)
+                  .to("#ai-brain", { duration: 0.8, scale: 1.1, repeat: 1, yoyo: true, ease: "power1.inOut" }, 8.2)
+                  .to("#brain-glow-1", { duration: 1.0, scale: 1.3, opacity: 0, ease: "power2.out" }, 8.2)
+                  .to("#summary-card", { duration: 0.6, opacity: 1, y: 0, ease: "back.out(1.2)" }, 8.6)
+                  
+                  .to("#bullet-1", { duration: 0.4, opacity: 1, x: 0, ease: "power2.out" }, 9.2)
+                  .to("#bullet-2", { duration: 0.4, opacity: 1, x: 0, ease: "power2.out" }, 9.8)
+                  
+                  // Transition Scene 3
+                  .to("#scene3", { duration: 0.5, opacity: 0, scale: 0.95, ease: "power2.inOut" }, 12.4);
+
+                // ================= SCENE 4: ACTIVE RECALL (12.9s - 17.5s) =================
+                tl.addLabel("scene4", 12.9)
+                  .add(() => activateMesh('mesh-yellow'), 12.9)
+                  .to("#scene4", { duration: 0.4, opacity: 1, zIndex: 30 }, 12.9)
+                  .to("#flashcard-inner", { duration: 0.7, rotationY: 180, ease: "back.out(1)" }, 13.3)
+                  
+                  // Transition from Flashcard to Quiz card
+                  .to("#flashcard-container", { duration: 0.4, opacity: 0, y: -20, ease: "power2.in" }, 14.5)
+                  .to("#quiz-card", { duration: 0.5, opacity: 1, y: 0, ease: "back.out(1.2)" }, 14.8)
+                  
+                  // Touch ripple local animation triggers inside Option B
+                  .add(() => { if (!isMusicMuted) sfxClick.play().catch(e=>console.log(e)); }, 15.9)
+                  .to("#quiz-opt-b", { duration: 0.1, scale: 0.96, ease: "power1.in" }, 15.9)
+                  .to("#tap-ripple", { duration: 0.35, scale: 1.5, opacity: 1, ease: "power2.out" }, 15.9)
+                  .to("#quiz-opt-b", { 
+                      duration: 0.15, 
+                      scale: 1, 
+                      borderColor: '#34A853', 
+                      backgroundColor: 'rgba(52, 168, 83, 0.08)', 
+                      ease: "power1.out" 
+                  }, 16.0)
+                  .to("#tap-ripple", { duration: 0.3, scale: 2.0, opacity: 0, ease: "power2.in" }, 16.0)
+                  
+                  // Dynamic Island morphs for Quiz Success banner
+                  .to("#dynamic-island", { duration: 0.5, width: 220, height: 32, borderRadius: 16, backgroundColor: '#34A853', ease: "back.out(1.2)" }, 16.0)
+                  .to("#island-dot", { duration: 0.2, opacity: 0 }, 16.0)
+                  .set("#island-text", { textContent: 'Correct! +100 XP 🎉', className: 'text-white text-[10px] font-bold text-center w-full block ml-2' }, 16.2)
+                  .to("#island-text", { duration: 0.3, opacity: 1 }, 16.2)
+                  
+                  .set("#opt-b-check", { display: 'block' }, 16.0)
+                  .set("#quiz-feedback", { display: 'block' }, 16.0)
+                  .set("#selected-ans-label", { textContent: 'B' }, 16.0)
+                  .add(() => { if (!isMusicMuted) sfxSuccess.play().catch(e=>console.log(e)); }, 16.1)
+                  .add(() => burstConfetti(), 16.1)
+                  
+                  .to({}, { 
+                      duration: 0.2, 
+                      onStart: () => {
+                          const badge = document.getElementById("quiz-score-badge");
+                          badge.innerText = "Score: 1/1";
+                          badge.className = "text-brand-green bg-green-50 px-2 py-0.5 rounded border border-green-100 font-bold";
+                      }
+                  }, 16.0)
+                  
+                  // Dynamic Island shrinks back
+                  .to("#island-text", { duration: 0.2, opacity: 0 }, 17.1)
+                  .to("#dynamic-island", { duration: 0.5, width: 110, height: 28, borderRadius: 14, backgroundColor: '#2d2e33', ease: "power2.inOut" }, 17.3)
+                  .to("#island-dot", { duration: 0.2, opacity: 1 }, 17.3)
+                  
+                  // Transition Scene 4
+                  .to("#scene4", { duration: 0.5, opacity: 0, scale: 0.95, ease: "power2.inOut" }, 17.4);
+
+                // ================= SCENE 5: CHAT (17.9s - 21.8s) =================
+                tl.addLabel("scene5", 17.9)
+                  .add(() => activateMesh('mesh-green'), 17.9)
+                  .to("#scene5", { duration: 0.4, opacity: 1, zIndex: 30 }, 17.9)
+                  .fromTo("#chat-window", { scale: 0.8, opacity: 0, y: 20 }, { duration: 0.7, scale: 1, opacity: 1, y: 0, ease: "back.out(1.4)" }, 18.2)
+                  
+                  .fromTo("#msg-user", { scale: 0.5, opacity: 0, transformOrigin: "bottom right" }, { duration: 0.4, scale: 1, opacity: 1, ease: "back.out(1.3)" }, 18.9)
+                  // Typing indicator appears before AI response
+                  .fromTo("#typing-indicator", { scale: 0.5, opacity: 0 }, { duration: 0.3, scale: 1, opacity: 1, ease: "back.out(1.2)" }, 19.3)
+                  .to("#typing-indicator", { duration: 0.2, opacity: 0, scale: 0.8 }, 19.55)
+                  .fromTo("#msg-ai", { scale: 0.5, opacity: 0, transformOrigin: "top left" }, { duration: 0.4, scale: 1, opacity: 1, ease: "back.out(1.3)" }, 19.6)
+                  
+                  .to("#ai-response-text", { 
+                      duration: 1.4, 
+                      text: "Oxygen is the final electron acceptor in the respiration process, combining with electrons to form water and generate ATP.", 
+                      ease: "none" 
+                  }, 20.0)
+                  .fromTo("#citation-badge", { opacity: 0, y: 5 }, { duration: 0.4, opacity: 1, y: 0, ease: "power2.out" }, 21.4)
+                  
+                  // Transition Scene 5
+                  .to("#scene5", { duration: 0.5, opacity: 0, scale: 0.95, ease: "power2.inOut" }, 21.7);
+
+                // ================= SCENE 6: OUTRO (22.2s - 25.0s) =================
+                tl.addLabel("scene6", 22.2)
+                  .add(() => activateMesh('mesh-blue'), 22.2)
+                  .to("#scene6", { duration: 0.4, opacity: 1, zIndex: 40 }, 22.2)
+                  .fromTo("#outro-logo", { scale: 0.6, opacity: 0, y: 15 }, { duration: 0.6, scale: 1, opacity: 1, y: 0, ease: "back.out(1.4)" }, 22.4)
+                  .fromTo("#outro-title", { y: 15, opacity: 0 }, { duration: 0.5, y: 0, opacity: 1, ease: "power2.out" }, 22.6)
+                  .fromTo("#outro-slogan", { y: 15, opacity: 0 }, { duration: 0.5, y: 0, opacity: 1, ease: "power2.out" }, 22.8)
+                  .fromTo("#outro-btn", { y: 20, opacity: 0 }, { duration: 0.6, y: 0, opacity: 1, ease: "back.out(1.5)" }, 23.1)
+                  .fromTo("#outro-subtext", { opacity: 0 }, { duration: 0.4, opacity: 1 }, 23.5)
+                  .add(() => {
+                      if (tl.progress() > 0.95) {
+                          outroPulse = gsap.to("#outro-btn", { duration: 1.5, scale: 1.05, repeat: -1, yoyo: true, ease: "sine.inOut" });
+                      }
+                  }, 24.0);
+            }
+
+            // Sync timelines and progress metrics
+            function updateTimelineProgress() {
+                const progress = tl.progress();
+                const curTime = tl.time();
+                
+                playheadProgress.style.width = `${progress * 100}%`;
+                playhead.style.left = `${progress * 100}%`;
+                
+                const formatTime = (secs) => {
+                    const m = Math.floor(secs / 60).toString().padStart(2, '0');
+                    const s = Math.floor(secs % 60).toString().padStart(2, '0');
+                    return `${m}:${s}`;
+                };
+                timerLabel.innerText = `${formatTime(curTime)} / ${formatTime(TOTAL_DURATION)}`;
+                
+                if (progress >= 1.0) {
+                    isPlaying = false;
+                    togglePlayIcons();
+                }
+            }
+
+            // Click-to-seek timeline logic
+            seekTrack.addEventListener('click', (e) => {
+                const rect = seekTrack.getBoundingClientRect();
+                const clickX = e.clientX - rect.left;
+                const pct = Math.max(0, Math.min(1, clickX / rect.width));
+                if (outroPulse) {
+                    outroPulse.kill();
+                    outroPulse = null;
+                }
+                tl.progress(pct);
+                if (isPlaying) tl.play();
+            });
+
+            // Start demo click handler
+            startPresentationBtn.addEventListener('click', () => {
+                // Initialize background music and play immediately
+                bgMusic.play().then(() => {
+                    bgMusic.volume = 0.35;
+                    audioVisualizer.classList.remove('visualizer-paused');
+                    audioVisualizer.classList.add('visualizer-playing');
+                }).catch(err => {
+                    console.log('Autoplay blocked:', err);
+                });
+                
+                // Hide overlay
+                startOverlay.style.opacity = '0';
+                setTimeout(() => {
+                    startOverlay.style.display = 'none';
+                }, 500);
+
+                // Play presentation
+                createAnimationTimeline();
+                tl.play();
+                isPlaying = true;
+                togglePlayIcons();
+            });
+
+            // Play / Pause control
+            playPauseBtn.addEventListener('click', () => {
+                if (isPlaying) {
+                    tl.pause();
+                    bgMusic.pause();
+                    audioVisualizer.classList.add('visualizer-paused');
+                    audioVisualizer.classList.remove('visualizer-playing');
+                    isPlaying = false;
+                } else {
+                    if (tl.progress() >= 1.0) tl.restart();
+                    else tl.play();
+                    
+                    bgMusic.play().catch(e=>console.log(e));
+                    audioVisualizer.classList.remove('visualizer-paused');
+                    audioVisualizer.classList.add('visualizer-playing');
+                    isPlaying = true;
+                }
+                togglePlayIcons();
+            });
+
+            function togglePlayIcons() {
+                if (isPlaying) {
+                    iconPlay.classList.add('hidden');
+                    iconPause.classList.remove('hidden');
+                } else {
+                    iconPlay.classList.remove('hidden');
+                    iconPause.classList.add('hidden');
+                }
+            }
+
+            // Restart control
+            restartBtn.addEventListener('click', () => {
+                tl.restart();
+                bgMusic.currentTime = 0;
+                bgMusic.play().catch(e=>console.log(e));
+                audioVisualizer.classList.remove('visualizer-paused');
+                audioVisualizer.classList.add('visualizer-playing');
+                isPlaying = true;
+                togglePlayIcons();
+            });
+
+            // Music Audio Toggle control
+            musicToggleBtn.addEventListener('click', () => {
+                if (isMusicMuted) {
+                    bgMusic.muted = false;
+                    isMusicMuted = false;
+                    audioVisualizer.classList.remove('visualizer-paused');
+                    audioVisualizer.classList.add('visualizer-playing');
+                } else {
+                    bgMusic.muted = true;
+                    isMusicMuted = true;
+                    audioVisualizer.classList.add('visualizer-paused');
+                    audioVisualizer.classList.remove('visualizer-playing');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

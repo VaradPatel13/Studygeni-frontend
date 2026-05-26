@@ -17,8 +17,13 @@ export const metadata: Metadata = {
     },
 };
 
+import { Suspense } from 'react';
 import RegisterForm from './RegisterForm';
 
 export default function RegisterPage() {
-    return <RegisterForm />;
+    return (
+        <Suspense fallback={<div className="min-h-screen bg-[var(--bg-page)] flex items-center justify-center text-sm text-[var(--text-secondary)]">Loading...</div>}>
+            <RegisterForm />
+        </Suspense>
+    );
 }

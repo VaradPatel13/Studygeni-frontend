@@ -1,6 +1,11 @@
 import { UserRepository } from '../repositories/user.repository';
 import { RegisterInput, LoginInput } from '../validations/auth.schema';
 import jwt, { SignOptions } from 'jsonwebtoken';
+import Subscription from '@/models/Subscription';
+
+const DEFAULT_FREE_PLAN = 'free';
+const DEFAULT_FREE_LIMIT = 3;
+const DEFAULT_FREE_AMOUNT = 0;
 
 const userRepository = new UserRepository();
 
@@ -23,6 +28,22 @@ export class AuthService {
     }
 
     const user = await userRepository.create(input);
+    await userRepository.update(user._id.toString(), { subscriptionPlan: DEFAULT_FREE_PLAN });
+
+    await Subscription.findOneAndUpdate(
+      { userId: user._id },
+      {
+        userId: user._id,
+        plan: DEFAULT_FREE_PLAN,
+        status: 'active',
+        documentsLimit: DEFAULT_FREE_LIMIT,
+        documentsUsed: 0,
+        amount: DEFAULT_FREE_AMOUNT,
+        currency: 'INR',
+      },
+      { upsert: true, new: true }
+    );
+
     const token = this.generateToken(user._id.toString());
 
     return { token, user };
@@ -45,6 +66,7 @@ export class AuthService {
         email: user.email,
         mobileNumber: user.mobileNumber,
         profileImage: user.profileImage,
+        subscriptionPlan: (user as any).subscriptionPlan || DEFAULT_FREE_PLAN,
       },
     };
   }

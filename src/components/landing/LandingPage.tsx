@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, Zap, Brain, MessageSquare, Star, Upload, FileText, CheckCircle2, GraduationCap, Clock, Users, ChevronRight, PlayCircle } from 'lucide-react';
 import Navbar from '@/components/landing/Navbar';
+import PricingSection from '@/components/landing/PricingSection';
 import { useState } from 'react';
 import { motion, Variants } from 'framer-motion';
 import { useTheme } from '@/components/ThemeProvider';
@@ -112,6 +113,47 @@ export default function LandingPage() {
                         <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-[var(--color-brand-green)]" /> No credit card required</span>
                         <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-[var(--color-brand-green)]" /> Cancel anytime</span>
                     </motion.div>
+                </motion.section>
+
+
+                {/* --- Interactive Demo Section --- */}
+                <motion.section
+                    id="demo"
+                    className="app-container mb-24 lg:mb-32 text-center"
+                    initial={{ opacity: 0, y: 40 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-100px" }}
+                    transition={{ duration: 0.7, ease: "easeOut" }}
+                >
+                    <div className="max-w-4xl mx-auto">
+                        <div className="mb-8">
+                            <span className="text-xs font-bold text-[var(--color-brand-blue)] bg-blue-50 dark:bg-blue-500/10 px-3.5 py-1.5 rounded-full border border-blue-100 dark:border-blue-900/30 uppercase tracking-widest font-sans">
+                                Platform Overview
+                            </span>
+                            <h2 className="text-3xl md:text-5xl font-outfit font-bold text-[var(--text-primary)] mt-4 mb-3 tracking-tight">
+                                See StudyMate in Action
+                            </h2>
+                            <p className="text-[var(--text-secondary)] text-md max-w-xl mx-auto leading-relaxed">
+                                Watch how StudyMate instantly processes study materials, generates summaries, flashcards, and answers your questions.
+                            </p>
+                        </div>
+
+                        {/* Premium Video Frame Container */}
+                        <div className="relative rounded-2xl md:rounded-3xl border border-[var(--border-subtle)] bg-white dark:bg-[#1e1f22] p-2 md:p-3 shadow-2xl dark:shadow-black/40 overflow-hidden group">
+                            {/* Colorful background ambient glow behind the frame */}
+                            <div className="absolute -inset-1 bg-gradient-to-tr from-[var(--color-brand-blue)] via-[var(--color-brand-red)] to-[var(--color-brand-yellow)] rounded-[20px] md:rounded-[28px] opacity-10 blur-xl group-hover:opacity-15 transition-opacity duration-500 -z-10"></div>
+                            
+                            <div className="relative aspect-video rounded-xl md:rounded-2xl overflow-hidden bg-[#202124] border border-[var(--border-subtle)]/30">
+                                <iframe
+                                    src="/promo.html?hidecontrols=true"
+                                    className="w-full h-full border-none"
+                                    title="StudyMate AI Promo Animation"
+                                    allow="autoplay"
+                                    sandbox="allow-scripts allow-same-origin"
+                                ></iframe>
+                            </div>
+                        </div>
+                    </div>
                 </motion.section>
 
 
@@ -340,6 +382,9 @@ export default function LandingPage() {
                         </div>
                     </div>
                 </section>
+
+                {/* --- Pricing Section --- */}
+                <PricingSection />
 
                 {/* --- Final CTA --- */}
                 <section className="py-32 bg-[#202124] text-white relative overflow-hidden">

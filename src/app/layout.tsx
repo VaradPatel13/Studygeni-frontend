@@ -14,8 +14,20 @@ export const metadata: Metadata = {
     template: "%s | StudyMate.io",
   },
   metadataBase: new URL("https://studymate-io.vercel.app/"),
-  description: "AI-powered education platform. Turn your notes into top grades with instant quizzes, flashcards, and summaries.",
-  keywords: ["study", "AI", "education", "flashcards", "quizzes", "summaries", "student", "learning"],
+  description: "Stop failing and start studying smarter. StudyMate.io is your AI study companion that instantly transforms PDFs, notes, and lectures into smart summaries, flashcards, and interactive practice quizzes.",
+  keywords: [
+    "study", 
+    "AI study", 
+    "AI study companion", 
+    "AI flashcards", 
+    "study app", 
+    "active recall", 
+    "spaced repetition", 
+    "AI quiz generator", 
+    "chat with documents", 
+    "education AI", 
+    "study tool"
+  ],
   authors: [{ name: "StudyMate.io Team" }],
   verification: {
     google: "C8uYU-RlcSJhPRmqsQ3hSZAxx-U-T3ZQpi806yOyucU",
@@ -53,7 +65,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${outfit.variable} font-sans antialiased`}
       >

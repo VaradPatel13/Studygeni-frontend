@@ -4,6 +4,7 @@ import { DocumentRepository } from '@/server/repositories/document.repository';
 import Quiz from '@/models/Quiz';
 import { sendSuccess, sendError } from '@/lib/server/response';
 import connectDB from '@/lib/server/db';
+import { assertUserHasFeature } from '@/lib/server/planAccess';
 
 const aiService = new AIService();
 const documentRepository = new DocumentRepository();
@@ -16,6 +17,8 @@ export async function POST(
     const userId = req.headers.get('x-user-id')!;
     const { documentId } = await params;
     const { count = 5, difficulty = 'mixed' } = await req.json();
+
+    await assertUserHasFeature(userId, 'Quiz generation');
 
     const document = await documentRepository.findById(documentId, userId);
     if (!document) return sendError('Document not found', 'RESOURCE_NOT_FOUND', 404);
@@ -32,7 +35,9 @@ export async function POST(
     });
 
     return sendSuccess('Quiz generated and saved successfully', savedQuiz);
-  } catch (error: any) {
-    return sendError(error.message || 'Internal Server Error', 'INTERNAL_ERROR', 500);
+  } catch (error: unknown) {
+    const isFeatureBlocked = error instanceof Error && error.name === 'FEATURE_NOT_AVAILABLE';
+    const message = error instanceof Error ? error.message : 'Internal Server Error';
+    return sendError(message, isFeatureBlocked ? 'FORBIDDEN' : 'INTERNAL_ERROR', isFeatureBlocked ? 403 : 500);
   }
 }
