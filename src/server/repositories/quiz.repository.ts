@@ -24,7 +24,7 @@ export class QuizRepository {
 
   async update(id: string, userId: string, data: any) {
     await connectDB();
-    return Quiz.findOneAndUpdate({ _id: id, userId }, data, { new: true });
+    return Quiz.findOneAndUpdate({ _id: id, userId }, data, { returnDocument: 'after' });
   }
 
   async delete(id: string, userId: string) {

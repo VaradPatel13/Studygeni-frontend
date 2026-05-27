@@ -142,7 +142,7 @@ async function logPaymentEvent(input: {
       ...input,
       currency: input.currency || 'INR',
     },
-    { upsert: true, new: true }
+    { upsert: true, returnDocument: 'after' }
   );
 }
 
@@ -186,7 +186,7 @@ async function syncSubscriptionAndUser(params: {
       endDate: params.endDate,
       paymentHistory: params.paymentHistoryEntry ? [params.paymentHistoryEntry] : undefined,
     },
-    { upsert: true, new: true }
+    { upsert: true, returnDocument: 'after' }
   );
 
   if (params.syncUserPlan !== false) {
@@ -353,6 +353,18 @@ export const BillingService = {
       },
     });
 
+    const couponCodeUsed = input.couponCode || subscription?.couponCode || null;
+    if (couponCodeUsed) {
+      try {
+        await Coupon.updateOne(
+          { code: couponCodeUsed.toUpperCase() },
+          { $inc: { usedCount: 1 } }
+        );
+      } catch (couponError) {
+        console.error('Failed to increment coupon count:', couponError);
+      }
+    }
+
     const paymentEvent = await logPaymentEvent({
       idempotencyKey: `payment:${input.paymentId}`,
       source: input.source,
@@ -363,7 +375,7 @@ export const BillingService = {
       paymentId: input.paymentId,
       amount: displayAmount,
       currency: displayCurrency,
-      couponCode: input.couponCode || subscription?.couponCode || null,
+      couponCode: couponCodeUsed,
       discountAmount: subscription?.discountAmount || 0,
       status: 'processed',
       signatureVerified: input.signatureVerified ?? input.source === 'webhook',

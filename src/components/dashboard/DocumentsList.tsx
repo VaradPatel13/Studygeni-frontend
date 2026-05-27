@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { documentService } from '@/services/documentService';
+import { paymentService } from '@/services/paymentService';
 import { ChevronRight, FileText, Search, Upload, Filter, Clock, CheckCircle, AlertCircle, ArrowUpDown, Calendar, X, Edit2, Trash2, ExternalLink, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Skeleton } from '@/components/ui/Skeleton';
@@ -52,6 +53,24 @@ export default function DocumentsList({ onSelectDocument }: DocumentsListProps) 
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
+
+        try {
+            toast.loading('Checking upload limits...');
+            const subscription = await paymentService.getCurrentSubscription();
+            toast.dismiss();
+
+            if (subscription) {
+                const used = subscription.documentsUsed ?? 0;
+                const limit = subscription.documentsLimit ?? 3;
+                if (used >= limit) {
+                    toast.error(`Upload limit reached (${used}/${limit} used). Please upgrade your plan.`);
+                    return;
+                }
+            }
+        } catch (error) {
+            toast.dismiss();
+            console.error('Failed to verify subscription limits:', error);
+        }
 
         const formData = new FormData();
         formData.append('file', file);

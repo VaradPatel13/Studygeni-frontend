@@ -21,7 +21,7 @@ export class DocumentRepository {
 
   async update(id: string, userId: string, data: any) {
     await connectDB();
-    return Document.findOneAndUpdate({ _id: id, userId }, data, { new: true });
+    return Document.findOneAndUpdate({ _id: id, userId }, data, { returnDocument: 'after' });
   }
 
   async delete(id: string, userId: string) {

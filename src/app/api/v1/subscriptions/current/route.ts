@@ -7,12 +7,19 @@ import User from '@/models/User';
 
 const DEFAULT_FREE_LIMIT = 3;
 
-async function getDocumentUsage(userId: string) {
-  const documentsUsed = await Document.countDocuments({ userId });
-  return {
-    documentsUsed,
-    documentsRemaining: Math.max(documentsUsed >= DEFAULT_FREE_LIMIT ? 0 : DEFAULT_FREE_LIMIT - documentsUsed, 0),
-  };
+async function getDocumentUsage(userId: string, subscription?: any, activePlan?: string) {
+  let documentsUsed = 0;
+  
+  if (activePlan && activePlan !== 'free' && subscription && subscription.status === 'active' && subscription.startDate) {
+    documentsUsed = await Document.countDocuments({
+      userId,
+      uploadDate: { $gte: subscription.startDate },
+    });
+  } else {
+    documentsUsed = await Document.countDocuments({ userId });
+  }
+
+  return documentsUsed;
 }
 
 export async function GET(req: NextRequest) {
@@ -21,9 +28,10 @@ export async function GET(req: NextRequest) {
 
     await connectDB();
 
-    const usage = await getDocumentUsage(userId);
-    const user = await User.findById(userId).select('subscriptionPlan');
-    const subscription = await Subscription.findOne({ userId }).sort({ updatedAt: -1 });
+    const [user, subscription] = await Promise.all([
+      User.findById(userId).select('subscriptionPlan'),
+      Subscription.findOne({ userId }).sort({ updatedAt: -1 }),
+    ]);
 
     const activePlan = user?.subscriptionPlan || 'free';
     const activePlanDetails = activePlan === 'free'
@@ -40,6 +48,7 @@ export async function GET(req: NextRequest) {
             documentsLimit: DEFAULT_FREE_LIMIT,
           };
 
+    const documentsUsed = await getDocumentUsage(userId, subscription, activePlanDetails.plan);
     const pendingPlan = subscription && subscription.status === 'pending' ? subscription.plan : null;
 
     return sendSuccess('Subscription fetched', {
@@ -47,8 +56,8 @@ export async function GET(req: NextRequest) {
       planName: activePlanDetails.planName,
       status: 'active',
       documentsLimit: activePlanDetails.documentsLimit,
-      documentsUsed: usage.documentsUsed,
-      documentsRemaining: Math.max(activePlanDetails.documentsLimit - usage.documentsUsed, 0),
+      documentsUsed: documentsUsed,
+      documentsRemaining: Math.max(activePlanDetails.documentsLimit - documentsUsed, 0),
       pendingPlan,
       pendingStatus: subscription?.status === 'pending' ? 'pending' : null,
       pendingOrderId: subscription?.status === 'pending' ? subscription.orderId : null,

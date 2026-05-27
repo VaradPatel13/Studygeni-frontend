@@ -25,6 +25,6 @@ export class UserRepository {
 
   async update(id: string, updateFields: any) {
     await connectDB();
-    return User.findByIdAndUpdate(id, updateFields, { new: true, runValidators: true });
+    return User.findByIdAndUpdate(id, updateFields, { returnDocument: 'after', runValidators: true });
   }
 }

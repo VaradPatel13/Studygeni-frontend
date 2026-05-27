@@ -22,7 +22,7 @@ export async function PATCH(
         },
         $inc: { 'cards.$.reviewCount': 1 }
       },
-      { new: true }
+      { returnDocument: 'after' }
     );
 
     if (!updatedFlashcardSet) return sendError('Flashcard set or card not found', 'RESOURCE_NOT_FOUND', 404);

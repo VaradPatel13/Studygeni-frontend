@@ -41,7 +41,7 @@ export class AuthService {
         amount: DEFAULT_FREE_AMOUNT,
         currency: 'INR',
       },
-      { upsert: true, new: true }
+      { upsert: true, returnDocument: 'after' }
     );
 
     const token = this.generateToken(user._id.toString());

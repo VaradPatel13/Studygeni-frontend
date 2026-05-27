@@ -1,6 +1,8 @@
 import { NextRequest } from 'next/server';
 import cloudinary from '@/lib/server/cloudinary';
 import Document from '@/models/Document';
+import User from '@/models/User';
+import Subscription from '@/models/Subscription';
 import { dispatchDocumentProcessing } from '@/server/services/document-processor.service';
 import { sendSuccess, sendError } from '@/lib/server/response';
 import connectDB from '@/lib/server/db';
@@ -15,6 +17,46 @@ export async function POST(req: NextRequest) {
     const title = formData.get('title') as string;
 
     if (!file) return sendError('No file uploaded', 'VALIDATION_ERROR', 400);
+
+    await connectDB();
+
+    const [user, subscription] = await Promise.all([
+      User.findById(userId).select('subscriptionPlan'),
+      Subscription.findOne({ userId }).sort({ updatedAt: -1 }),
+    ]);
+
+    const activePlan = user?.subscriptionPlan || 'free';
+    const activePlanDetails = activePlan === 'free'
+      ? { plan: 'free', planName: 'Free', documentsLimit: 3 }
+      : subscription && subscription.status === 'active'
+        ? {
+            plan: subscription.plan,
+            planName: subscription.plan.charAt(0).toUpperCase() + subscription.plan.slice(1),
+            documentsLimit: subscription.documentsLimit,
+          }
+        : {
+            plan: activePlan,
+            planName: activePlan.charAt(0).toUpperCase() + activePlan.slice(1),
+            documentsLimit: 3,
+          };
+
+    let documentsUsed = 0;
+    if (activePlanDetails.plan !== 'free' && subscription && subscription.status === 'active' && subscription.startDate) {
+      documentsUsed = await Document.countDocuments({
+        userId,
+        uploadDate: { $gte: subscription.startDate },
+      });
+    } else {
+      documentsUsed = await Document.countDocuments({ userId });
+    }
+
+    if (documentsUsed >= activePlanDetails.documentsLimit) {
+      return sendError(
+        `Upload limit reached. You have uploaded ${documentsUsed} of your allowed ${activePlanDetails.documentsLimit} documents. Please upgrade your plan.`,
+        'LIMIT_EXCEEDED_ERROR',
+        403
+      );
+    }
 
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
@@ -44,7 +86,6 @@ export async function POST(req: NextRequest) {
       uploadStream.end(buffer);
     });
 
-    await connectDB();
     const document = await Document.create({
       userId,
       title: title || file.name,

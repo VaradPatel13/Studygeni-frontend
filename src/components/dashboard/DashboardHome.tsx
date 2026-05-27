@@ -20,6 +20,7 @@ import {
 import { documentService } from '@/services/documentService';
 import { progressService } from '@/services/progressService';
 import { flashcardService } from '@/services/flashcardService';
+import { paymentService } from '@/services/paymentService';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 
@@ -125,6 +126,24 @@ export default function DashboardHome({ onViewAllDocuments, onUpgradeClick, curr
         if (!uploadTitle.trim()) {
             toast.error('Please enter a title');
             return;
+        }
+
+        try {
+            toast.loading('Checking upload limits...');
+            const subscription = await paymentService.getCurrentSubscription();
+            toast.dismiss();
+
+            if (subscription) {
+                const used = subscription.documentsUsed ?? 0;
+                const limit = subscription.documentsLimit ?? 3;
+                if (used >= limit) {
+                    toast.error(`Upload limit reached (${used}/${limit} used). Please upgrade your plan.`);
+                    return;
+                }
+            }
+        } catch (error) {
+            toast.dismiss();
+            console.error('Failed to verify subscription limits:', error);
         }
 
         const formData = new FormData();
